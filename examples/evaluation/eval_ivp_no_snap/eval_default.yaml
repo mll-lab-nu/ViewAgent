@@ -25,7 +25,7 @@ envs:
     split: test
     max_turns: 10
     config:
-      jsonl_path: ${fileroot}/data/viewsuite_5k/interactive_view_planning_test_filter.jsonl
+      jsonl_path: ${fileroot}/data/viewsuite_15k/interactive_view_planning_test_filter.jsonl
       max_turns: 10
       render_backend: client
       client_url_file_path: ${fileroot}/client_url.txt

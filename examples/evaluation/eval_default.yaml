@@ -37,7 +37,7 @@ envs:
     split: test
     max_turns: 1
     config:
-      jsonl_path: ${fileroot}/data/viewsuite_5k/path_to_view_test_filter.jsonl
+      jsonl_path: ${fileroot}/data/viewsuite_15k/path_to_view_test_filter.jsonl
       image_size: [512,512]
       format: eval_mode
       example_count: 0
@@ -49,7 +49,7 @@ envs:
     split: test
     max_turns: 1
     config:
-      jsonl_path: ${fileroot}/data/viewsuite_5k/view_to_path_test_filter.jsonl
+      jsonl_path: ${fileroot}/data/viewsuite_15k/view_to_path_test_filter.jsonl
       image_size: [512,512]
       format: eval_mode
       example_count: 0
@@ -61,7 +61,7 @@ envs:
     split: test
     max_turns: 10
     config:
-      jsonl_path: ${fileroot}/data/viewsuite_5k/interactive_view_planning_test_filter.jsonl
+      jsonl_path: ${fileroot}/data/viewsuite_15k/interactive_view_planning_test_filter.jsonl
       max_turns: 10
       render_backend: client
       client_url_file_path: ${fileroot}/client_url.txt

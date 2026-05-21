@@ -575,7 +575,7 @@ if __name__ == "__main__":
     import fire
 
     async def run(
-        jsonl_path: str = "data/viewsuite_5k/interactive_view_planning_train_filter.jsonl",
+        jsonl_path: str = "data/viewsuite_15k/interactive_view_planning_train_filter.jsonl",
         seed: int = 208,
         render_backend: str = "client",
         client_url: str = "http://0.0.0.0:8767",

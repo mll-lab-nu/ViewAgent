@@ -6,7 +6,7 @@ envs:
     max_turns: 10
     response_length_per_turn: 512
     config:
-      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/viewsuite_5k/interactive_view_planning_dev_filter.jsonl
+      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/viewsuite_15k/interactive_view_planning_dev_filter.jsonl
       image_size: [512, 512]
       format: eval_mode
       use_example_in_sys_prompt: false
@@ -22,7 +22,7 @@ envs:
     max_turns: 1
     response_length_per_turn: 2048
     config:
-      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/viewsuite_5k/path_to_view_dev_filter.jsonl
+      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/viewsuite_15k/path_to_view_dev_filter.jsonl
       image_size: [512, 512]
       format: eval_mode
       format_reward: 0.0
@@ -35,7 +35,7 @@ envs:
     max_turns: 1
     response_length_per_turn: 2048
     config:
-      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/viewsuite_5k/view_to_path_dev_filter.jsonl
+      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/viewsuite_15k/view_to_path_dev_filter.jsonl
       image_size: [512, 512]
       format: eval_mode
       format_reward: 0.0

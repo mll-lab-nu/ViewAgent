@@ -123,7 +123,7 @@ general_overrides:
         - multi_turn_action_gen_mcq
         - view_difference
         - view_difference_mcq
-      viewsuite_5k_dir: ${oc.env:VIEWSUITE_ROOT}/data/viewsuite_5k
+      viewsuite_15k_dir: ${oc.env:VIEWSUITE_ROOT}/data/viewsuite_15k
       multi_turn_action_gen:
         min_path_len: 3
         max_path_len: 5
