@@ -2,5 +2,5 @@
 
 python -m view_suite.utils.download_targz_hf \
     --repo=ViewSuite/viewsuite \
-    --files=viewsuite_5k.tar.gz,mindcube.tar.gz \
+    --files=viewsuite_15k.tar.gz,mindcube.tar.gz \
     --out="$VIEWSUITE_ROOT/data"
