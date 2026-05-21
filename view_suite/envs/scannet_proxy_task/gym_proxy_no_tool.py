@@ -294,7 +294,7 @@ if __name__ == "__main__":
         print(obs['obs_str'])
 
     def main(
-        jsonl_path: str = "data/viewsuite_5k/path_to_view_dev_filter.jsonl",
+        jsonl_path: str = "data/viewsuite_15k/path_to_view_dev_filter.jsonl",
         save_path: str = "./test_fwd",
         resize: Optional[str] = None,
         format: str = "free_think",

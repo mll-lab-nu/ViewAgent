@@ -28,7 +28,7 @@ def generate_view_difference_mcq(
     min_path_len: int = 2,
     max_path_len: int = 5,
     sample_per_scene: int = 15,
-    viewsuite_5k_dir: Optional[str] = None,
+    viewsuite_15k_dir: Optional[str] = None,
     rng: Optional[random.Random] = None,
     balanced_sampling: bool = True,
 ) -> List[Dict[str, Any]]:
@@ -103,7 +103,7 @@ def generate_view_difference_mcq(
             images: List[str] = [from_img, to_img]
 
             top_down = _resolve_top_down(
-                scene_id, viewsuite_5k_dir, output_dir, ds, copied,
+                scene_id, viewsuite_15k_dir, output_dir, ds, copied,
             )
             if top_down:
                 images.append(top_down)

@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 # ── Config ──────────────────────────────────────────────────────────────────
 
 DEFAULT_ROLLOUTS_DIR = Path("/root/projects/viewsuite/rollouts_all")
-DATA_DIR = Path("/root/projects/viewsuite/data/viewsuite_5k")
+DATA_DIR = Path("/root/projects/viewsuite/data/viewsuite_15k")
 
 EASY_THRESHOLD = 3.0  # unified view distance threshold
 STEP_TRANSLATION_M = 0.5

@@ -125,7 +125,7 @@ Lives on the training/eval machine (the one talking to the render service).
 
 ```bash
 bash scripts/download_viewsuite_all.sh
-# downloads viewsuite_5k.tar.gz + mindcube.tar.gz into data/
+# downloads viewsuite_15k.tar.gz + mindcube.tar.gz into data/
 ```
 
 After both, you should have:
@@ -133,7 +133,7 @@ After both, you should have:
 ```
 data/
 ├── scannet/scans/...
-└── viewsuite_5k/
+└── viewsuite_15k/
     ├── interactive_view_planning_test.jsonl   # Interactive View Planning (IVP)
     ├── path_to_view_test.jsonl                # Path-to-View (P2V)
     ├── view_to_path_test.jsonl                # View-to-Path (V2P)
@@ -232,7 +232,7 @@ Type movement keys in any combination (e.g. `wwd`), or `quit` to exit. If the IV
 
 ## 📊 5. Evaluation
 
-Both eval suites read `data/viewsuite_5k/*.jsonl`. **IVP** evaluation additionally needs the render service (Step 3) and `client_url.txt`; **P2V/V2P** do not.
+Both eval suites read `data/viewsuite_15k/*.jsonl`. **IVP** evaluation additionally needs the render service (Step 3) and `client_url.txt`; **P2V/V2P** do not.
 
 ### 5a. Closed-source / API models — `examples/evaluation/eval_scannet_proxy_task`
 

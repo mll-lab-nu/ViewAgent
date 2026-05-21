@@ -159,7 +159,7 @@ if __name__ == "__main__":
     ) -> None:
         jsonl_path = jsonl_path or os.path.join(
             os.environ.get("VIEWSUITE_ROOT", "."),
-            "data/viewsuite_5k/view_to_path_test.jsonl",
+            "data/viewsuite_15k/view_to_path_test.jsonl",
         )
         save_dir = os.path.abspath(save_dir or os.path.join(
             os.environ.get("VIEWSUITE_ROOT", "."), "tests/v2p_play"))

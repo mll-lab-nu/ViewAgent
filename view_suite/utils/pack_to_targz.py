@@ -245,8 +245,8 @@ def pack(
 
 
 def main(
-    folder: str = "data/viewsuite_5k",
-    output: str = "viewsuite_5k.tar.gz",
+    folder: str = "data/viewsuite_15k",
+    output: str = "viewsuite_15k.tar.gz",
     include: Optional[Union[str, List[str]]] = None,
     no_follow_symlinks: bool = True,
     level: int = 1,
