@@ -157,7 +157,7 @@ The service exposes an HTTP render endpoint that gym environments call to render
 
 > **Who needs this?** Only **Interactive View Planning (IVP)** — and Gaussian-Splat–rendered evaluation — renders views on the fly and needs this service. **Path-to-View (P2V) and View-to-Path (V2P) do not**: they are single-turn tasks that read pre-rendered images straight from the jsonl, so they run and evaluate without ever starting the service.
 
-**Mesh backend (open3d)** — renders directly from the ScanNet meshes (Step 2); no extra download needed.
+**Mesh backend (open3d, recommended, full splits available)** — renders directly from the ScanNet meshes (Step 2); no extra download needed.
 
 ```bash
 # Required: tells the service where to find data/scannet/...
@@ -167,7 +167,7 @@ export VIEWSUITE_ROOT="$(pwd)"
 bash scripts/scannet_http_service_loop.sh 32 0 1 8767 10800 open3d
 ```
 
-**3D-Gaussian-Splatting backend (gsplat)** — renders from pretrained per-scene 3DGS reconstructions of the ScanNet scenes ([SceneSplat-7K](https://huggingface.co/datasets/GaussianWorld/scannet_mcmc_1.5M_3dgs)). Download those first into `data/scannet_3dgs_mcmc/`:
+**3D-Gaussian-Splatting backend (gsplat, only test split available)** — renders from pretrained per-scene 3DGS reconstructions of the ScanNet scenes ([`GaussianWorld/scannet_mcmc_1.5M_3dgs`](https://huggingface.co/datasets/GaussianWorld/scannet_mcmc_1.5M_3dgs), from the [SceneSplat-7K](https://huggingface.co/datasets/GaussianWorld/scene_splat_7k) project). Download those first into `data/scannet_3dgs_mcmc/`:
 
 ```bash
 export VIEWSUITE_ROOT="$(pwd)"
