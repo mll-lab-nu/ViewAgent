@@ -117,7 +117,7 @@ class PerformanceSummary:
         self,
         rollouts_dir: str = "/root/projects/viewsuite/rollouts",
         output_dir: Optional[str] = None,
-        viewsuite_data_path: str = "/root/projects/viewsuite/data/viewsuite_5k",
+        viewsuite_data_path: str = "/root/projects/viewsuite/data/viewsuite_15k",
         jsonl_dir: Optional[str] = None,
         thresholds: str = "0.25,15;0.5,30;1,30;1,60",
         tol_per_action_len: str = DEFAULT_TOL_PER_ACTION_LEN,
@@ -289,7 +289,7 @@ class PerformanceSummary:
         self,
         rollouts_dir: str = "/root/projects/viewsuite/rollouts",
         model: str = "glm_4_6v",
-        viewsuite_data_path: str = "/root/projects/viewsuite/data/viewsuite_5k",
+        viewsuite_data_path: str = "/root/projects/viewsuite/data/viewsuite_15k",
     ) -> None:
         """
         Fix GLM format errors by re-parsing bare-letter answers from transcripts.

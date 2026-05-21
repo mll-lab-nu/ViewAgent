@@ -11,7 +11,7 @@ envs:
     split: test
     max_turns: 20
     config:
-      jsonl_path: ${fileroot}/data/viewsuite_5k/interactive_view_planning_test.jsonl
+      jsonl_path: ${fileroot}/data/viewsuite_15k/interactive_view_planning_test.jsonl
       max_turns: 20
       render_backend: client
       client_url_file_path: ${fileroot}/client_url.txt
@@ -33,7 +33,7 @@ envs:
     split: test
     max_turns: 30
     config:
-      jsonl_path: ${fileroot}/data/viewsuite_5k/interactive_view_planning_test.jsonl
+      jsonl_path: ${fileroot}/data/viewsuite_15k/interactive_view_planning_test.jsonl
       max_turns: 30
       render_backend: client
       client_url_file_path: ${fileroot}/client_url.txt

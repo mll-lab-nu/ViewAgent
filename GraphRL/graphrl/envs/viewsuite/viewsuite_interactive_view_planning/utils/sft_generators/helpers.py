@@ -71,15 +71,15 @@ def _resolve_node_image(
 
 def _resolve_top_down(
     scene_id: str,
-    viewsuite_5k_dir: Optional[str],
+    viewsuite_15k_dir: Optional[str],
     output_dir: Path,
     dataset_name: str,
     copied: Set[str],
 ) -> Optional[str]:
     """Copy top-down view and return relative path, or None."""
-    if not viewsuite_5k_dir:
+    if not viewsuite_15k_dir:
         return None
-    src = Path(viewsuite_5k_dir) / scene_id / "top_down_view.png"
+    src = Path(viewsuite_15k_dir) / scene_id / "top_down_view.png"
     filename = f"{scene_id}_top_down.png"
     return _copy_image(src, output_dir, dataset_name, filename, copied)
 

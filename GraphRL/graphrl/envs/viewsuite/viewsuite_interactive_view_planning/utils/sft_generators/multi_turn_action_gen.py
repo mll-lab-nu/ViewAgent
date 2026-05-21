@@ -78,7 +78,7 @@ def generate_multi_turn_action_gen(
     min_path_len: int = 3,
     max_path_len: int = 5,
     sample_per_scene: int = 10,
-    viewsuite_5k_dir: Optional[str] = None,
+    viewsuite_15k_dir: Optional[str] = None,
     rng: Optional[random.Random] = None,
     balanced_sampling: bool = True,
     oversample: int = DEFAULT_OVERSAMPLE,
@@ -124,13 +124,13 @@ def generate_multi_turn_action_gen(
         if use_ratio:
             selected = _select_with_ratio_for_scene(
                 graph, paths, ratio, target, balanced_sampling,
-                images_dir, output_dir, ds, viewsuite_5k_dir, copied, rng,
+                images_dir, output_dir, ds, viewsuite_15k_dir, copied, rng,
                 scene_id,
             )
         else:
             selected = _select_flat_for_scene(
                 graph, paths, target, balanced_sampling,
-                images_dir, output_dir, ds, viewsuite_5k_dir, copied, rng,
+                images_dir, output_dir, ds, viewsuite_15k_dir, copied, rng,
                 scene_id,
             )
 
@@ -148,7 +148,7 @@ def _select_flat_for_scene(
     images_dir: Path,
     output_dir: Path,
     ds: str,
-    viewsuite_5k_dir: Optional[str],
+    viewsuite_15k_dir: Optional[str],
     copied: Set[str],
     rng: random.Random,
     scene_id: str,
@@ -158,7 +158,7 @@ def _select_flat_for_scene(
     for path in paths:
         rec = _build_record(
             graph, path, images_dir, output_dir, ds,
-            viewsuite_5k_dir, copied, rng,
+            viewsuite_15k_dir, copied, rng,
         )
         if rec is not None:
             candidates.append((_path_action_counter(path), rec))
@@ -184,7 +184,7 @@ def _select_with_ratio_for_scene(
     images_dir: Path,
     output_dir: Path,
     ds: str,
-    viewsuite_5k_dir: Optional[str],
+    viewsuite_15k_dir: Optional[str],
     copied: Set[str],
     rng: random.Random,
     scene_id: str,
@@ -201,7 +201,7 @@ def _select_with_ratio_for_scene(
         for path in bpaths:
             rec = _build_record(
                 graph, path, images_dir, output_dir, ds,
-                viewsuite_5k_dir, copied, rng,
+                viewsuite_15k_dir, copied, rng,
             )
             if rec is not None:
                 bucket_candidates[bname].append((_path_action_counter(path), rec))
@@ -279,7 +279,7 @@ def _build_record(
     images_dir: Path,
     output_dir: Path,
     ds: str,
-    viewsuite_5k_dir: Optional[str],
+    viewsuite_15k_dir: Optional[str],
     copied: Set[str],
     rng: random.Random,
 ) -> Optional[Dict[str, Any]]:
@@ -319,7 +319,7 @@ def _build_record(
     initial_pose = _format_pose(path[0]["from_state"], label="Initial view")
 
     top_down = _resolve_top_down(
-        scene_id, viewsuite_5k_dir, output_dir, ds, copied,
+        scene_id, viewsuite_15k_dir, output_dir, ds, copied,
     )
     if top_down:
         images.append(top_down)

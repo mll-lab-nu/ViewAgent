@@ -1,8 +1,8 @@
 #!/bin/bash
-# Regenerate viewsuite_5k_gs_test/ by re-rendering with gsplat.
+# Regenerate viewsuite_15k_gs_test/ by re-rendering with gsplat.
 #
 # Assumes:
-#   - build_manifest.py has produced viewsuite_5k_gs_test_manifest.jsonl
+#   - build_manifest.py has produced viewsuite_15k_gs_test_manifest.jsonl
 #   - scripts/download_scannet_3dgs.sh has populated /root/projects/viewsuite/data/scannet_3dgs_mcmc/
 #
 # Usage:
@@ -14,10 +14,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-SRC_ROOT="${1:-/root/projects/viewsuite/data/viewsuite_5k}"
-OUT_ROOT="${2:-/root/projects/viewsuite/data/viewsuite_5k_gs_test}"
+SRC_ROOT="${1:-/root/projects/viewsuite/data/viewsuite_15k}"
+OUT_ROOT="${2:-/root/projects/viewsuite/data/viewsuite_15k_gs_test}"
 GS_ROOT="${3:-/root/projects/viewsuite/data/scannet_3dgs_mcmc}"
-MANIFEST="${MANIFEST:-$SCRIPT_DIR/viewsuite_5k_gs_test_manifest.jsonl}"
+MANIFEST="${MANIFEST:-$SCRIPT_DIR/viewsuite_15k_gs_test_manifest.jsonl}"
 LIMIT="${LIMIT:-0}"
 
 echo "[cfg] SRC_ROOT=$SRC_ROOT"

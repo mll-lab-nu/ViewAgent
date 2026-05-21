@@ -11,7 +11,7 @@
 #   ./ViewSuite/scripts/download_scannet_3dgs.sh <MANIFEST> <GS_ROOT>
 #
 # Defaults:
-#   MANIFEST = ${VIEWSUITE_ROOT}/view_suite/envs/scannet_proxy_task/data_gen/viewsuite_5k_gs_test_manifest.jsonl
+#   MANIFEST = ${VIEWSUITE_ROOT}/view_suite/envs/scannet_proxy_task/data_gen/viewsuite_15k_gs_test_manifest.jsonl
 #   GS_ROOT  = ${VIEWSUITE_ROOT}/data/scannet_3dgs_mcmc
 
 set -euo pipefail
@@ -20,7 +20,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"  # .../ViewSuite
 
-MANIFEST="${1:-$REPO_ROOT/view_suite/envs/scannet_proxy_task/data_gen/viewsuite_5k_gs_test_manifest.jsonl}"
+MANIFEST="${1:-$REPO_ROOT/view_suite/envs/scannet_proxy_task/data_gen/viewsuite_15k_gs_test_manifest.jsonl}"
 GS_ROOT="${2:-${VIEWSUITE_ROOT}/data/scannet_3dgs_mcmc}"
 
 : "${HF_TOKEN:?HF_TOKEN is not set. export HF_TOKEN=hf_...}"

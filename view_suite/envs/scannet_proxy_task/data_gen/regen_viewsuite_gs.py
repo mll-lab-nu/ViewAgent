@@ -1,8 +1,8 @@
 """
 Regenerate the viewsuite test dataset with gsplat-rendered images.
 
-Input:  data/viewsuite_5k/ + the three test jsonls + a manifest (build_manifest.py)
-Output: data/viewsuite_5k_gs_test/ with the same layout but:
+Input:  data/viewsuite_15k/ + the three test jsonls + a manifest (build_manifest.py)
+Output: data/viewsuite_15k_gs_test/ with the same layout but:
   - the 3 jsonl files are copied as-is
   - per scene:      top_down_view.png         copied from source
   - per sample:     meta.json                 copied from source
@@ -26,9 +26,9 @@ from PIL import Image
 
 # Defaults
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_MANIFEST = os.path.join(_THIS_DIR, "viewsuite_5k_gs_test_manifest.jsonl")
-DEFAULT_SRC_ROOT = "/root/projects/viewsuite/data/viewsuite_5k"
-DEFAULT_OUT_ROOT = "/root/projects/viewsuite/data/viewsuite_5k_gs_test"
+DEFAULT_MANIFEST = os.path.join(_THIS_DIR, "viewsuite_15k_gs_test_manifest.jsonl")
+DEFAULT_SRC_ROOT = "/root/projects/viewsuite/data/viewsuite_15k"
+DEFAULT_OUT_ROOT = "/root/projects/viewsuite/data/viewsuite_15k_gs_test"
 DEFAULT_GS_ROOT = "/root/projects/viewsuite/data/scannet_3dgs_mcmc"
 
 RENDER_WIDTH = 512

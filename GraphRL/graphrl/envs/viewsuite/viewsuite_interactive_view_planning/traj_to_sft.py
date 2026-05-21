@@ -15,7 +15,7 @@ Pipeline.yaml::
     traj_to_sft:
       module: graphrl.envs.viewsuite.viewsuite_interactive_view_planning.InteractiveViewPlanningTrajToSFT
       generators: [action_gen, path_to_view, ...]
-      viewsuite_5k_dir: ${oc.env:HOME}/projects/viewsuite/data/viewsuite_5k
+      viewsuite_15k_dir: ${oc.env:HOME}/projects/viewsuite/data/viewsuite_15k
       action_gen: { min_path_len: 1, max_path_len: 3, sample_per_scene: 15, ... }
       ...
       seed: 42
@@ -155,7 +155,7 @@ class InteractiveViewPlanningTrajToSFT(TrajToSFTGraphBase):
         vd_cfg: Dict[str, Any] = cfg.get("view_difference", {})
         vd_mcq_cfg: Dict[str, Any] = cfg.get("view_difference_mcq", {})
         seed: int = cfg.get("seed", 42)
-        viewsuite_5k_dir: Optional[str] = cfg.get("viewsuite_5k_dir")
+        viewsuite_15k_dir: Optional[str] = cfg.get("viewsuite_15k_dir")
 
         master_rng = random.Random(seed)
 
@@ -172,7 +172,7 @@ class InteractiveViewPlanningTrajToSFT(TrajToSFTGraphBase):
                 min_path_len=action_cfg.get("min_path_len", 1),
                 max_path_len=action_cfg.get("max_path_len", 3),
                 sample_per_scene=action_cfg.get("sample_per_scene", 15),
-                viewsuite_5k_dir=viewsuite_5k_dir,
+                viewsuite_15k_dir=viewsuite_15k_dir,
                 rng=child_rng(),
                 balanced_sampling=action_cfg.get("balanced_sampling", True),
             )
@@ -187,7 +187,7 @@ class InteractiveViewPlanningTrajToSFT(TrajToSFTGraphBase):
                 min_path_len=fwd_cfg.get("min_path_len", 1),
                 max_path_len=fwd_cfg.get("max_path_len", 3),
                 sample_per_scene=fwd_cfg.get("sample_per_scene", 15),
-                viewsuite_5k_dir=viewsuite_5k_dir,
+                viewsuite_15k_dir=viewsuite_15k_dir,
                 rng=child_rng(),
                 balanced_sampling=fwd_cfg.get("balanced_sampling", True),
             )
@@ -202,7 +202,7 @@ class InteractiveViewPlanningTrajToSFT(TrajToSFTGraphBase):
                 min_path_len=multi_cfg.get("min_path_len", 3),
                 max_path_len=multi_cfg.get("max_path_len", 5),
                 sample_per_scene=multi_cfg.get("sample_per_scene", 10),
-                viewsuite_5k_dir=viewsuite_5k_dir,
+                viewsuite_15k_dir=viewsuite_15k_dir,
                 rng=child_rng(),
                 balanced_sampling=multi_cfg.get("balanced_sampling", True),
                 oversample=int(multi_cfg.get("oversample", 10)),
@@ -219,7 +219,7 @@ class InteractiveViewPlanningTrajToSFT(TrajToSFTGraphBase):
                 min_path_len=multi_mcq_cfg.get("min_path_len", 1),
                 max_path_len=multi_mcq_cfg.get("max_path_len", 3),
                 sample_per_scene=multi_mcq_cfg.get("sample_per_scene", 15),
-                viewsuite_5k_dir=viewsuite_5k_dir,
+                viewsuite_15k_dir=viewsuite_15k_dir,
                 rng=child_rng(),
                 balanced_sampling=multi_mcq_cfg.get("balanced_sampling", True),
             )
@@ -235,7 +235,7 @@ class InteractiveViewPlanningTrajToSFT(TrajToSFTGraphBase):
                 max_path_len=multi_mix_cfg.get("max_path_len", 5),
                 sample_per_scene=multi_mix_cfg.get("sample_per_scene", 10),
                 mcq_prob=multi_mix_cfg.get("mcq_prob", 0.5),
-                viewsuite_5k_dir=viewsuite_5k_dir,
+                viewsuite_15k_dir=viewsuite_15k_dir,
                 rng=child_rng(),
                 balanced_sampling=multi_mix_cfg.get("balanced_sampling", True),
             )
@@ -250,7 +250,7 @@ class InteractiveViewPlanningTrajToSFT(TrajToSFTGraphBase):
                 min_path_len=vd_cfg.get("min_path_len", 2),
                 max_path_len=vd_cfg.get("max_path_len", 5),
                 sample_per_scene=vd_cfg.get("sample_per_scene", 15),
-                viewsuite_5k_dir=viewsuite_5k_dir,
+                viewsuite_15k_dir=viewsuite_15k_dir,
                 rng=child_rng(),
                 balanced_sampling=vd_cfg.get("balanced_sampling", True),
             )
@@ -265,7 +265,7 @@ class InteractiveViewPlanningTrajToSFT(TrajToSFTGraphBase):
                 min_path_len=vd_mcq_cfg.get("min_path_len", 2),
                 max_path_len=vd_mcq_cfg.get("max_path_len", 5),
                 sample_per_scene=vd_mcq_cfg.get("sample_per_scene", 15),
-                viewsuite_5k_dir=viewsuite_5k_dir,
+                viewsuite_15k_dir=viewsuite_15k_dir,
                 rng=child_rng(),
                 balanced_sampling=vd_mcq_cfg.get("balanced_sampling", True),
             )

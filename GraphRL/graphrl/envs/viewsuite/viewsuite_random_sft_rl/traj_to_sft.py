@@ -33,7 +33,7 @@ Pipeline.yaml::
       sft:
         # Same knobs as InteractiveViewPlanningTrajToSFT — see that class.
         generators: [multi_turn_action_gen, view_difference, ...]
-        viewsuite_5k_dir: ...
+        viewsuite_15k_dir: ...
         seed: 42
 """
 

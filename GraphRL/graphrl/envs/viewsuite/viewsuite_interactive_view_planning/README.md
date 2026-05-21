@@ -174,7 +174,7 @@ general_overrides:
 
   traj_to_sft:
     module: graphrl.envs.viewsuite.viewsuite_interactive_view_planning.InteractiveViewPlanningTrajToSFT
-    viewsuite_5k_dir: ${oc.env:HOME}/projects/viewsuite/data/viewsuite_5k
+    viewsuite_15k_dir: ${oc.env:HOME}/projects/viewsuite/data/viewsuite_15k
     graph_builder:
       num_workers: 4
       filter: { void_threshold: 0.7, std_threshold: 10.0 }
