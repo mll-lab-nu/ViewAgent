@@ -116,7 +116,7 @@ def _normalize_files(files: Sequence[str] | str) -> list[str]:
 
 def cli(
     files: str="viewsuite_15k.tar.gz",
-    repo: str="JamesK2W/viewsuite",
+    repo: str="ViewSuite/viewsuite",
     out: str="data/",
     repo_type: str = "dataset",
     revision: str = "main",
