@@ -209,7 +209,7 @@ if __name__ == "__main__":
     ) -> None:
         root = os.environ.get("VIEWSUITE_ROOT", ".")
         jsonl_path = jsonl_path or os.path.join(
-            root, "data/viewsuite_5k/interactive_view_planning_test.jsonl"
+            root, "data/viewsuite_15k/interactive_view_planning_test.jsonl"
         )
         scannet_root = scannet_root or os.path.join(root, "data/scannet/scans")
         client_url = client_url or _default_client_url()

@@ -26,7 +26,7 @@ def generate_path_to_view(
     min_path_len: int = 1,
     max_path_len: int = 3,
     sample_per_scene: int = 15,
-    viewsuite_5k_dir: Optional[str] = None,
+    viewsuite_15k_dir: Optional[str] = None,
     rng: Optional[random.Random] = None,
     balanced_sampling: bool = True,
 ) -> List[Dict[str, Any]]:
@@ -112,7 +112,7 @@ def generate_path_to_view(
 
             images: List[str] = [from_img]
             top_down = _resolve_top_down(
-                scene_id, viewsuite_5k_dir, output_dir, "path_to_view", copied,
+                scene_id, viewsuite_15k_dir, output_dir, "path_to_view", copied,
             )
             if top_down:
                 images.append(top_down)

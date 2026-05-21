@@ -3,7 +3,7 @@ Build a unified manifest from multiple viewsuite jsonl files.
 
 Scans each input jsonl, extracts unique (scene_id, sample_id) pairs, and writes
 a manifest jsonl with one row per unique sample. Each row lists:
-  - scene_id, sample_id, sample_dir (relative path under viewsuite_5k/)
+  - scene_id, sample_id, sample_dir (relative path under viewsuite_15k/)
   - images: standard 5 files to render (initial_view + option_000..003)
   - sources: which input jsonls referenced this sample
 
@@ -11,13 +11,13 @@ Also prints unique scene_id list (useful for the download script).
 
 Usage:
     python -m view_suite.envs.scannet_proxy_task.data_gen.build_manifest \
-        --jsonls viewsuite_5k/active_explore_test.jsonl \
-                 viewsuite_5k/inverse_dynamics_test.jsonl \
-                 viewsuite_5k/forward_dynamics_test.jsonl \
-        --out  ViewSuite/view_suite/envs/scannet_proxy_task/data_gen/viewsuite_5k_gs_test_manifest.jsonl
+        --jsonls viewsuite_15k/active_explore_test.jsonl \
+                 viewsuite_15k/inverse_dynamics_test.jsonl \
+                 viewsuite_15k/forward_dynamics_test.jsonl \
+        --out  ViewSuite/view_suite/envs/scannet_proxy_task/data_gen/viewsuite_15k_gs_test_manifest.jsonl
 
 Defaults (no args) resolve to the three *_test.jsonl files under
-data/viewsuite_5k/ and write the manifest next to this file.
+data/viewsuite_15k/ and write the manifest next to this file.
 """
 from __future__ import annotations
 
@@ -29,13 +29,13 @@ from typing import Iterable, Sequence
 
 # ---- Defaults ----
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-_REPO_DATA = "/root/projects/viewsuite/data/viewsuite_5k"
+_REPO_DATA = "/root/projects/viewsuite/data/viewsuite_15k"
 DEFAULT_JSONLS = [
     os.path.join(_REPO_DATA, "active_explore_test.jsonl"),
     os.path.join(_REPO_DATA, "inverse_dynamics_test.jsonl"),
     os.path.join(_REPO_DATA, "forward_dynamics_test.jsonl"),
 ]
-DEFAULT_OUT = os.path.join(_THIS_DIR, "viewsuite_5k_gs_test_manifest.jsonl")
+DEFAULT_OUT = os.path.join(_THIS_DIR, "viewsuite_15k_gs_test_manifest.jsonl")
 
 # ScanNet viewsuite samples have a fixed set of images per sample_dir.
 STANDARD_SAMPLE_IMAGES = (

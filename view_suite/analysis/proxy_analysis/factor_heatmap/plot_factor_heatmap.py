@@ -26,7 +26,7 @@ from scipy.stats import spearmanr
 # Configuration
 # ---------------------------------------------------------------------------
 
-JSONL_DIR = Path("/root/projects/viewsuite/data/viewsuite_5k")
+JSONL_DIR = Path("/root/projects/viewsuite/data/viewsuite_15k")
 ROLLOUT_DIR = Path("/root/projects/viewsuite/data/rollouts/rollouts_all_new")
 COVERAGE_DIR = Path("/root/projects/viewsuite/data/rollouts/rollouts_pointcloud_coverage")
 PAPER_ROOT = Path("/root/projects/viewsuite/69f16f2122f12968eeb43bf1")

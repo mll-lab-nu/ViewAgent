@@ -46,7 +46,7 @@ The default `tol_per_action_len="0.25,15;2:0.5,30;3-5:1,30;1,60"` maps:
 # Full analysis (auto-discovers all models)
 python -m view_suite.analysis.proxy_analysis.performance_summary.main run \
     --rollouts_dir /path/to/rollouts \
-    --viewsuite_data_path /path/to/viewsuite_5k
+    --viewsuite_data_path /path/to/viewsuite_15k
 
 # Specify output directory
 python -m view_suite.analysis.proxy_analysis.performance_summary.main run \

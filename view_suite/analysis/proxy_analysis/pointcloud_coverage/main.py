@@ -45,7 +45,7 @@ from view_suite.analysis.proxy_analysis.pointcloud_coverage.plotter import Plott
 
 
 # Default JSONL path (matches the evaluation config)
-_DEFAULT_JSONL = "/root/projects/viewsuite/data/viewsuite_5k/interactive_view_planning_test_filter.jsonl"
+_DEFAULT_JSONL = "/root/projects/viewsuite/data/viewsuite_15k/interactive_view_planning_test_filter.jsonl"
 
 # Checkpoint file name (one JSON object per line, each line = one trajectory result)
 _CHECKPOINT_FILE = "checkpoint.jsonl"

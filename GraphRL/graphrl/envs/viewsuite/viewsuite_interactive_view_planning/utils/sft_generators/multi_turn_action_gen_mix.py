@@ -60,7 +60,7 @@ def generate_multi_turn_action_gen_mix(
     max_path_len: int = 5,
     sample_per_scene: int = 10,
     mcq_prob: float = 0.5,
-    viewsuite_5k_dir: Optional[str] = None,
+    viewsuite_15k_dir: Optional[str] = None,
     rng: Optional[random.Random] = None,
     balanced_sampling: bool = True,
 ) -> List[Dict[str, Any]]:
@@ -126,7 +126,7 @@ def generate_multi_turn_action_gen_mix(
             initial_pose = _format_pose(path[0]["from_state"])
 
             top_down = _resolve_top_down(
-                scene_id, viewsuite_5k_dir, output_dir, ds, copied,
+                scene_id, viewsuite_15k_dir, output_dir, ds, copied,
             )
             if top_down:
                 images.append(top_down)
