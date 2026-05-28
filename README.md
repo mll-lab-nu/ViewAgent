@@ -2,7 +2,7 @@
   <img src="assets/viewsuite_logo.png" alt="ViewSuite logo" height="34" style="vertical-align: middle; margin-right: 6px;">
   ViewSuite
 </h1>
-<p align="center"><b>View Planning via Scene Self-Exploration</b></p>
+<p align="center"><b>Planning with the Views via Scene Self-Exploration</b></p>
 
 <!-- Badges -->
 <div align="center">
