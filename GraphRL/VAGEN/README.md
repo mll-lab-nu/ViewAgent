@@ -132,7 +132,7 @@ bash examples/frozenlake/train_grpo_qwen25vl3b_filtertopp_vision.sh
 cd VAGEN
 bash examples/sokoban/train_ppo_no_concat_qwen25vl3b.sh
 ```
-### Evaluation (supported by [ViewSuite](https://github.com/viewsuite/ViewSuite))
+### Evaluation (supported by [ViewSuite](https://github.com/mll-lab-nu/ViewSuite))
 
 VAGEN supports evaluation using different backends (OpenAI, Claude, Gemini, sglang, vLLM). For details, see [vagen/evaluate/adapters/README.md](vagen/evaluate/adapters/README.md).
 
