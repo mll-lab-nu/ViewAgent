@@ -1,15 +1,16 @@
 <h1 align="center">
   <img src="assets/viewsuite_logo.png" alt="ViewSuite logo" height="34" style="vertical-align: middle; margin-right: 6px;">
-  Planning with the Views
+  ViewSuite
 </h1>
-<p align="center"><b>View Planning with Self-Exploration</b></p>
+<p align="center"><b>View Planning via Scene Self-Exploration</b></p>
 
 <!-- Badges -->
 <div align="center">
 
 [![Paper](https://img.shields.io/badge/📄-Paper-b31b1b.svg)](https://viewsuite.github.io/viewsuite_paper.pdf)
 [![Homepage](https://img.shields.io/badge/🏠-Homepage-blue.svg)](https://viewsuite.github.io/)
-[![HuggingFace](https://img.shields.io/badge/🤗-HuggingFace-yellow.svg)](https://huggingface.co/ViewSuite)
+[![Models](https://img.shields.io/badge/🤗-Models-yellow.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-models)
+[![Dataset](https://img.shields.io/badge/🤗-Dataset-orange.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-datasets)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
 </div>
@@ -42,7 +43,7 @@
 
 ## 📢 Updates
 
-- **[2026-05-20]** We release the ViewSuite codebase, benchmark, and the iterative self-exploration training framework, along with the [dataset](https://huggingface.co/datasets/ViewSuite/viewsuite) and [trained checkpoints](https://huggingface.co/ViewSuite) on HuggingFace.
+- **[2026-05-20]** We release the ViewSuite codebase, benchmark, and the iterative self-exploration training framework, along with the [dataset](https://huggingface.co/collections/MLL-Lab/viewsuite-datasets) and [trained checkpoints](https://huggingface.co/collections/MLL-Lab/viewsuite-models) on HuggingFace.
 - **[Coming soon]** Paper on arXiv.
 
 ## 🌟 Overview
@@ -112,7 +113,7 @@ bash scripts/install_service.sh
 
 ### Service side — ScanNet scans + meshes (large)
 
-Lives on the render-service machine. Downloads from the public dataset repo [`ViewSuite/viewsuite`](https://huggingface.co/datasets/ViewSuite/viewsuite).
+Lives on the render-service machine. Downloads from the public dataset repo [`MLL-Lab/viewsuite`](https://huggingface.co/datasets/MLL-Lab/viewsuite).
 
 ```bash
 bash scripts/download_scannet.sh
@@ -329,7 +330,7 @@ If you find ViewSuite useful in your research, please consider citing our paper:
 
 ```bibtex
 @article{wang2026viewsuite,
-  title   = {VLMs Walk the Scene: View Planning via Scene Self-Exploration},
+  title   = {ViewSuite: View Planning via Scene Self-Exploration},
   author  = {Wang, Kangrui and Li, Linjie and Yang, Zhengyuan and Chen, Shiqi and
              Wang, Zihan and Fei-Fei, Li and Wu, Jiajun and Guibas, Leonidas and
              Wang, Lijuan and Li, Manling},
