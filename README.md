@@ -85,7 +85,7 @@ Used on the machine that runs RL/SFT training and the eval harness.
 
 ```bash
 # Clone the repository
-git clone https://github.com/viewsuite/ViewSuite.git
+git clone https://github.com/mll-lab-nu/ViewSuite.git
 cd ViewSuite
 
 # Create env (Python 3.12)
