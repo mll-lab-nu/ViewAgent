@@ -329,7 +329,7 @@ If you find ViewSuite useful in your research, please consider citing our paper:
 
 ```bibtex
 @article{wang2026viewsuite,
-  title   = {ViewSuite: View Planning via Scene Self-Exploration},
+  title   = {Planning with the Views},
   author  = {Wang, Kangrui and Li, Linjie and Yang, Zhengyuan and Chen, Shiqi and
              Wang, Zihan and Fei-Fei, Li and Wu, Jiajun and Guibas, Leonidas and
              Wang, Lijuan and Li, Manling},
