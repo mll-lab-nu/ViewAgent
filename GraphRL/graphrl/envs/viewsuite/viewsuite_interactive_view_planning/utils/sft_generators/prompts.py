@@ -52,7 +52,7 @@ _FORWARD_DYNAMICS_PROMPTS = [
     ),
     (
         "Act as a 3D scene simulator. After mentally executing the given actions from the "
-        "initial viewpoint, select the correct resulting view.\n"
+        "initial view, select the correct resulting view.\n"
         "If you want to submit your answer, please use the format: <action>answer(x)</action> where x is A or B or C or D."
     ),
     (
@@ -188,7 +188,7 @@ _MULTI_TURN_MIX_PROMPTS = [
         f"{_MULTI_TURN_MIX_ACTION_FMT}"
     ),
     (
-        "You are navigating a 3D scene toward a target viewpoint. "
+        "You are navigating a 3D scene toward a target view. "
         "Plan your route and execute actions one at a time.\n"
         f"Movement: {_STEP_TRANSLATION}m per step, {_STEP_ROTATION}\u00b0 per rotation.\n"
         f"{_MULTI_TURN_MIX_ACTION_FMT}"
@@ -231,7 +231,7 @@ _VIEW_DIFFERENCE_PROMPTS = [
         "If you want to submit your answer, please use the format: <action>answer(x)</action> where x is a number."
     ),
     (
-        "Act as a spatial distance predictor. Given two viewpoint images, "
+        "Act as a spatial distance predictor. Given two view images, "
         "estimate the number of navigation actions to travel from one to the other.\n"
         f"{_VIEW_DIFF_ACTION_CTX}"
         "If you want to submit your answer, please use the format: <action>answer(x)</action> where x is a number."
@@ -266,7 +266,7 @@ _VIEW_DIFFERENCE_MCQ_PROMPTS = [
         "If you want to submit your answer, please use the format: <action>answer(x)</action> where x is A or B or C or D."
     ),
     (
-        "Act as a spatial distance predictor. Given two viewpoint images, "
+        "Act as a spatial distance predictor. Given two view images, "
         "choose how many navigation actions separate them from the options.\n"
         f"{_VIEW_DIFF_ACTION_CTX}"
         "If you want to submit your answer, please use the format: <action>answer(x)</action> where x is A or B or C or D."
