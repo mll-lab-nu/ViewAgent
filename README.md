@@ -6,7 +6,7 @@
 <!-- Badges -->
 <div align="center">
 
-[![Paper](https://img.shields.io/badge/📄-Paper-b31b1b.svg)](https://arxiv.org/abs/2605.29563v1)
+[![Paper](https://img.shields.io/badge/📄-Paper-b31b1b.svg)](https://arxiv.org/abs/2605.29563v3)
 [![Homepage](https://img.shields.io/badge/🏠-Homepage-blue.svg)](https://viewsuite.github.io/)
 [![Models](https://img.shields.io/badge/🤗-Models-yellow.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-models)
 [![Dataset](https://img.shields.io/badge/🤗-Dataset-orange.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-datasets)
@@ -43,7 +43,7 @@
 ## 📢 Updates
 
 - **[2026-05-20]** We release the ViewSuite codebase, benchmark, and the iterative self-exploration training framework, along with the [dataset](https://huggingface.co/collections/MLL-Lab/viewsuite-datasets) and [trained checkpoints](https://huggingface.co/collections/MLL-Lab/viewsuite-models) on HuggingFace.
-- **[2026-05-28]** Paper on [arXiv](https://arxiv.org/abs/2605.29563v1).
+- **[2026-05-28]** Paper on [arXiv](https://arxiv.org/abs/2605.29563v3).
 
 ## 🌟 Overview
 
