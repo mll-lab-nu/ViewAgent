@@ -6,7 +6,7 @@
 <!-- Badges -->
 <div align="center">
 
-[![Paper](https://img.shields.io/badge/📄-Paper-b31b1b.svg)](https://viewsuite.github.io/viewsuite_paper.pdf)
+[![Paper](https://img.shields.io/badge/📄-Paper-b31b1b.svg)](https://arxiv.org/abs/2605.29563v1)
 [![Homepage](https://img.shields.io/badge/🏠-Homepage-blue.svg)](https://viewsuite.github.io/)
 [![Models](https://img.shields.io/badge/🤗-Models-yellow.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-models)
 [![Dataset](https://img.shields.io/badge/🤗-Dataset-orange.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-datasets)
@@ -43,7 +43,7 @@
 ## 📢 Updates
 
 - **[2026-05-20]** We release the ViewSuite codebase, benchmark, and the iterative self-exploration training framework, along with the [dataset](https://huggingface.co/collections/MLL-Lab/viewsuite-datasets) and [trained checkpoints](https://huggingface.co/collections/MLL-Lab/viewsuite-models) on HuggingFace.
-- **[Coming soon]** Paper on arXiv.
+- **[2026-05-28]** Paper on [arXiv](https://arxiv.org/abs/2605.29563v1).
 
 ## 🌟 Overview
 
@@ -328,12 +328,12 @@ http://10.0.0.4:8767
 If you find ViewSuite useful in your research, please consider citing our paper:
 
 ```bibtex
-@article{wang2026viewsuite,
-  title   = {Planning with the Views},
-  author  = {Wang, Kangrui and Li, Linjie and Yang, Zhengyuan and Chen, Shiqi and
-             Wang, Zihan and Fei-Fei, Li and Wu, Jiajun and Guibas, Leonidas and
-             Wang, Lijuan and Li, Manling},
-  year    = {2026}
+@misc{wang2026planningviews,
+      title={Planning with the Views}, 
+      author={Kangrui Wang and Linjie Li and Zhengyuan Yang and Shiqi Chen and Zihan Wang and Li Fei-Fei and Jiajun Wu and Leonidas Guibas and Lijuan Wang and Manling Li},
+      year={2026},
+      eprint={2605.29563},
+      url={https://arxiv.org/abs/2605.29563}, 
 }
 ```
 
