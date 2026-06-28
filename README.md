@@ -7,7 +7,7 @@
 <div align="center">
 
 [![Paper](https://img.shields.io/badge/📄-Paper-b31b1b.svg)](https://arxiv.org/abs/2605.29563v3)
-[![Homepage](https://img.shields.io/badge/🏠-Homepage-blue.svg)](https://viewsuite.github.io/)
+[![Homepage](https://img.shields.io/badge/🏠-Homepage-blue.svg)](https://viewagent.github.io/)
 [![Models](https://img.shields.io/badge/🤗-Models-yellow.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-models)
 [![Dataset](https://img.shields.io/badge/🤗-Dataset-orange.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-datasets)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
