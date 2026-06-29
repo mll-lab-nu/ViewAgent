@@ -7,9 +7,9 @@
 <div align="center">
 
 [![Paper](https://img.shields.io/badge/📄-Paper-b31b1b.svg)](https://arxiv.org/abs/2605.29563v3)
-[![Homepage](https://img.shields.io/badge/🏠-Homepage-blue.svg)](https://viewsuite.github.io/)
-[![Models](https://img.shields.io/badge/🤗-Models-yellow.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-models)
-[![Dataset](https://img.shields.io/badge/🤗-Dataset-orange.svg)](https://huggingface.co/collections/MLL-Lab/viewsuite-datasets)
+[![Homepage](https://img.shields.io/badge/🏠-Homepage-blue.svg)](https://viewagent.github.io/)
+[![Models](https://img.shields.io/badge/🤗-Models-yellow.svg)](https://huggingface.co/collections/MLL-Lab/viewagent-models)
+[![Dataset](https://img.shields.io/badge/🤗-Dataset-orange.svg)](https://huggingface.co/datasets/MLL-Lab/viewsuite)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
 </div>
@@ -42,7 +42,7 @@
 
 ## 📢 Updates
 
-- **[2026-05-20]** We release the ViewSuite codebase, benchmark, and the iterative self-exploration training framework, along with the [dataset](https://huggingface.co/collections/MLL-Lab/viewsuite-datasets) and [trained checkpoints](https://huggingface.co/collections/MLL-Lab/viewsuite-models) on HuggingFace.
+- **[2026-05-20]** We release the ViewSuite codebase, benchmark, and the iterative self-exploration training framework, along with the [dataset](https://huggingface.co/datasets/MLL-Lab/viewsuite) and [trained checkpoints](https://huggingface.co/collections/MLL-Lab/viewagent-models) on HuggingFace.
 - **[2026-05-28]** Paper on [arXiv](https://arxiv.org/abs/2605.29563v3).
 
 ## 🌟 Overview
@@ -57,7 +57,7 @@ Can VLMs predict how each camera move changes the view, and plan many such moves
 
 Across 13 frontier VLMs, a critical **planning gap** emerges: models possess basic view-action knowledge (~50–70% on short-horizon P2V/V2P) but fail to compose it across multi-turn plans (below 21% on IVP). To close this gap, we propose an **iterative training framework** that alternates *self-exploration* with *view graph distillation*. The key insight is that all exploration trajectories, regardless of outcome, collectively form a view graph; distilling it into diverse supervised tasks reshapes the policy distribution and overcomes the sparse rewards that stall pure RL. This improves Qwen2.5-VL-7B from **2.5% → 47.8%** on Interactive View Planning, surpassing GPT-5.4 Pro (18.5%) and Gemini 3.1 Pro (21.4%).
 
-For more details, see our [paper](https://viewsuite.github.io/viewsuite_paper.pdf) and [project homepage](https://viewsuite.github.io/).
+For more details, see our [paper](https://viewagent.github.io/viewsuite_paper.pdf) and [project homepage](https://viewagent.github.io/).
 
 ## 📦 Repository Structure
 
@@ -146,7 +146,7 @@ Download the released Qwen2.5-VL-7B checkpoints — used as starting points or e
 
 ```bash
 bash scripts/download_model.sh
-# downloads into model/qwen25-ivp/{viewsuite-all-qwen25vl7b,viewsuite-ivp-qwen25vl7b}/
+# downloads into model/qwen25-ivp/{viewagent-all-qwen25vl7b,viewagent-ivp-qwen25vl7b}/
 ```
 
 ---
