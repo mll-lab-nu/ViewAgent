@@ -6,7 +6,7 @@
 <!-- Badges -->
 <div align="center">
 
-[![Paper](https://img.shields.io/badge/📄-Paper-b31b1b.svg)](https://arxiv.org/abs/2605.29563v3)
+[![Paper](https://img.shields.io/badge/📄-Paper-b31b1b.svg)](https://arxiv.org/abs/2605.29563)
 [![Homepage](https://img.shields.io/badge/🏠-Homepage-blue.svg)](https://viewagent.github.io/)
 [![Models](https://img.shields.io/badge/🤗-Models-yellow.svg)](https://huggingface.co/collections/MLL-Lab/viewagent-models)
 [![Dataset](https://img.shields.io/badge/🤗-Dataset-orange.svg)](https://huggingface.co/datasets/MLL-Lab/viewsuite)
@@ -43,21 +43,21 @@
 ## 📢 Updates
 
 - **[2026-05-20]** We release the ViewSuite codebase, benchmark, and the iterative self-exploration training framework, along with the [dataset](https://huggingface.co/datasets/MLL-Lab/viewsuite) and [trained checkpoints](https://huggingface.co/collections/MLL-Lab/viewagent-models) on HuggingFace.
-- **[2026-05-28]** Paper on [arXiv](https://arxiv.org/abs/2605.29563v3).
+- **[2026-05-28]** Paper on [arXiv](https://arxiv.org/abs/2605.29563).
 
 ## 🌟 Overview
 
-Can VLMs predict how each camera move changes the view, and plan many such moves ahead? We call this capability **view planning**, and decompose it into two coupled abilities: (1) **understanding** how a single action transforms the view, and (2) **composing** many such transformations across multi-turn plans to identify a target view.
+Can VLMs predict how each camera move changes the view, and plan many such moves ahead? We call this ability **view planning**: using camera moves as planning primitives to find a target view in 3D. It factors into two coupled abilities: (1) **tracking** how given camera actions change the view, and (2) **composing** them into a multi-turn plan that localizes an unseen target view.
 
-**ViewSuite** is a 3D point-cloud environment and benchmark suite for view planning, built on ~300 real [ScanNet](http://www.scan-net.org/) indoor scenes (~55K view pairs, ~165K task instances). It probes view planning through three diagnostic tasks:
+**ViewSuite** is a 3D point-cloud environment and benchmark suite for view planning with full 6-DoF camera pose control, built on 286 real [ScanNet](http://www.scan-net.org/) indoor scenes (~55K view pairs, ~165K task instances). It probes view planning through three diagnostic tasks:
 
-- **Path-to-View (P2V)** — predict the resulting view from an action sequence *(tests understanding)*.
-- **View-to-Path (V2P)** — infer the action sequence between two views *(tests understanding)*.
-- **Interactive View Planning (IVP)** — plan view changes over multiple turns and submit a 6-DoF estimate of the target *(tests multi-turn leveraging)*.
+- **Path-to-View (P2V)**: predict the resulting view from an action sequence *(single-turn, tests tracking)*.
+- **View-to-Path (V2P)**: infer the action sequence between two views *(single-turn, tests tracking)*.
+- **Interactive View Planning (IVP)**: plan view changes over multiple turns and submit a 6-DoF camera pose estimate of the target view *(multi-turn, tests planning)*.
 
-Across 13 frontier VLMs, a critical **planning gap** emerges: models possess basic view-action knowledge (~50–70% on short-horizon P2V/V2P) but fail to compose it across multi-turn plans (below 21% on IVP). To close this gap, we propose an **iterative training framework** that alternates *self-exploration* with *view graph distillation*. The key insight is that all exploration trajectories, regardless of outcome, collectively form a view graph; distilling it into diverse supervised tasks reshapes the policy distribution and overcomes the sparse rewards that stall pure RL. This improves Qwen2.5-VL-7B from **2.5% → 47.8%** on Interactive View Planning, surpassing GPT-5.4 Pro (18.5%) and Gemini 3.1 Pro (21.4%).
+Across 13 frontier VLMs, a sharp **planning gap** emerges: the best models exceed 70% on short-horizon P2V/V2P but reach at most **21.3%** on IVP (Gemini 3.1 Pro; GPT-5.4 Pro reaches 19.9%), and over 90% of their successes occur only after the target view becomes observable. To close this gap, we train a multi-turn **VLM agent** with an **iterative framework** that alternates *self-exploration* (reinforcement learning in ViewSuite) with *view graph distillation*. Every trajectory, successful or not, traces valid view transitions; aggregated across exploration they form a **view graph**, an empirical **world model** of view transitions, and distilling sampled paths into supervised demonstrations is a form of **on-policy distillation** with no teacher stronger than the environment. This lifts Qwen2.5-VL-7B from **2.5% → 47.8%** on Interactive View Planning, surpassing every frontier model evaluated.
 
-For more details, see our [paper](https://viewagent.github.io/viewsuite_paper.pdf) and [project homepage](https://viewagent.github.io/).
+For more details, see the [paper on arXiv](https://arxiv.org/abs/2605.29563), the [project homepage](https://viewagent.github.io/), and the [TL;DR thread on X](https://x.com/ManlingLi_/status/2067697152722415623).
 
 ## 📦 Repository Structure
 
