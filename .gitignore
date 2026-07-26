@@ -42,3 +42,4 @@ MANIFEST
 # ai2thor filter review artifacts + one-off finalize helper
 /filter_review*/
 /scripts/_finalize_ai2thor_dataset.sh
+/outputs/
