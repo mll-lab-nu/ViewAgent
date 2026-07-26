@@ -26,9 +26,7 @@ LOG_FILE="${EXPERIMENT_DIR}/pipeline_$(date +%Y%m%d_%H%M%S).log"
 echo "Logging to: ${LOG_FILE}"
 echo "Using ${N_GPUS_PER_NODE} GPU(s) for RL and ${SFT_N_GPUS} GPU(s) for SFT"
 
-if [ -z "${WANDB_API_KEY:-}" ]; then
-    export WANDB_MODE=offline
-fi
+export WANDB_MODE="${WANDB_MODE:-online}"   # wandb authed via ~/.netrc; set WANDB_MODE=offline to disable
 
 python -m graphrl.main \
     --config-path="${SCRIPT_DIR}" \

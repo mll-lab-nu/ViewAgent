@@ -25,23 +25,21 @@ mkdir -p "${EXPERIMENT_DIR}"
 LOG_FILE="${EXPERIMENT_DIR}/smoke_$(date +%Y%m%d_%H%M%S).log"
 echo "Logging to: ${LOG_FILE}  (GPUs=${CUDA_VISIBLE_DEVICES})"
 
-if [ -z "${WANDB_API_KEY:-}" ]; then
-    export WANDB_MODE=offline
-fi
+export WANDB_MODE="${WANDB_MODE:-online}"   # wandb authed via ~/.netrc; set WANDB_MODE=offline to disable
 
 python -m graphrl.main \
     --config-path="${SCRIPT_DIR}" \
     --config-name=pipeline \
     experiment_name=ai2thor_ivp_smoke \
     general_overrides.rl.hydra_overrides.data.train_files="${SCRIPT_DIR}/train.yaml" \
-    general_overrides.rl.hydra_overrides.data.val_files="${SCRIPT_DIR}/val.yaml" \
+    general_overrides.rl.hydra_overrides.data.val_files="${SCRIPT_DIR}/val_smoke.yaml" \
     iterations=1 \
     general_overrides.rl.hydra_overrides.trainer.n_gpus_per_node="${N_GPUS_PER_NODE}" \
     general_overrides.rl.hydra_overrides.trainer.nnodes=1 \
     general_overrides.rl.hydra_overrides.data.train_batch_size=8 \
     general_overrides.rl.hydra_overrides.actor_rollout_ref.actor.ppo_mini_batch_size=8 \
-    general_overrides.rl.hydra_overrides.critic.ppo_mini_batch_size=8 \
+    +general_overrides.rl.hydra_overrides.critic.ppo_mini_batch_size=8 \
     iteration_overrides.iter0.rl.training_steps=2 \
-    iteration_overrides.iter0.traj_to_sft=null \
+    +iteration_overrides.iter0.traj_to_sft=null \
     iteration_overrides.iter0.sft=null \
     "$@" 2>&1 | tee "${LOG_FILE}"

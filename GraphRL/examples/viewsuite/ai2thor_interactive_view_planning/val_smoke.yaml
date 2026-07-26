@@ -1,0 +1,46 @@
+# Validation envs for AI2-THOR IVP training (run by val_before_train + test_freq).
+# Scene-disjoint eval split. IVP needs the AI2-THOR render service.
+envs:
+  - name: Ai2ThorInteractiveViewPlanning
+    data_source: ae
+    seed: [0, 16, 1]
+    n_envs: 16
+    max_turns: 10
+    response_length_per_turn: 512
+    config:
+      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/ai2thor/interactive_view_planning_eval.jsonl
+      image_size: [512, 512]
+      format: eval_mode
+      use_example_in_sys_prompt: false
+      client_url_file_path: ${oc.env:VIEWSUITE_ROOT}/client_url_ai2thor.txt
+      render_backend: client
+      max_turns: 10
+      action_only_mode: true
+      allow_rotate: false
+      obs_format_bonus_reward: 0.01
+
+  - name: Ai2ThorPath2View
+    data_source: path_to_view
+    seed: [0, 16, 1]
+    n_envs: 16
+    max_turns: 1
+    response_length_per_turn: 2048
+    config:
+      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/ai2thor/path_to_view_eval.jsonl
+      image_size: [512, 512]
+      format: eval_mode
+      format_reward: 0.0
+      answer_reward: 0.1
+
+  - name: Ai2ThorView2Path
+    data_source: view_to_path
+    seed: [0, 16, 1]
+    n_envs: 16
+    max_turns: 1
+    response_length_per_turn: 2048
+    config:
+      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/ai2thor/view_to_path_eval.jsonl
+      image_size: [512, 512]
+      format: eval_mode
+      format_reward: 0.0
+      answer_reward: 0.1
