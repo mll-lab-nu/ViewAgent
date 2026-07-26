@@ -63,8 +63,11 @@ _FORMAT_TEMPLATES: Dict[str, str] = {
         "{action_description}"
     ),
     "eval_mode": (
-        "You can think first, which is optional, then answer, respond in this format:\n"
-        "[your reasoning here]<action>{action_example}</action>\n"
+        "You can think first (optional), then answer. Respond in EXACTLY this format:\n"
+        "<think>your reasoning here</think><action>{action_example}</action>\n"
+        "The <think>...</think> block is optional, but the <action>...</action> "
+        "block is REQUIRED and must use angle-bracket tags exactly as shown "
+        "(do not use square brackets or any other tags).\n"
         "{action_description}"
     ),
     "no_think": (

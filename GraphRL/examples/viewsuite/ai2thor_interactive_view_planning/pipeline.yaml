@@ -1,0 +1,210 @@
+# =============================================================================
+# AI2-THOR Interactive View Planning — GraphRL Pipeline Config
+# =============================================================================
+# Mirror of examples/viewsuite/viewsuite_interactive_view_planning/pipeline.yaml
+# (ScanNet) but pointed at the AI2-THOR env classes + generated dataset.
+#
+# Usage:
+#   bash run.sh                    # full iterative RL<->SFT
+#   bash run_smoke.sh              # short RL-only smoke (proves the pipeline)
+#
+# Requires: VIEWSUITE_ROOT exported, the AI2-THOR HTTP render service running,
+# and its URL written to $VIEWSUITE_ROOT/client_url_ai2thor.txt.
+
+hydra:
+  job:
+    chdir: false
+
+project_name: viewsuite
+experiment_name: ai2thor_interactive_view_planning
+experiment_dir: exps/${project_name}/${experiment_name}
+initial_model_path: Qwen/Qwen2.5-VL-7B-Instruct
+iterations: 3
+
+general_overrides:
+  rl:
+    training_steps: 600
+    vagen_dir: VAGEN
+    # train_files / val_files are injected by run.sh (need absolute paths)
+    hydra_overrides:
+      data:
+        max_prompt_length: 4000
+        max_response_length: 10000
+        train_batch_size: 128
+        train_files: null
+        val_files: null
+        eval_files: null
+      algorithm:
+        adv_estimator: gae
+        kl_ctrl:
+          kl_coef: 0.0
+      actor_rollout_ref:
+        model:
+          use_remove_padding: true
+          use_fused_kernels: true
+        actor:
+          ppo_micro_batch_size_per_gpu: 2
+          ppo_mini_batch_size: 128
+          checkpoint:
+            save_contents: [model, hf_model, optimizer, extra]
+          fsdp_config:
+            param_offload: true
+            optimizer_offload: true
+        rollout:
+          log_prob_micro_batch_size_per_gpu: 2
+          tensor_model_parallel_size: 1
+          mode: async
+          max_num_batched_tokens: 32768
+          gpu_memory_utilization: 0.6
+          enforce_eager: true
+          disable_log_stats: false
+          agent:
+            agent_loop_config_path: vagen/configs/agent.yaml
+          engine_kwargs:
+            sglang:
+              attention_backend: flashinfer
+              mm_attention_backend: triton_attn
+          n: 1
+        ref:
+          log_prob_micro_batch_size_per_gpu: 2
+          fsdp_config:
+            param_offload: true
+      critic:
+        enable: true
+        model:
+          use_remove_padding: true
+          fsdp_config:
+            param_offload: true
+            optimizer_offload: true
+        ppo_micro_batch_size_per_gpu: 2
+      trainer:
+        n_gpus_per_node: 8
+        save_freq: 20
+        test_freq: 20
+        max_actor_ckpt_to_keep: 1
+        max_critic_ckpt_to_keep: 1
+        nnodes: 1
+        skip_special_tokens_val: true
+        log_val_generations: 32
+
+  traj_to_sft:
+    module: graphrl.envs.viewsuite.viewsuite_interactive_view_planning.InteractiveViewPlanningTrajToSFT
+    # NOTE: the SFT view-graph distillation generators read per-scene images from
+    # this dir. For AI2-THOR this points at the generated dataset root; the full
+    # distillation path may need per-generator path adaptation (the RL-only smoke
+    # does not exercise it).
+    viewsuite_15k_dir: ${oc.env:VIEWSUITE_ROOT}/data/ai2thor
+    graph_builder:
+      num_workers: 4
+      filter:
+        void_threshold: 0.7
+        std_threshold: 10.0
+    generators:
+      - action_gen
+      - path_to_view
+      - multi_turn_action_gen
+      - multi_turn_action_gen_mcq
+      - multi_turn_action_gen_mix
+      - view_difference
+      - view_difference_mcq
+    action_gen:
+      min_path_len: 1
+      max_path_len: 3
+      sample_per_scene: 15
+      balanced_sampling: true
+    path_to_view:
+      min_path_len: 1
+      max_path_len: 3
+      sample_per_scene: 15
+      balanced_sampling: true
+    multi_turn_action_gen:
+      min_path_len: 3
+      max_path_len: 5
+      sample_per_scene: 20
+      oversample: 10
+      single_mix_multi_ratio: "6:2:2"
+      balanced_sampling: true
+    multi_turn_action_gen_mcq:
+      min_path_len: 1
+      max_path_len: 3
+      sample_per_scene: 15
+      balanced_sampling: false
+    multi_turn_action_gen_mix:
+      min_path_len: 3
+      max_path_len: 5
+      sample_per_scene: 20
+      mcq_prob: 0.5
+      balanced_sampling: true
+    view_difference:
+      min_path_len: 2
+      max_path_len: 5
+      sample_per_scene: 15
+      balanced_sampling: true
+    view_difference_mcq:
+      min_path_len: 2
+      max_path_len: 5
+      sample_per_scene: 15
+      balanced_sampling: true
+    seed: 42
+
+  sft:
+    n_gpus: 8
+    hydra_overrides:
+      stage: sft
+      do_train: true
+      finetuning_type: full
+      dataset: action_gen,path_to_view,multi_turn_action_gen,multi_turn_action_gen_mcq,multi_turn_action_gen_mix,view_difference,view_difference_mcq
+      template: qwen2_vl
+      cutoff_len: 16384
+      preprocessing_num_workers: 16
+      per_device_train_batch_size: 2
+      gradient_accumulation_steps: 2
+      learning_rate: 1.0e-5
+      num_train_epochs: 4.0
+      weight_decay: 0.01
+      lr_scheduler_type: cosine
+      warmup_ratio: 0.1
+      bf16: true
+      flash_attn: fa2
+      logging_steps: 10
+      overwrite_output_dir: true
+      val_size: 0.2
+      eval_strategy: epoch
+      per_device_eval_batch_size: 2
+      load_best_model_at_end: true
+      metric_for_best_model: eval_loss
+      greater_is_better: false
+      save_strategy: epoch
+      save_total_limit: 1
+      trust_remote_code: true
+      deepspeed: ds_z2_config.json
+      use_fast_tokenizer: false
+
+iteration_overrides:
+  iter0:
+    rl:
+      training_steps: 61
+    sft:
+      hydra_overrides:
+        num_train_epochs: 3.0
+  iter1:
+    rl:
+      training_steps: 61
+    sft:
+      hydra_overrides:
+        num_train_epochs: 3.0
+  iter2:
+    rl:
+      training_steps: 61
+    sft:
+      hydra_overrides:
+        num_train_epochs: 3.0
+  iter3:
+    rl:
+      training_steps: 1001
+      timeout: 259200
+      hydra_overrides:
+        huggingface_hub:
+          hf_save_freq: 200
+          repo_id: null
+          private: false
