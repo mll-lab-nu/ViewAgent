@@ -35,13 +35,20 @@ class HFUploadActor:
                 pass
         self.repo_id = repo_id
 
-        self.api.create_repo(
-            repo_id=self.repo_id,
-            repo_type="model",
-            exist_ok=True,
-            private=private,
-        )
-        print(f"[HFUpload] Initialized upload actor for repo: {self.repo_id}")
+        # Non-fatal: a failed create_repo (offline / bad token / perms) must not
+        # kill the actor (which would cascade to ActorDiedError on flush()).
+        try:
+            self.api.create_repo(
+                repo_id=self.repo_id,
+                repo_type="model",
+                exist_ok=True,
+                private=private,
+            )
+            self._ok = True
+            print(f"[HFUpload] Initialized upload actor for repo: {self.repo_id}")
+        except Exception as e:
+            self._ok = False
+            print(f"[HFUpload] create_repo failed for {self.repo_id} ({e}); uploads will be skipped (local only).")
 
     def upload(self, local_path: str, label: str, path_in_repo: str = "",
                allow_patterns: Optional[List[str]] = None):
@@ -61,6 +68,8 @@ class HFUploadActor:
         Returns:
             label on success, None on failure.
         """
+        if not getattr(self, "_ok", True):
+            return None  # repo unavailable (create_repo failed) -> skip, stay local
         if not os.path.exists(local_path):
             print(f"[HFUpload] Warning: {local_path} does not exist, skipping upload")
             return None
@@ -159,10 +168,26 @@ class HFUploadManager:
         # Strip manager-only keys before forwarding to the actor.
         actor_kwargs = {k: v for k, v in hf_hub_cfg.items()
                         if k not in ("hf_save_freq", "upload_contents")}
-        if actor_kwargs.get("repo_id"):
+        if not actor_kwargs.get("repo_id"):
+            print("Warning: hf_save_freq set but huggingface_hub.repo_id missing; skipping HF upload (checkpoints kept local).")
+            return
+        # Only upload when a HF token is actually resolvable. Otherwise stay
+        # local-only — an unattended run must never crash trying to reach the Hub
+        # (e.g. no token / offline). Set HF_TOKEN + huggingface_hub.repo_id to enable.
+        try:
+            from huggingface_hub import get_token
+            token = actor_kwargs.get("token") or get_token()
+        except Exception:
+            token = actor_kwargs.get("token")
+        if not token:
+            print(f"Warning: huggingface_hub.repo_id={actor_kwargs.get('repo_id')} set but no HF token found; "
+                  f"skipping HF upload (checkpoints kept LOCAL only).")
+            return
+        try:
             self._actor = HFUploadActor.remote(**actor_kwargs)
-        else:
-            print("Warning: hf_save_freq is set but huggingface_hub.repo_id is missing, skipping HF upload.")
+        except Exception as e:
+            print(f"Warning: could not init HF upload actor ({e}); skipping HF upload (local only).")
+            self._actor = None
 
     @property
     def enabled(self) -> bool:
@@ -225,7 +250,12 @@ class HFUploadManager:
         print(f"[HFUpload] Started async best-val upload (step {global_steps}) to {path_in_repo}")
 
     def flush(self):
-        """Block until any pending upload finishes."""
+        """Block until any pending upload finishes. Never fatal — a failed/dead
+        upload must not crash training."""
         if self._pending_future is not None:
-            ray.get(self._pending_future)
-            self._pending_future = None
+            try:
+                ray.get(self._pending_future)
+            except Exception as e:
+                print(f"[HFUpload] Warning: upload failed/skipped (non-fatal): {e}")
+            finally:
+                self._pending_future = None
