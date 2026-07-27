@@ -1,0 +1,78 @@
+# ── AI2-THOR Proxy Task — OpenRouter eval base ───────────────────────
+# Frontier-model evaluation on the AI2-THOR test split via OpenRouter.
+# Per-model configs inherit this file (defaults: - eval_default).
+# IVP needs the AI2-THOR render service (client_url_ai2thor.txt).
+# Run with OPENROUTER_API_KEY exported + HTTPS_PROXY=http://fwdproxy:8080.
+# ─────────────────────────────────────────────────────────────────────
+
+fileroot: ${oc.env:VIEWSUITE_ROOT}
+
+n_envs: &n_envs 252
+
+default_chat_config:
+  temperature: 0.0
+  max_tokens: 10000
+  top_p: 0.95
+
+envs:
+
+  - name: Ai2ThorPath2View
+    n_envs: *n_envs
+    tag_id: path_to_view
+    seed: [1, 252, 1]
+    split: test
+    max_turns: 1
+    config:
+      jsonl_path: ${fileroot}/data/ai2thor/path_to_view_test.jsonl
+      image_size: [512, 512]
+      format: eval_mode
+      example_count: 0
+
+  - name: Ai2ThorView2Path
+    n_envs: *n_envs
+    tag_id: view_to_path
+    seed: [1, 252, 1]
+    split: test
+    max_turns: 1
+    config:
+      jsonl_path: ${fileroot}/data/ai2thor/view_to_path_test.jsonl
+      image_size: [512, 512]
+      format: eval_mode
+      example_count: 0
+
+  - name: Ai2ThorInteractiveViewPlanning
+    n_envs: *n_envs
+    tag_id: interactive_view_planning
+    seed: [1, 252, 1]
+    split: test
+    max_turns: 10
+    config:
+      jsonl_path: ${fileroot}/data/ai2thor/interactive_view_planning_test.jsonl
+      max_turns: 10
+      render_backend: client
+      client_url_file_path: ${fileroot}/client_url_ai2thor.txt
+      image_size: [512, 512]
+      format: eval_mode
+      use_example_in_sys_prompt: false
+      action_only_mode: true
+
+experiment:
+  dump_dir: ${fileroot}/rollouts/ai2thor_default
+  default_max_turns: 1
+
+run:
+  backend: "openai"
+  base_seed: 0
+  max_concurrent_jobs: 12
+  resume: skip_completed
+  live_summary: true
+
+backends:
+  openai:
+    api_key: ${oc.env:OPENROUTER_API_KEY}
+    base_url: "https://openrouter.ai/api/v1"
+    model: "openai/gpt-5.4"
+    max_concurrency: 12
+    max_retries: 8
+    min_backoff: 0.5
+    max_backoff: 12.0
