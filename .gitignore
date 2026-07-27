@@ -43,3 +43,4 @@ MANIFEST
 /filter_review*/
 /scripts/_finalize_ai2thor_dataset.sh
 /outputs/
+train_progress.png
