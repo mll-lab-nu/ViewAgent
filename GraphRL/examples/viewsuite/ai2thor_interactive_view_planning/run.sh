@@ -41,6 +41,5 @@ python -m graphrl.main \
     iteration_overrides.iter0.rl.training_steps=61 \
     iteration_overrides.iter1.rl.training_steps=61 \
     iteration_overrides.iter2.rl.training_steps=61 \
-    +iteration_overrides.iter3.rl.hydra_overrides.huggingface_hub.repo_id=ai2thor_interactive_view_planning \
     +iteration_overrides.iter3.rl.hydra_overrides.trainer.log_image.enable=false \
     "$@" 2>&1 | tee "${LOG_FILE}"
