@@ -46,25 +46,41 @@ recycle_if_due(){
 }
 
 # ---------------- Phase 1: babysit training ----------------
+LOGDIR="$ROOT/GraphRL/exps/viewsuite/ai2thor_interactive_view_planning"
+rl_alive(){ pgrep -f "[m]ain_ppo" >/dev/null 2>&1 || pgrep -f "[r]aylet" >/dev/null 2>&1; }
+log_age(){ local lf; lf=$(ls -t $LOGDIR/pipeline_*.log 2>/dev/null | head -1); [ -z "$lf" ] && { echo 999999; return; }; echo $(( $(date +%s) - $(date -r "$lf" +%s) )); }
+clean_kill_train(){   # stop unit + purge all ray/sglang/verl leftovers (bracket-safe) + free ports
+  systemctl --user stop ai2thor_ivp_train.service 2>/dev/null
+  for pat in "[g]raphrl.main" "[m]ain_ppo" "[r]ay::" "[s]glang" "raylet" "gcs_server"; do pkill -9 -f "$pat" 2>/dev/null; done
+  ray stop --force >/dev/null 2>&1 || true; sleep 5
+  systemctl --user reset-failed ai2thor_ivp_train.service 2>/dev/null
+}
+start_train(){ systemd-run --user --unit=ai2thor_ivp_train --same-dir /bin/bash /home/kangrui/projects/viewagent_ai2thor/run_ai2thor_full.sh; }
+
 log "orchestrator started; babysitting training"
-RESUMES=0; MAXRESUMES=5
+RESUMES=0; MAXRESUMES=8
 while true; do
   heal_infra
   recycle_if_due
-  if systemctl --user is-active ai2thor_ivp_train.service >/dev/null 2>&1; then
-    STEP=$(grep -oE "training/global_step:[0-9]+" $ROOT/GraphRL/exps/viewsuite/ai2thor_interactive_view_planning/pipeline_*.log 2>/dev/null | tail -1)
-    log "training active ($STEP); infra ok"
-    sleep 300; continue
-  fi
-  LF=$(ls -t $ROOT/GraphRL/exps/viewsuite/ai2thor_interactive_view_planning/pipeline_*.log 2>/dev/null | head -1)
+  LF=$(ls -t $LOGDIR/pipeline_*.log 2>/dev/null | head -1)
   if grep -q "PIPELINE COMPLETE" "$LF" 2>/dev/null; then log "training PIPELINE COMPLETE"; break; fi
+  healthy=0
+  if systemctl --user is-active ai2thor_ivp_train.service >/dev/null 2>&1; then
+    age=$(log_age)
+    if rl_alive || [ "$age" -le 150 ]; then
+      healthy=1
+      STEP=$(grep -oE "training/global_step:[0-9]+" $LOGDIR/pipeline_*.log 2>/dev/null | tail -1)
+      log "training active ($STEP, log_age=${age}s); infra ok"
+    else
+      log "HUNG: unit active but RL subprocess dead (log_age=${age}s) -> clean kill + resume"
+    fi
+  fi
+  if [ "$healthy" -eq 1 ]; then sleep 240; continue; fi
   if [ "$RESUMES" -lt "$MAXRESUMES" ]; then
-    RESUMES=$((RESUMES+1)); log "training not active & not complete -> RESUME #$RESUMES"
-    systemctl --user reset-failed ai2thor_ivp_train.service 2>/dev/null
-    systemd-run --user --unit=ai2thor_ivp_train --same-dir /bin/bash /home/kangrui/projects/viewagent_ai2thor/run_ai2thor_full.sh
-    sleep 180
+    RESUMES=$((RESUMES+1)); log "training not healthy -> clean RESUME #$RESUMES"
+    clean_kill_train; start_train; sleep 200
   else
-    log "training died and MAXRESUMES reached -> giving up babysit, proceeding to eval whatever exists"; break
+    log "MAXRESUMES reached -> giving up babysit, proceeding to eval whatever exists"; break
   fi
 done
 
