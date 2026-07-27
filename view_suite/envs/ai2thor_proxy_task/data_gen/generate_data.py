@@ -51,6 +51,18 @@ from view_suite.ai2thor.pose_utils import (
     intrinsics_from_fov,
     top_down_c2w,
 )
+from view_suite.scannet.utils.pose_utils import c2w_extrinsic_to_se3
+from view_suite.envs.scannet_proxy_task.utils.gym_proxy_tool_utils import geodesic_angle_deg
+
+
+def _pose_within(pose_a: Dict, pose_b: Dict, pos_thr: float, ang_thr: float) -> bool:
+    """True if two Unity poses are within (pos_thr m, ang_thr deg) — i.e. the
+    IVP success threshold. Uses the same SE(3)+geodesic math the env grades with."""
+    a = c2w_extrinsic_to_se3(unity_pose_to_c2w(pose_a), degrees=True)
+    b = c2w_extrinsic_to_se3(unity_pose_to_c2w(pose_b), degrees=True)
+    pos = float(np.linalg.norm(np.array(a[:3]) - np.array(b[:3])))
+    ang = float(geodesic_angle_deg(np.array(a[3:]), np.array(b[3:])))
+    return pos <= pos_thr and ang <= ang_thr
 
 
 # ---------- Action vocabulary (matches ScanNet proxy task) ----------
@@ -91,6 +103,10 @@ class GenConfig:
     # floor / ceiling view). 1.0 = off. Applied to the initial view and every
     # option (the target view is one of the options).
     max_dominant_pixel_frac: float = 0.8
+    # Reject a GT target whose pose is already within the IVP success threshold
+    # of the initial pose (task would be trivially solved at step 0).
+    degen_pos_thr: float = 0.5
+    degen_ang_thr: float = 30.0
 
 
 # =============================================================================
@@ -352,9 +368,13 @@ def _build_sample(
         gt_len = rng.randint(cfg.gt_seq_min, cfg.gt_seq_max)
         seq = _sample_action_seq(rng, gt_len)
         pose = _apply_sequence(init_pose, seq, cfg.step_translation, cfg.step_rotation_deg)
-        if _valid_option_pose(pose, reachable_xz, cfg):
-            gt_seq, gt_pose = seq, pose
-            break
+        if not _valid_option_pose(pose, reachable_xz, cfg):
+            continue
+        # reject degenerate targets: init already within success threshold of target
+        if _pose_within(init_pose, pose, cfg.degen_pos_thr, cfg.degen_ang_thr):
+            continue
+        gt_seq, gt_pose = seq, pose
+        break
     if gt_seq is None:
         return None  # couldn't find a valid GT — caller should resample the initial pose
 

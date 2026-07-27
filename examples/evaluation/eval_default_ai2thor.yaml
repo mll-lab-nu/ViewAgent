@@ -30,7 +30,7 @@ fileroot: ${oc.env:VIEWSUITE_ROOT}
 
 # Test-split size from the default small dataset (12 scenes -> 2 test scenes x
 # 8 samples = 16). Bump together with the data_gen / split parameters.
-n_envs: &n_envs 331
+n_envs: &n_envs 252
 
 default_chat_config:
   temperature: 0.0
@@ -42,7 +42,7 @@ envs:
   - name: Ai2ThorPath2View
     n_envs: *n_envs
     tag_id: path_to_view
-    seed: [1, 331, 1]
+    seed: [1, 252, 1]
     split: test
     max_turns: 1
     config:
@@ -54,7 +54,7 @@ envs:
   - name: Ai2ThorView2Path
     n_envs: *n_envs
     tag_id: view_to_path
-    seed: [1, 331, 1]
+    seed: [1, 252, 1]
     split: test
     max_turns: 1
     config:
@@ -66,7 +66,7 @@ envs:
   - name: Ai2ThorInteractiveViewPlanning
     n_envs: *n_envs
     tag_id: interactive_view_planning
-    seed: [1, 331, 1]
+    seed: [1, 252, 1]
     split: test
     max_turns: 10
     config:

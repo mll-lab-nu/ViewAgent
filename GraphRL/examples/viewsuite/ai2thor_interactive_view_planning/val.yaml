@@ -3,8 +3,8 @@
 envs:
   - name: Ai2ThorInteractiveViewPlanning
     data_source: ae
-    seed: [0, 325, 1]
-    n_envs: 325
+    seed: [0, 251, 1]
+    n_envs: 251
     max_turns: 10
     response_length_per_turn: 512
     config:
@@ -21,8 +21,8 @@ envs:
 
   - name: Ai2ThorPath2View
     data_source: path_to_view
-    seed: [0, 325, 1]
-    n_envs: 325
+    seed: [0, 251, 1]
+    n_envs: 251
     max_turns: 1
     response_length_per_turn: 2048
     config:
@@ -34,8 +34,8 @@ envs:
 
   - name: Ai2ThorView2Path
     data_source: view_to_path
-    seed: [0, 325, 1]
-    n_envs: 325
+    seed: [0, 251, 1]
+    n_envs: 251
     max_turns: 1
     response_length_per_turn: 2048
     config:
