@@ -1,0 +1,302 @@
+[
+ {
+  "id": "20260315-203012-4b5af835",
+  "chose": "A",
+  "reason": "The initial view appears to be from the left/west side of the bed, facing toward the top/north side of the room. The target view shows the bed now on the left, with the green object near the bed\u2019s lower corner visible, and the camera looking back toward the opposite curtain wall \u2014 consistent with turning around 180\u00b0 and shifting slightly away from the bed and toward the wall. That matches: turn_left \u00d76, then move_backward, move_right."
+ },
+ {
+  "id": "20260315-190549-b9b43934",
+  "chose": "B",
+  "reason": "The initial view looks like a close-up of the same covered furniture seen on the right of the target view. To get the chair into view on the left while keeping that furniture close on the right, the best match is a small left turn plus looking down, without translating."
+ },
+ {
+  "id": "20260315-150232-19e101e1",
+  "chose": "C",
+  "reason": "The target appears to be reached mainly by rotating left from the sink-facing initial pose: the sink wall shifts to the right side/out of frame, while the left-side partition/open area comes into view. No translation seems necessary, and the 90\u00b0 left turn matches best."
+ },
+ {
+  "id": "20260315-204228-3a6eef21",
+  "chose": "B",
+  "reason": "Turn left slightly, move toward the end wall, then sidestep right to line up with the shelf end. This matches option B."
+ },
+ {
+  "id": "20260315-201454-398140fb",
+  "chose": "A",
+  "reason": "The target view shows the same shelving shifted from the right side to the left side, with noticeably more of the area to the right visible and the camera pitched upward. That suggests a larger right turn than 30\u00b0, one upward look, and a small lateral shift. So the best match is A."
+ },
+ {
+  "id": "20260315-150515-2a1a944a",
+  "chose": "D",
+  "reason": "The target looks like turning around from the desk to face the opposite wall, with a slight upward tilt to catch the whiteboard/shelf area. The view seems mostly straight-on rather than diagonal, so 180\u00b0 turn + look up fits better than 150\u00b0. Then a small backward move would help frame the wall and objects (bin, monitor, cart)."
+ },
+ {
+  "id": "20260315-145629-22bd3ac3",
+  "chose": "A",
+  "reason": "The target looks like a closer, more side-on view of the wooden shelf/cabinet seen in the initial image, with the chair mostly out of frame. The simplest way to get that is to turn left toward the cabinet opening and move forward."
+ },
+ {
+  "id": "20260315-194502-4ae4cb2d",
+  "chose": "C",
+  "reason": "The target is a downward close-up of a metal shelf/cabinet in another part of the room. From the initial view and the top-down map, this requires a substantial repositioning across the room, not just a small turn or a vertical move. The only sequence that plausibly matches is the 60\u00b0 right turn, look down, then longer traverse: C."
+ },
+ {
+  "id": "20260315-143334-fe44579a",
+  "chose": "C",
+  "reason": "The target looks like the same spot as the initial view, but with the camera pitched downward and rotated slightly to the right: the chair/furniture that is on the right in the initial view ends up on the left edge in the target, and there\u2019s no strong evidence of translation. That matches turning right twice (60\u00b0) and looking down."
+ },
+ {
+  "id": "20260315-203435-79b575f9",
+  "chose": "B",
+  "reason": "The target appears to be reached by rotating to the right toward the bookshelf and then shifting right from the initial position near the table. Options with vertical movement or looking up do not fit, and the large left-turn sequence points the wrong way."
+ },
+ {
+  "id": "20260315-201507-7a5d08b9",
+  "chose": "B",
+  "reason": "Likely just a slight right turn and look down to the floor/wall area near the outlet; no translation seems needed."
+ },
+ {
+  "id": "20260315-145724-d2f021ba",
+  "chose": "D",
+  "reason": "From the start, the door is directly ahead and the target view looks like the nearby chair/table area off to the left of the starting position. A small leftward reorientation fits; the move sequences would likely shift into the wall/door area. So two left turns (60\u00b0) is the best match."
+ },
+ {
+  "id": "20260315-194035-e934b008",
+  "chose": "C",
+  "reason": "The target appears to be a close-up of the black object on the table, with the same general left-right arrangement as the initial view. That fits keeping the same heading, looking up, then moving forward and right."
+ },
+ {
+  "id": "20260315-144811-b7571430",
+  "chose": "A",
+  "reason": "Initial view faces the curtain wall; the target view appears from a position shifted around the desk with the curtains now to the left and a moderate downward tilt. The best match is a 60\u00b0 right turn, slight look down, then moving around the desk to the left/back and slightly lower: option A."
+ },
+ {
+  "id": "20260315-144255-6f23f77f",
+  "chose": "B",
+  "reason": "The target view looks like a slightly more centered, backed-up view from the same side/end of the table: the initial view is very close to one chair at the table corner, while the target shows two chair backs and more of the tabletop. That is best matched by turning a bit left to face more toward the table center, then moving backward."
+ },
+ {
+  "id": "20260315-145513-78b158fd",
+  "chose": "C",
+  "reason": "The target view is a modest change from the initial one: the camera is still beside the bed, but it is turned slightly left and pulled back a bit so the nightstand drops out while more of the curtains/left side come into view. That best matches a single left turn plus one backward move."
+ },
+ {
+  "id": "20260315-191306-c1f20cf7",
+  "chose": "A",
+  "reason": "The target looks just around the partition visible on the left in the initial view: look slightly left/down and sidestep left into that stall area. Large rotations/translations or vertical moves seem unnecessary."
+ },
+ {
+  "id": "20260315-185749-1d53583b",
+  "chose": "C",
+  "reason": "The target view is reached by rotating toward the bookshelf on the right side of the initial scene and shifting to the right side of the table. The only sequence that matches this modest turn-and-strafe change without unnecessary vertical motion is C."
+ },
+ {
+  "id": "20260315-185746-051462ca",
+  "chose": "D",
+  "reason": "Initial appears to be from the left-chair side facing the door. The target looks like the coffee table from nearly the same spot, just rotated toward it, pitched downward, and slightly lowered. That matches: turn left 90\u00b0, look down, move down."
+ },
+ {
+  "id": "20260315-192852-fdabd3ab",
+  "chose": "D",
+  "reason": "The target view appears to be from farther to the right/east side of the room, looking back toward the beanbag area, with a slight counterclockwise roll and upward tilt. Among the options, only D makes the needed large lateral translation and matches the final orientation best."
+ },
+ {
+  "id": "20260315-202022-c9116fdc",
+  "chose": "A",
+  "reason": "The target still appears to be near the same blue equipment, but from a slightly shifted position and angled upward. A small forward-left move plus looking up fits better than the large relocation in B, the downward move in C, or staying in place in D."
+ },
+ {
+  "id": "20260315-144814-6b285593",
+  "chose": "A",
+  "reason": "The target is a much closer view of the same bookshelf on the right, with only a slight change in yaw and no strong evidence of a 30\u00b0 downward pitch. A small right turn followed by moving forward best matches that shift."
+ },
+ {
+  "id": "20260315-203616-ff0fe897",
+  "chose": "A",
+  "reason": "The target appears to be in the same general facing direction as the initial view, just shifted around the partition so the toilet area becomes visible. A 180\u00b0 or 90\u00b0 left rotation would misalign the window/wall layout. Between the no-rotation choices, the shorter translation with a small upward move best matches the target position."
+ },
+ {
+  "id": "20260315-193710-c5dbffe5",
+  "chose": "C",
+  "reason": "Target appears to be reached by first turning nearly around (150\u00b0 left), then shifting mostly sideways toward the bookshelf/fireplace side rather than advancing deeper into the room. That matches option C best."
+ },
+ {
+  "id": "20260315-191838-0149c9af",
+  "chose": "C",
+  "reason": "The target view is likely reached by moving from the table\u2019s side toward the upper-right corner area near the white bin/appliance and curtain, without changing height. The needed reorientation looks like about 60\u00b0 left, then a small reposition: back off the table edge and shift right twice into the corner view. So option C best matches."
+ },
+ {
+  "id": "20260315-203703-ea92d25b",
+  "chose": "A",
+  "reason": "The initial view is from the carpeted room corner by the bed. The target is over the bathroom sink, so we need a substantial backward translation into the bathroom plus an upward move. The upright target also makes the roll-heavy options unlikely. The best match is backing out 3 steps, adjusting view, then moving up."
+ },
+ {
+  "id": "20260315-193338-31516432",
+  "chose": "D",
+  "reason": "The target looks like the same general location as the initial view, but pitched downward toward the desk/surface in front rather than rotated around the room. No large horizontal repositioning seems necessary; just looking down and lowering the camera matches best."
+ },
+ {
+  "id": "20260329-125752-b917611a",
+  "chose": "C",
+  "reason": "The target looks like the same location as the initial view, just rotated toward the dark opening on the right and tilted downward. No forward translation seems necessary. A 60\u00b0 right turn (two 30\u00b0 steps) plus one look_down best matches."
+ },
+ {
+  "id": "20260315-194436-f7aa327b",
+  "chose": "C",
+  "reason": "The target view is a modest rightward rotation plus moving closer toward the door/chair area. Compared with the initial image, the door shifts left in frame, the chair becomes much more prominent, and the left wall disappears\u2014consistent with turning right 30\u00b0 and then advancing toward the chair side. That matches two forward moves after the turn, not the sequence with a compensating left move."
+ },
+ {
+  "id": "20260315-195418-171dec85",
+  "chose": "B",
+  "reason": "Target looks like a near turn-around from the initial furniture view to face the bed, with only a small positional adjustment. The 150\u00b0 right turn plus a slight backward move matches best."
+ },
+ {
+  "id": "20260315-190724-0b85fa27",
+  "chose": "B",
+  "reason": "The target appears to be near the same door/wall area as the initial view, with the shelf just off to the left of the initial facing direction. A modest left turn without major translation fits best; the larger turns/moves seem too extreme."
+ },
+ {
+  "id": "20260315-202750-b39d66c2",
+  "chose": "B",
+  "reason": "The initial view is from the desk/chair area on the right side of the room, facing the desk/windows. The target view looks back toward the door, with shelves on the left and the desk edge on the right, so it requires turning away from the desk by about 120\u00b0 and moving slightly forward into the aisle. The target framing also suggests a pitch adjustment upward rather than a vertical move."
+ },
+ {
+  "id": "20260315-192240-20167bd7",
+  "chose": "C",
+  "reason": "The target is best matched by backing into the doorway/hall area from the initial bedroom view and raising the camera pitch slightly. This fits [look_up, move_backward] much better than the other options, which either move the wrong way or introduce large extra rotations."
+ },
+ {
+  "id": "20260315-192113-1c10d8cb",
+  "chose": "C",
+  "reason": "Comparing the initial view and the top-down map, the target looks like a slight leftward reorientation from the initial area, with a small lateral shift into the rug/shelf view rather than a large relocation. Options with large rotations or look-up don\u2019t fit; among the remaining choices, C best matches the target perspective."
+ },
+ {
+  "id": "20260315-195245-aadff7e6",
+  "chose": "A",
+  "reason": "The target appears to be just left of the initial position, aligned more directly down the aisle toward the bookshelf ahead. A small right turn plus a short backward step and several left moves best matches that shift; the longer paths overshoot or rotate incorrectly."
+ },
+ {
+  "id": "20260315-151624-47ca99db",
+  "chose": "A",
+  "reason": "The initial view appears to be from a tight closet/entry nook facing the ironing board wall, while the target view is out in the room facing the microwave/fridge cabinet area. That requires a substantial reorientation and room-scale translation; options with only a tiny move or with look_down do not fit. A is the best match."
+ },
+ {
+  "id": "20260315-202125-1a273523",
+  "chose": "A",
+  "reason": "Target is most consistent with a 60\u00b0 right turn in place: the window/drawer wall stays on the left, while the bed swings into the foreground. No translation is needed."
+ },
+ {
+  "id": "20260315-192132-bb51eb36",
+  "chose": "B",
+  "reason": "The target view looks like a turn-around from the initial balcony corner, then a move forward into the narrow passage on the right side. That matches the 180\u00b0 rotation plus forward/right offset in option B."
+ },
+ {
+  "id": "20260315-202707-37017849",
+  "chose": "B",
+  "reason": "Target is a close, downward-looking view of the small shelf/cart beside the table\u2019s right edge. From the initial view, this is best matched by turning nearly around, looking down, then sidestepping slightly. That corresponds to option B."
+ },
+ {
+  "id": "20260315-194347-5cc4b46e",
+  "chose": "A",
+  "reason": "The target looks like the white lattice basket/crate adjacent to the large appliance seen in the initial view. From the starting position, this is most consistent with simply rotating left to face the nearby basket without translating. The only matching sequence is two left turns."
+ },
+ {
+  "id": "20260315-195138-d40068aa",
+  "chose": "A",
+  "reason": "The target appears to be a nearby view around the same central object: both views are close to a tall vertical display on the left, but the target is angled more toward the open floor/display table area rather than the wall shelves. Large vertical translations in B/C/D are inconsistent with the similar eye level. A small left rotation plus a short forward move best matches."
+ },
+ {
+  "id": "20260315-145615-65eaf048",
+  "chose": "D",
+  "reason": "The target view is a close, downward-looking view of the same white paneled surface that appears on the right side of the initial image. So the camera should turn toward that surface, tilt down, and shift closer/rightward rather than move far across the room. That matches option D."
+ },
+ {
+  "id": "20260315-192828-d389d340",
+  "chose": "B",
+  "reason": "The target looks like a nearby nook just past the blue object, requiring a slight right reorientation, a small diagonal shift around it, and a pitch correction rather than a long traversal. B fits best."
+ },
+ {
+  "id": "20260315-193939-22e07d59",
+  "chose": "C",
+  "reason": "The target appears to be the nearby shelving unit already on the right side of the initial view, with the same left-side display objects still visible at the edge. That suggests mostly a small rightward reorientation plus a downward tilt, without significant translation."
+ },
+ {
+  "id": "20260315-145855-fb5aef6a",
+  "chose": "C",
+  "reason": "The target looks like the same corner area from roughly the same position, but rotated slightly left and pitched downward: the ceiling visible in the initial view disappears, more of the left opening/room enters frame, and lower objects become visible. That matches a left turn plus looking down, not a larger translation."
+ },
+ {
+  "id": "20260315-142611-432b3c93",
+  "chose": "A",
+  "reason": "The target seems to be reached by turning mostly back into the room from the initial window-facing corner, then shifting deeper/sideways into the utility area. Among the options, A best matches that large reorientation plus repositioning; B is far too small, C includes an unlikely downward move, and D moves the camera the wrong way relative to the apparent room layout."
+ },
+ {
+  "id": "20260315-151723-c45e904a",
+  "chose": "C",
+  "reason": "The target is a nearby side-angle view of the same object/fixture, requiring a modest clockwise reorientation and a small sidestep to the right rather than a large relocation. That matches: turn right twice, then move right."
+ },
+ {
+  "id": "20260315-200017-424eea04",
+  "chose": "B",
+  "reason": "From the initial corner-facing view, the target cubby shelf appears to be off to the right side with a slight downward tilt, requiring a small right turn and mostly rightward movement rather than a large reorientation."
+ },
+ {
+  "id": "20260315-200927-80a64d60",
+  "chose": "C",
+  "reason": "The target is near the chair/cart area to the right of the initial view. A strong right turn is needed, but not the extra motion/pitch change in A. The best match is turning right 4 times (120\u00b0) and moving forward once."
+ },
+ {
+  "id": "20260315-151606-2b847542",
+  "chose": "D",
+  "reason": "The initial view is from the right/east side near the foot of the bed, looking toward the headboard. The target view is the furniture area north of the bed (mini-fridge left, cabinet center, chair right), which is reached by turning around to face that area and shifting left across the foot of the bed. Options with vertical motion/look changes don\u2019t match. The best match is the 180\u00b0 turn plus two left moves."
+ },
+ {
+  "id": "20260315-201859-4756f998",
+  "chose": "A",
+  "reason": "The target is the same stacked boxes viewed much closer, with little yaw change but a more downward angle. Moving left twice brings the camera into that corner/alcove, and the look_down + move_up matches the higher, downward-looking close-up."
+ },
+ {
+  "id": "20260315-202909-4310e8de",
+  "chose": "B",
+  "reason": "The target looks like the same shelving/wall area from nearly the same spot, but rotated a bit left and tilted upward. No large translation seems needed. So the best match is turn_left, then look_up."
+ },
+ {
+  "id": "20260315-143247-7fa02693",
+  "chose": "B",
+  "reason": "B and D are identical; the target is best matched by turning right, moving forward, then shifting left twice (plus up). I\u2019ll choose the first duplicate."
+ },
+ {
+  "id": "20260315-192431-9b749f13",
+  "chose": "B",
+  "reason": "The blue cleaning machine is already partially visible at the far right of the initial view, so the target is most likely reached from the same position by rotating slightly right and then tilting down. That matches a single right turn plus look down."
+ },
+ {
+  "id": "20260315-203142-eaf1fd0e",
+  "chose": "B",
+  "reason": "The initial view is at the right-side pipe/machine area, while the target is near the left cabinet/crate wall. This needs the largest horizontal displacement, with roughly the same facing direction, so the sequence with multiple forward and left moves fits best."
+ },
+ {
+  "id": "20260315-204402-832bf1a4",
+  "chose": "A",
+  "reason": "The target is in the toilet/stall area, which is roughly behind/opposite the initial sink-facing view. Among the options, only A makes a large enough rotation to turn away from the sinks and then shifts position into the stall area."
+ },
+ {
+  "id": "20260315-193751-3aca9734",
+  "chose": "A",
+  "reason": "The initial view faces the window/checkerboard corner. The target view appears to be toward the door/shelf side with the whiteboard just on the right edge, which matches turning about 150\u00b0 to the right and then stepping back slightly to frame the door and shelf."
+ },
+ {
+  "id": "20260315-201408-05e9b017",
+  "chose": "D",
+  "reason": "The initial view already looks along the dark wall, with the floor open to the right. The target view appears to be reached by moving slightly forward into the narrow passage while turning a bit right so the blue machine appears on the right and the chair comes into view ahead. Large vertical moves or a left turn don\u2019t fit."
+ },
+ {
+  "id": "20260315-144829-371c9ab8",
+  "chose": "A",
+  "reason": "From the shelf-facing start, the target is most plausibly around the left end of the shelving unit: turn left 90\u00b0, move along the shelf, step into the side gap, then raise slightly for the final view."
+ },
+ {
+  "id": "20260315-185749-b4af307e",
+  "chose": "C",
+  "reason": "From the top-down layout, the start appears near the shelving/cabinet area on the right side of the room, while the target is at the nearby desk/chair workstation. The target is reached by rotating to the right-side desk area and translating about one meter plus a small lateral adjustment. Among the options, C best matches that shift and orientation."
+ }
+]

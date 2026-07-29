@@ -1,0 +1,74 @@
+{
+ "P2V/gpt_5_4": {
+  "n_fail": 276,
+  "n_format_err": 2,
+  "format_rate": 0.7,
+  "n_sampled": 60
+ },
+ "P2V/gpt_5_4_pro": {
+  "n_fail": 248,
+  "n_format_err": 2,
+  "format_rate": 0.8,
+  "n_sampled": 60
+ },
+ "P2V/gemini_3_1_pro": {
+  "n_fail": 271,
+  "n_format_err": 14,
+  "format_rate": 5.2,
+  "n_sampled": 60
+ },
+ "P2V/claude_opus_4_6": {
+  "n_fail": 346,
+  "n_format_err": 19,
+  "format_rate": 5.5,
+  "n_sampled": 60
+ },
+ "P2V/grok_4_20_beta": {
+  "n_fail": 285,
+  "n_format_err": 0,
+  "format_rate": 0.0,
+  "n_sampled": 60
+ },
+ "P2V/qwen_25_vl_7b_trained": {
+  "n_fail": 498,
+  "n_format_err": 420,
+  "format_rate": 84.3,
+  "n_sampled": 60
+ },
+ "V2P/gpt_5_4": {
+  "n_fail": 289,
+  "n_format_err": 1,
+  "format_rate": 0.3,
+  "n_sampled": 60
+ },
+ "V2P/gpt_5_4_pro": {
+  "n_fail": 262,
+  "n_format_err": 2,
+  "format_rate": 0.8,
+  "n_sampled": 60
+ },
+ "V2P/gemini_3_1_pro": {
+  "n_fail": 268,
+  "n_format_err": 14,
+  "format_rate": 5.2,
+  "n_sampled": 60
+ },
+ "V2P/claude_opus_4_6": {
+  "n_fail": 310,
+  "n_format_err": 6,
+  "format_rate": 1.9,
+  "n_sampled": 60
+ },
+ "V2P/grok_4_20_beta": {
+  "n_fail": 294,
+  "n_format_err": 0,
+  "format_rate": 0.0,
+  "n_sampled": 60
+ },
+ "V2P/qwen_25_vl_7b_trained": {
+  "n_fail": 420,
+  "n_format_err": 201,
+  "format_rate": 47.9,
+  "n_sampled": 60
+ }
+}
