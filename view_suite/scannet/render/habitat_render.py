@@ -50,7 +50,7 @@ class HabitatRenderer:
 
     def __init__(self, file_path: str, gpu_device_id: int = 0,
                  width: int = 512, height: int = 512, hfov_deg: float = 90.0,
-                 lighting: bool = True, light_intensity: float = 3.0,
+                 lighting: bool = True, light_intensity: float = 2.5,
                  background=(1.0, 1.0, 1.0, 1.0)):
         import habitat_sim  # imported lazily: only the `habitat` env has it
 
