@@ -18,6 +18,7 @@ Requires the separate `habitat` conda env (habitat-sim 0.3.3 headless):
 """
 from __future__ import annotations
 
+import contextlib
 import math
 from typing import Optional, Sequence
 
@@ -134,7 +135,14 @@ class HabitatRenderer:
     def close(self) -> None:
         if self._sim is not None:
             try:
+                # Same context caveat as rendering: tearing down a simulator that is
+                # not the current one aborts the process (SIGABRT on "no current
+                # context"). Make it current first.
+                with contextlib.suppress(Exception):
+                    self._sim.renderer.acquire_gl_context()
                 self._sim.close()
+            except Exception:
+                pass
             finally:
                 self._sim = None
 
@@ -159,6 +167,14 @@ class HabitatRenderer:
         # pure black, passing the pose straight through renders the scene.
         c2w_gl = c2w @ _CV_TO_GL
         R, t = c2w_gl[:3, :3], c2w_gl[:3, 3]
+
+        # Habitat keeps ONE current GL context per process, and constructing a new
+        # Simulator steals it from every existing one — so with N resident scenes only
+        # the last-built one can draw ("GL::Context::current(): no current context").
+        # acquire_gl_context() makes THIS simulator current again; it is a no-op when
+        # it already is, so the single-scene path pays nothing.
+        with contextlib.suppress(Exception):
+            self._sim.renderer.acquire_gl_context()
 
         state = self._hs.AgentState()
         state.position = t.astype(np.float32)

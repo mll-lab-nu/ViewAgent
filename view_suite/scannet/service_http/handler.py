@@ -29,7 +29,7 @@ from view_suite.scannet.render.mesh_render import MeshRenderer
 from view_suite.scannet.utils.path_utils import resolve_scene_ply, resolve_scene_gs_ply
 from view_suite.service_http.multipart import numpy_to_png_bytes
 
-SUPPORTED_BACKENDS = ("open3d", "gsplat")
+SUPPORTED_BACKENDS = ("open3d", "gsplat", "habitat")
 
 LOGGER = logging.getLogger(__name__)
 if not LOGGER.handlers:
@@ -40,6 +40,11 @@ _ACTIVE_SCENE_ID: Optional[str] = None
 _ACTIVE_RENDERER = None  # MeshRenderer or GaussianSplatRenderer
 _RENDERER_LOCK = threading.Lock()
 _FORCED_RENDER_SIZE: Optional[Tuple[int, int]] = None
+# PHYSICAL gpu index this worker owns. Kept separate from CUDA_VISIBLE_DEVICES because
+# habitat's gpu_device_id goes through EGL enumeration, which CUDA masking does not
+# touch — after _bind_process_to_gpu(6) CUDA sees one device numbered 0, but habitat
+# still needs the real "6" to pick the right EGL device.
+_WORKER_GPU_ID: Optional[int] = None
 
 
 def _bind_process_to_gpu(gpu_id: Optional[int]) -> None:
@@ -58,8 +63,10 @@ def _bind_process_to_gpu(gpu_id: Optional[int]) -> None:
     Args:
         gpu_id: GPU device ID to bind to, or None to skip binding
     """
+    global _WORKER_GPU_ID
     if gpu_id is None:
         return
+    _WORKER_GPU_ID = int(gpu_id)                          # habitat needs the PHYSICAL id
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)      # CUDA (torch, gsplat)
     os.environ["NVIDIA_VISIBLE_DEVICES"] = str(gpu_id)    # container runtime masking
     os.environ["EGL_DEVICE_ID"] = str(gpu_id)             # honoured by some EGL loaders
@@ -149,6 +156,10 @@ def _ensure_scene_loaded(scene_id: str, scene_root: str, backend: str):
 
         # Release previous renderer (best-effort cleanup)
         if _ACTIVE_RENDERER is not None:
+            # habitat frees its Simulator (and the GPU memory) via close()
+            if hasattr(_ACTIVE_RENDERER, "close"):
+                with contextlib.suppress(Exception):
+                    _ACTIVE_RENDERER.close()
             # gsplat renderer exposes .release() directly
             if hasattr(_ACTIVE_RENDERER, "release") and not hasattr(_ACTIVE_RENDERER, "mesh"):
                 with contextlib.suppress(Exception):
@@ -169,6 +180,10 @@ def _ensure_scene_loaded(scene_id: str, scene_root: str, backend: str):
         elif backend == "open3d":
             ply_path = resolve_scene_ply(scene_root, scene_id)
             renderer = MeshRenderer(ply_path)
+        elif backend == "habitat":
+            from view_suite.scannet.render.habitat_render import HabitatRenderer
+            ply_path = resolve_scene_ply(scene_root, scene_id)   # same mesh as open3d
+            renderer = HabitatRenderer(ply_path, gpu_device_id=_WORKER_GPU_ID or 0)
         else:
             raise ValueError(f"Unsupported backend={backend!r}; expected one of {SUPPORTED_BACKENDS}")
         _ACTIVE_RENDERER = renderer
