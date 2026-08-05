@@ -25,7 +25,6 @@ import numpy as np
 from PIL import Image
 
 from view_suite.service_http.handler import BaseHandler, HandlerResult
-from view_suite.scannet.render.mesh_render import MeshRenderer
 from view_suite.scannet.utils.path_utils import resolve_scene_ply, resolve_scene_gs_ply
 from view_suite.service_http.multipart import numpy_to_png_bytes
 
@@ -47,7 +46,7 @@ _FORCED_RENDER_SIZE: Optional[Tuple[int, int]] = None
 _WORKER_GPU_ID: Optional[int] = None
 
 
-def _bind_process_to_gpu(gpu_id: Optional[int]) -> None:
+def _bind_process_to_gpu(gpu_id: Optional[int], backend: str = "") -> None:
     """
     Bind this worker process to a single GPU.
 
@@ -71,11 +70,35 @@ def _bind_process_to_gpu(gpu_id: Optional[int]) -> None:
     os.environ["NVIDIA_VISIBLE_DEVICES"] = str(gpu_id)    # container runtime masking
     os.environ["EGL_DEVICE_ID"] = str(gpu_id)             # honoured by some EGL loaders
     os.environ.setdefault("MAGNUM_DEVICE", str(gpu_id))   # habitat/Magnum device pick
+    if backend == "habitat":
+        # habitat renders through EGL and never touches torch, but importing torch here
+        # would still create a CUDA context per worker — ~1GB of VRAM each, taken away
+        # from the training job we are trying to co-locate with.
+        return
     try:
         import torch
         torch.cuda.set_device(0)
     except Exception:
         pass
+
+
+def _habitat_device_id() -> int:
+    """GPU index to hand habitat, expressed in the worker's CUDA numbering.
+
+    Habitat resolves gpu_device_id by matching a *CUDA* device against the EGL device
+    list, so it must be given a CUDA-visible index, not a physical one. Since
+    _bind_process_to_gpu() sets CUDA_VISIBLE_DEVICES to this worker's single GPU, the
+    physical device is renumbered to 0 inside the process — passing the physical id
+    instead aborts the worker with "unable to find CUDA device N among M EGL devices",
+    which shows up as a BrokenProcessPool respawn loop on every GPU except 0.
+    """
+    vis = os.environ.get("CUDA_VISIBLE_DEVICES")
+    if not vis:
+        return _WORKER_GPU_ID or 0          # unmasked: physical id is correct
+    ids = [t.strip() for t in vis.split(",") if t.strip()]
+    if _WORKER_GPU_ID is not None and str(_WORKER_GPU_ID) in ids:
+        return ids.index(str(_WORKER_GPU_ID))
+    return 0
 
 
 def _normalize_gpu_ids(value: Sequence[int] | str | int | None) -> list[int]:
@@ -178,12 +201,16 @@ def _ensure_scene_loaded(scene_id: str, scene_root: str, backend: str):
             ply_path = resolve_scene_gs_ply(scene_root, scene_id)
             renderer = GaussianSplatRenderer(ply_path)
         elif backend == "open3d":
+            # Imported lazily like the other backends: mesh_render pulls in open3d and
+            # uses 3.10+ union syntax, which the habitat env (py3.9, no open3d) cannot
+            # even parse — a habitat-only worker must not pay for it.
+            from view_suite.scannet.render.mesh_render import MeshRenderer
             ply_path = resolve_scene_ply(scene_root, scene_id)
             renderer = MeshRenderer(ply_path)
         elif backend == "habitat":
             from view_suite.scannet.render.habitat_render import HabitatRenderer
             ply_path = resolve_scene_ply(scene_root, scene_id)   # same mesh as open3d
-            renderer = HabitatRenderer(ply_path, gpu_device_id=_WORKER_GPU_ID or 0)
+            renderer = HabitatRenderer(ply_path, gpu_device_id=_habitat_device_id())
         else:
             raise ValueError(f"Unsupported backend={backend!r}; expected one of {SUPPORTED_BACKENDS}")
         _ACTIVE_RENDERER = renderer
@@ -226,7 +253,7 @@ def _render_images_worker(
         _FORCED_RENDER_SIZE = forced_render_size
 
     # Bind GPU (idempotent if already set)
-    _bind_process_to_gpu(gpu_id)
+    _bind_process_to_gpu(gpu_id, backend)
 
     renderer = _ensure_scene_loaded(scene_id, scene_root, backend)
 
