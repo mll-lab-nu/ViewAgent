@@ -75,9 +75,14 @@ class HabitatRenderer:
         # gives flat vertex-colour shading — correct but dark/flat. With lighting=True we
         # register a rig of directional lights to approximate Open3D's defaultLit PBR
         # (sun light + indirect intensity 20000) so the two renderers look comparable.
-        cfg.scene_light_setup = ("" if not self._lighting
-                                 else self._hs.gfx.DEFAULT_LIGHTING_KEY)
-        if not self._lighting:
+        if self._lighting:
+            # override_scene_light_defaults is REQUIRED: without it the ScanNet .ply is
+            # loaded on a flat vertex-colour path that ignores lights entirely (proved:
+            # identical output at light intensity 3/8/20). With it, the mesh is rendered
+            # lit so the rig below actually does something.
+            cfg.scene_light_setup = self._hs.gfx.DEFAULT_LIGHTING_KEY
+            cfg.override_scene_light_defaults = True
+        else:
             cfg.scene_light_setup = self._hs.gfx.NO_LIGHT_KEY
 
         spec = hs.CameraSensorSpec()
