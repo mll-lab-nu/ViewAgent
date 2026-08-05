@@ -49,13 +49,18 @@ class HabitatRenderer:
     """Renders a ScanNet mesh through Habitat-Sim on an explicitly chosen GPU."""
 
     def __init__(self, file_path: str, gpu_device_id: int = 0,
-                 width: int = 512, height: int = 512, hfov_deg: float = 90.0):
+                 width: int = 512, height: int = 512, hfov_deg: float = 90.0,
+                 lighting: bool = True, light_intensity: float = 3.0,
+                 background=(1.0, 1.0, 1.0, 1.0)):
         import habitat_sim  # imported lazily: only the `habitat` env has it
 
         self._hs = habitat_sim
         self.file_path = file_path
         self.gpu_device_id = int(gpu_device_id)
         self._w, self._h, self._hfov = int(width), int(height), float(hfov_deg)
+        self._bg = tuple(background)
+        self._lighting = bool(lighting)
+        self._light_intensity = float(light_intensity)
         self._sim = None
         self._build()
 
@@ -66,9 +71,14 @@ class HabitatRenderer:
         cfg.scene_id = self.file_path
         cfg.gpu_device_id = self.gpu_device_id      # the whole point — real isolation
         cfg.enable_physics = False
-        # ScanNet meshes carry vertex colours and ship no lighting rig; NO_LIGHT_KEY
-        # gives flat vertex-colour shading (without it every render comes back black).
-        cfg.scene_light_setup = self._hs.gfx.NO_LIGHT_KEY
+        # ScanNet meshes carry vertex colours and ship no lighting rig. NO_LIGHT_KEY
+        # gives flat vertex-colour shading — correct but dark/flat. With lighting=True we
+        # register a rig of directional lights to approximate Open3D's defaultLit PBR
+        # (sun light + indirect intensity 20000) so the two renderers look comparable.
+        cfg.scene_light_setup = ("" if not self._lighting
+                                 else self._hs.gfx.DEFAULT_LIGHTING_KEY)
+        if not self._lighting:
+            cfg.scene_light_setup = self._hs.gfx.NO_LIGHT_KEY
 
         spec = hs.CameraSensorSpec()
         spec.uuid = "rgb"
@@ -76,8 +86,36 @@ class HabitatRenderer:
         spec.resolution = [self._h, self._w]
         spec.hfov = self._hfov
         spec.position = [0.0, 0.0, 0.0]             # sensor at the agent origin
+        # Match MeshRenderer, whose background defaults to WHITE (1,1,1,1).
+        # Habitat clears to black by default, which alone made renders look ~5x
+        # darker than Open3D in mean-pixel terms even where geometry matched.
+        spec.clear_color = list(self._bg)
         agent_cfg = hs.agent.AgentConfiguration(sensor_specifications=[spec])
         self._sim = hs.Simulator(hs.Configuration(cfg, [agent_cfg]))
+        if self._lighting:
+            self._apply_lights()
+
+    def _apply_lights(self) -> None:
+        """Directional rig approximating Open3D's sun + indirect ambient.
+
+        w=0 in the vector means a DIRECTIONAL light. One bright key from above plus
+        weaker fills from the four sides so interiors are not lit from one face only
+        (a single sun leaves most of a room black).
+        """
+        hs = self._hs
+        I = self._light_intensity
+        def L(vec, k):
+            return hs.gfx.LightInfo(vector=vec, color=[k * I, k * I, k * I],
+                                    model=hs.gfx.LightPositionModel.Global)
+        lights = [
+            L([0.0, 0.0, -1.0, 0.0], 1.0),   # key, from above (scene is Z-up)
+            L([1.0, 0.0, -0.3, 0.0], 0.4),
+            L([-1.0, 0.0, -0.3, 0.0], 0.4),
+            L([0.0, 1.0, -0.3, 0.0], 0.4),
+            L([0.0, -1.0, -0.3, 0.0], 0.4),
+            L([0.0, 0.0, 1.0, 0.0], 0.25),   # bounce from the floor
+        ]
+        self._sim.set_light_setup(lights, hs.gfx.DEFAULT_LIGHTING_KEY)
 
     def _rebuild_if_needed(self, width: int, height: int, hfov: float) -> None:
         """Habitat fixes sensor resolution/FOV at construction, so a different
