@@ -44,14 +44,26 @@ _FORCED_RENDER_SIZE: Optional[Tuple[int, int]] = None
 
 def _bind_process_to_gpu(gpu_id: Optional[int]) -> None:
     """
-    Bind this process to a single GPU via CUDA_VISIBLE_DEVICES.
+    Bind this worker process to a single GPU.
+
+    IMPORTANT: `CUDA_VISIBLE_DEVICES` alone is NOT enough for the open3d backend.
+    Open3D renders through Filament -> EGL, and EGL enumerates devices independently
+    of CUDA, so an Open3D context always lands on EGL device 0 no matter what CUDA
+    sees. That is why multi-GPU open3d rendering never worked and only single-GPU
+    boxes were usable. We therefore also mask at the driver/EGL level. The fully
+    reliable fix for open3d is still container-level masking (NVIDIA_VISIBLE_DEVICES
+    handed to the container runtime) or the habitat backend, which takes an explicit
+    gpu_device_id and is verified to isolate.
 
     Args:
         gpu_id: GPU device ID to bind to, or None to skip binding
     """
     if gpu_id is None:
         return
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)      # CUDA (torch, gsplat)
+    os.environ["NVIDIA_VISIBLE_DEVICES"] = str(gpu_id)    # container runtime masking
+    os.environ["EGL_DEVICE_ID"] = str(gpu_id)             # honoured by some EGL loaders
+    os.environ.setdefault("MAGNUM_DEVICE", str(gpu_id))   # habitat/Magnum device pick
     try:
         import torch
         torch.cuda.set_device(0)
