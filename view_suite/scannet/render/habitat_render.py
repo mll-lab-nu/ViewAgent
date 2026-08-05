@@ -28,13 +28,10 @@ from PIL import Image
 # (+X right, +Y up, -Z forward). Flipping Y and Z converts between them.
 _CV_TO_GL = np.diag([1.0, -1.0, -1.0, 1.0])
 
-# ScanNet worlds are Z-up (verified: scene0329_00 bounds x 0..9.6, y 0..11, z 0..2.8
-# — z is clearly the ~2.8m ceiling height). Habitat assumes Y-up, so poses expressed
-# in the ScanNet frame must be rotated -90deg about X before being handed to Habitat.
-_ZUP_TO_YUP = np.array([[1., 0., 0., 0.],
-                        [0., 0., 1., 0.],
-                        [0., -1., 0., 0.],
-                        [0., 0., 0., 1.]])
+# NOTE: ScanNet worlds are Z-up (scene0329_00 bounds x 0..9.6, y 0..11, z 0..2.8 —
+# z is the ~2.8m ceiling height) while Habitat is nominally Y-up, BUT Habitat loads
+# the mesh without re-orienting it, so no world rotation must be applied here.
+# Measured: with a Z-up->Y-up rotation every frame is black; without it, 33% coverage.
 
 
 def _hfov_deg_from_K(K: np.ndarray, width: int) -> float:
@@ -113,8 +110,11 @@ class HabitatRenderer:
         hfov = _hfov_deg_from_K(camera_intrinsics, width)
         self._rebuild_if_needed(int(width), int(height), hfov)
 
-        # ScanNet Z-up world -> Habitat Y-up world, then OpenCV cam -> OpenGL cam
-        c2w_gl = _ZUP_TO_YUP @ c2w @ _CV_TO_GL
+        # OpenCV cam -> OpenGL cam only. Do NOT rotate the world: Habitat loads the
+        # ScanNet mesh in its native (Z-up) frame without converting it, so poses are
+        # already in the right frame. Verified: applying a Z-up->Y-up rotation renders
+        # pure black, passing the pose straight through renders the scene.
+        c2w_gl = c2w @ _CV_TO_GL
         R, t = c2w_gl[:3, :3], c2w_gl[:3, 3]
 
         state = self._hs.AgentState()
