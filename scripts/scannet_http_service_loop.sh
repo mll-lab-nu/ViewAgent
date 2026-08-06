@@ -16,7 +16,21 @@ RUN_DIR="$PWD/scannet_http_service_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$RUN_DIR"
 SUPERVISOR_LOG="${RUN_DIR}/supervisor.log"
 # Survives supervisor death so a later run can still clean up leaked worker groups.
-PGID_FILE="${PGID_FILE:-/tmp/scannet_render_pgids_${PORT}.txt}"
+# Per-user and per-port: a world-writable shared path in /tmp lets any local user
+# pre-create the file (and inject a PGID), and makes the first user to touch a port
+# permanently deny reaping to everyone else on the box.
+umask 077
+PGID_FILE="${PGID_FILE:-${XDG_RUNTIME_DIR:-/tmp}/scannet_render_pgids_$(id -u)_${PORT}.txt}"
+mkdir -p "$(dirname "$PGID_FILE")" 2>/dev/null || true
+# Only one supervisor per port may reap. Without this, restarting the loop without
+# stopping the old one makes the new supervisor SIGKILL the running service, after which
+# both fight over the port and reap each other every generation.
+LOCK_FILE="${PGID_FILE}.lock"
+exec 9>"$LOCK_FILE" 2>/dev/null || true
+if ! flock -n 9 2>/dev/null; then
+  echo "FATAL: another supervisor already owns port ${PORT} (lock: $LOCK_FILE)" >&2
+  exit 1
+fi
 
 log() { echo "[$(date)] $*" | tee -a "$SUPERVISOR_LOG"; }
 
@@ -27,22 +41,50 @@ CURRENT_PGID=""
 
 # Killing only the supervisor's child leaves the pool workers behind: they are spawned
 # processes, so they survive as orphans and keep their GPU contexts (a habitat worker
-# holds ~590 MiB of VRAM). Sweep anything still bound to our port before and after each
-# service generation, or restarts leak a GPU's worth of memory every few hours.
+# holds ~330 MiB of VRAM). Observed 151 leaked workers after one supervisor was killed.
+# Workers share the service's process GROUP -- their cmdline is `multiprocessing.spawn`,
+# not service.py, so pgrep on the service path never finds them -- so we record each
+# generation's PGID and reap by group.
+#
+# Each record is "PGID STARTTIME". The start time (field 22 of /proc/<pid>/stat, in
+# clock ticks since boot) pins the record to one specific process: PIDs are recycled, and
+# a stale file left by a SIGKILLed supervisor would otherwise make a later run SIGKILL
+# whatever unrelated process now owns that group id.
+record_pgid() {
+  local pg="$1" st actual
+  case "$pg" in ''|*[!0-9]*) return 0 ;; esac
+  [ "$pg" -gt 1 ] 2>/dev/null || return 0
+  # Only record a genuine group LEADER. The PGID capture above falls back to the child
+  # PID when `ps` misses a fast-exiting child, and persisting a PID as if it were a PGID
+  # would later SIGKILL whatever group happens to carry that number.
+  actual=$(awk '{print $5}' "/proc/$pg/stat" 2>/dev/null)
+  [ "$actual" = "$pg" ] || { log "Not recording $pg: not a process-group leader"; return 0; }
+  st=$(awk '{print $22}' "/proc/$pg/stat" 2>/dev/null)
+  [ -n "$st" ] && echo "$pg $st" >> "$PGID_FILE" 2>/dev/null
+  return 0
+}
+
 reap_orphans() {
-  # Pool workers are multiprocessing-spawn children, so their cmdline is
-  # `multiprocessing.spawn`, not service.py — pgrep on the service path never finds
-  # them. What they do share is the service's process GROUP, so reap by PGID. Stale
-  # PGIDs from a supervisor that died without cleaning up are recorded in $PGID_FILE.
-  local pg
-  for pg in $(cat "$PGID_FILE" 2>/dev/null); do
-    if kill -0 "-$pg" 2>/dev/null; then
-      log "Reaping orphaned render process group $pg"
-      kill -KILL "-$pg" 2>/dev/null || true
-    fi
-  done
-  : > "$PGID_FILE"
-  sleep 2
+  local pg st now_st reaped=0 mypg
+  mypg=$(ps -o pgid= -p $$ 2>/dev/null | tr -d ' ')
+  while read -r pg st _; do
+    # `kill -0 -$pg` is NOT a sufficient guard: it returns success for "0" (the caller's
+    # own process group) and for "1" (kill(-1) == every process this user owns,
+    # including the training job and this script). Both must be rejected explicitly.
+    case "$pg" in ''|*[!0-9]*) continue ;; esac
+    [ "$pg" -gt 1 ] 2>/dev/null || continue
+    [ "$pg" = "$mypg" ] && continue
+    now_st=$(awk '{print $22}' "/proc/$pg/stat" 2>/dev/null)
+    [ -n "$now_st" ] || continue                 # group leader is gone; nothing to reap
+    [ "$now_st" = "$st" ] || continue            # PID recycled -- not our process
+    kill -0 "-$pg" 2>/dev/null || continue
+    log "Reaping orphaned render process group $pg"
+    kill -KILL "-$pg" 2>/dev/null || true
+    reaped=1
+  done < "$PGID_FILE" 2>/dev/null
+  : > "$PGID_FILE" 2>/dev/null || log "WARNING: cannot write $PGID_FILE; orphans will leak"
+  [ "$reaped" = 1 ] && sleep 2                   # only pay the wait when we killed something
+  return 0
 }
 
 kill_group() {
@@ -80,7 +122,7 @@ while true; do
   PGID=$(ps -o pgid= -p "$CHILD_PID" 2>/dev/null | tr -d ' ')
   PGID=${PGID:-$CHILD_PID}
   CURRENT_PGID="$PGID"
-  echo "$PGID" >> "$PGID_FILE"
+  record_pgid "$PGID"
   log "Service #${SERVICE_COUNT} started PID=${CHILD_PID} PGID=${PGID} log=${SERVICE_LOG}"
 
   SECS=0

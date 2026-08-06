@@ -1,4 +1,3 @@
-from __future__ import annotations  # py3.9 (habitat env) parses 3.10 unions
 #!/usr/bin/env python3
 """
 ScanNet Render HTTP Service
@@ -13,6 +12,7 @@ Environment variables:
     UNIFIED_API_KEY: Optional API key for authentication
     UNIFIED_ADMIT_TIMEOUT: Timeout for request admission in seconds (default: 2.0)
 """
+from __future__ import annotations  # py3.9 (habitat env) parses 3.10 unions
 import logging
 import os
 from typing import Sequence

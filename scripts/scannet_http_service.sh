@@ -10,12 +10,29 @@ OMP_CAP=${2:-4}
 PORT=${3:-8767}
 GPU_IDS=${4:-"0"}
 BACKEND=${5:-open3d}  # open3d (mesh) | gsplat (3DGS) | habitat (mesh, multi-GPU)
-SCANNET_ROOT=${SCANNET_ROOT:-data/scannet/scans}
+# Anchor to VIEWSUITE_ROOT, not the CWD: setsid does not change directory, so a
+# CWD-relative default resolves against wherever the supervisor happened to be started
+# and the service then comes up healthy but fails on every scene.
+SCANNET_ROOT=${SCANNET_ROOT:-${VIEWSUITE_ROOT}/data/scannet/scans}
 # habitat lives in its own conda env (py3.9); the training env cannot import it.
 PY_BIN=${PY_BIN:-python}
-if [ "$BACKEND" = "habitat" ] && [ -x "$HOME/miniconda3/envs/habitat/bin/python3" ]; then
-  PY_BIN="$HOME/miniconda3/envs/habitat/bin/python3"
+if [ "$BACKEND" = "habitat" ]; then
+  HABITAT_PY=${HABITAT_PY:-${HOME:-/root}/miniconda3/envs/habitat/bin/python3}
+  if [ ! -x "$HABITAT_PY" ]; then
+    # Fail loudly. Falling through to the default interpreter would start a service
+    # that binds the port, looks healthy, and returns HTTP 200 with zero images for
+    # every request — habitat_sim is imported lazily inside the worker.
+    echo "FATAL: BACKEND=habitat but no habitat interpreter at $HABITAT_PY" >&2
+    echo "       create it: conda create -y -n habitat python=3.9 && \\" >&2
+    echo "       conda install -y -n habitat habitat-sim headless -c conda-forge -c aihabitat" >&2
+    exit 1
+  fi
+  PY_BIN="$HABITAT_PY"
 fi
+# The habitat env has habitat-sim but not the repo on its path, and service.py is run by
+# absolute path so sys.path[0] is service_http/, not the repo root. Without this the
+# service dies with ModuleNotFoundError: view_suite on every supervisor restart.
+export PYTHONPATH="${VIEWSUITE_ROOT}${PYTHONPATH:+:${PYTHONPATH}}"
 LOG_LEVEL=${LOG_LEVEL:-info}
 
 export UNIFIED_MAX_INFLIGHT=${UNIFIED_MAX_INFLIGHT:-256}

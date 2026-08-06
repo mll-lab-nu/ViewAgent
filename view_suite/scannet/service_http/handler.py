@@ -67,10 +67,15 @@ def _bind_process_to_gpu(gpu_id: Optional[int], backend: str = "") -> None:
         return
     _WORKER_GPU_ID = int(gpu_id)                          # habitat needs the PHYSICAL id
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)      # CUDA (torch, gsplat)
-    os.environ["NVIDIA_VISIBLE_DEVICES"] = str(gpu_id)    # container runtime masking
-    os.environ["EGL_DEVICE_ID"] = str(gpu_id)             # honoured by some EGL loaders
-    os.environ.setdefault("MAGNUM_DEVICE", str(gpu_id))   # habitat/Magnum device pick
     if backend == "habitat":
+        # Scoped to habitat deliberately: these are inert for Filament and for this
+        # box's EGL loader (neither libEGL nor open3d reads EGL_DEVICE_ID, and
+        # NVIDIA_VISIBLE_DEVICES is only consumed at container creation), so setting
+        # them unconditionally would be an untested mutation on the working backends'
+        # per-render hot path.
+        os.environ["NVIDIA_VISIBLE_DEVICES"] = str(gpu_id)   # container runtime masking
+        os.environ["EGL_DEVICE_ID"] = str(gpu_id)            # some EGL loaders read this
+        os.environ.setdefault("MAGNUM_DEVICE", str(gpu_id))  # habitat/Magnum device pick
         # habitat renders through EGL and never touches torch, but importing torch here
         # would still create a CUDA context per worker — ~1GB of VRAM each, taken away
         # from the training job we are trying to co-locate with.
@@ -202,9 +207,10 @@ def _ensure_scene_loaded(scene_id: str, scene_root: str, backend: str,
             ply_path = resolve_scene_gs_ply(scene_root, scene_id)
             renderer = GaussianSplatRenderer(ply_path)
         elif backend == "open3d":
-            # Imported lazily like the other backends: mesh_render pulls in open3d and
-            # uses 3.10+ union syntax, which the habitat env (py3.9, no open3d) cannot
-            # even parse — a habitat-only worker must not pay for it.
+            # Imported lazily like the other backends. Note this alone does NOT keep
+            # open3d out of a habitat worker: this package's __init__ imports
+            # handler_ray -> actor -> mesh_render anyway. What makes the habitat env
+            # work is mesh_render's own `except ImportError: o3d = None` guard.
             from view_suite.scannet.render.mesh_render import MeshRenderer
             ply_path = resolve_scene_ply(scene_root, scene_id)
             renderer = MeshRenderer(ply_path)
