@@ -156,7 +156,8 @@ def _normalize_forced_size(value: Sequence[int] | int | str | None) -> Optional[
     return (max(1, vals[0]), max(1, vals[1]))
 
 
-def _ensure_scene_loaded(scene_id: str, scene_root: str, backend: str):
+def _ensure_scene_loaded(scene_id: str, scene_root: str, backend: str,
+                         size: Optional[Tuple[int, int]] = None):
     """
     Keep one scene cached per process. Replace if scene_id changes.
 
@@ -210,7 +211,13 @@ def _ensure_scene_loaded(scene_id: str, scene_root: str, backend: str):
         elif backend == "habitat":
             from view_suite.scannet.render.habitat_render import HabitatRenderer
             ply_path = resolve_scene_ply(scene_root, scene_id)   # same mesh as open3d
-            renderer = HabitatRenderer(ply_path, gpu_device_id=_habitat_device_id())
+            # Build at the size we are about to render at. Habitat bakes resolution
+            # into the sensor framebuffer, so constructing at the 512x512 class default
+            # and then serving a differently sized request forces an immediate
+            # close()+rebuild — i.e. every worker loaded its scene twice.
+            w, h = size or (512, 512)
+            renderer = HabitatRenderer(ply_path, gpu_device_id=_habitat_device_id(),
+                                       width=w, height=h)
         else:
             raise ValueError(f"Unsupported backend={backend!r}; expected one of {SUPPORTED_BACKENDS}")
         _ACTIVE_RENDERER = renderer
@@ -255,7 +262,14 @@ def _render_images_worker(
     # Bind GPU (idempotent if already set)
     _bind_process_to_gpu(gpu_id, backend)
 
-    renderer = _ensure_scene_loaded(scene_id, scene_root, backend)
+    # Peek at the first task's size so habitat can build its sensor at the right
+    # resolution instead of rebuilding on the first render.
+    if _FORCED_RENDER_SIZE is not None:
+        first_size = _FORCED_RENDER_SIZE
+    else:
+        _s = (tasks[0].get("size") if tasks else None) or [300, 300]
+        first_size = (int(_s[0]), int(_s[1]))
+    renderer = _ensure_scene_loaded(scene_id, scene_root, backend, first_size)
 
     out: List[bytes] = []
     for idx, task in enumerate(tasks):

@@ -23,7 +23,6 @@ import math
 from typing import Optional, Sequence
 
 import numpy as np
-from PIL import Image
 
 # OpenCV camera (+X right, +Y down, +Z forward)  ->  Habitat/OpenGL camera
 # (+X right, +Y up, -Z forward). Flipping Y and Z converts between them.
@@ -170,7 +169,7 @@ class HabitatRenderer:
         camera_extrinsics,
         width: int = 512,
         height: int = 512,
-    ) -> Image.Image:
+    ) -> np.ndarray:
         """camera_extrinsics is a 4x4 OpenCV-style c2w matrix (same as MeshRenderer)."""
         import quaternion  # provided by habitat-sim
 
@@ -205,4 +204,10 @@ class HabitatRenderer:
         rgb = np.asarray(self._sim.get_sensor_observations()["rgb"])
         if rgb.ndim == 3 and rgb.shape[2] == 4:      # RGBA -> RGB
             rgb = rgb[:, :, :3]
-        return Image.fromarray(rgb.astype(np.uint8))
+        # Return an ndarray, NOT a PIL Image: BaseRenderer's contract is what
+        # MeshRenderer does (`return np.asarray(pil)`), and the service calls
+        # `.astype(np.uint8)` on the result. Returning a PIL Image raised AttributeError
+        # inside the worker, which handle()'s catch-all turned into HTTP 200 with zero
+        # images — every habitat render silently produced nothing while the stress
+        # harness counted it as a success.
+        return rgb.astype(np.uint8)
