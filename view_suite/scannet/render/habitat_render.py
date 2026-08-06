@@ -34,15 +34,31 @@ _CV_TO_GL = np.diag([1.0, -1.0, -1.0, 1.0])
 # Measured: with a Z-up->Y-up rotation every frame is black; without it, 33% coverage.
 
 
-def _hfov_deg_from_K(K: np.ndarray, width: int) -> float:
-    """Horizontal FOV implied by fx. Habitat takes an FOV, not a full K."""
+def _geometry_from_K(K: np.ndarray, width: int, height: int):
+    """Map a full pinhole K onto what habitat can express.
+
+    Habitat takes a single horizontal FOV and derives the vertical one from the
+    framebuffer aspect, so it can only represent SQUARE pixels. ScanNet's intrinsics are
+    not square (default_intrinsics() is fx 462.07 / fy 617.31, ratio 1.34), so using fx
+    alone leaves every frame vertically stretched by that ratio and showing ~30% too much
+    vertical content compared with MeshRenderer.
+
+    The fix is to render at a height that makes the implied vertical FOV match fy, then
+    resample to the requested height. Want tan(vfov/2) = H/(2*fy) while habitat gives
+    tan(vfov/2) = H_render/(2*fx), so H_render = H * fx / fy.
+
+    Returns (hfov_deg, render_height).
+    """
     K = np.asarray(K, dtype=np.float64)
     if K.shape == (4, 4):
         K = K[:3, :3]
-    fx = float(K[0, 0])
+    fx, fy = float(K[0, 0]), float(K[1, 1])
     if fx <= 0:
-        return 90.0
-    return float(np.degrees(2.0 * math.atan(0.5 * width / fx)))
+        return 90.0, int(height)
+    hfov = float(np.degrees(2.0 * math.atan(0.5 * width / fx)))
+    if fy <= 0:
+        return hfov, int(height)
+    return hfov, max(1, int(round(height * fx / fy)))
 
 
 class HabitatRenderer:
@@ -125,11 +141,10 @@ class HabitatRenderer:
     def _rebuild_if_needed(self, width: int, height: int, hfov: float) -> None:
         """Adapt to a new request geometry, rebuilding only when unavoidable.
 
-        Resolution is baked into the sensor's framebuffer, so a size change still costs
-        a full rebuild (~1.4s). FOV does not: retargeting the projection in place keeps
-        the scene loaded. That matters because callers routinely vary focal length while
-        holding the size fixed — rebuilding on every fx would turn each render into a
-        scene reload (measured: 43 renders/s instead of ~200 on 8 GPUs).
+        Both resolution and FOV are baked in at construction, so either changing costs a
+        full rebuild (2.2-3.0s on a ~230MB mesh). A caller that varies intrinsics per
+        request therefore pays a scene reload per frame; callers that hold intrinsics
+        fixed (the normal case) pay nothing after the first render.
         """
         if (width, height) != (self._w, self._h):
             prev = (self._w, self._h, self._hfov)
@@ -149,15 +164,22 @@ class HabitatRenderer:
             return
         if abs(hfov - self._hfov) < 1e-6:
             return
+        # NOTE: there is no working in-place FOV path in habitat-sim 0.3.3. Setting
+        # spec.hfov and calling sensor.set_projection_params(spec) is silently accepted
+        # and changes nothing — the render camera's projection matrix is untouched and
+        # the output is bit-identical (verified: a 90-degree renderer asked for 60
+        # degrees returned max pixel diff 0). Believing it worked was worse than the
+        # rebuild it replaced, because it also updated self._hfov, so every later request
+        # short-circuited and the whole stream silently rendered at the wrong FOV.
+        # Rebuild, and pay the cost.
+        prev = self._hfov
+        self.close()
+        self._hfov = hfov
         try:
-            spec = self._sim.get_agent(0).agent_config.sensor_specifications[0]
-            spec.hfov = hfov
-            self._sim.get_agent(0)._sensors["rgb"].set_projection_params(spec)
-            self._hfov = hfov
-        except Exception:                      # no in-place path -> fall back to rebuild
-            self.close()
-            self._hfov = hfov
             self._build()
+        except Exception:
+            self._hfov = prev
+            raise
 
     def close(self) -> None:
         if self._sim is not None:
@@ -185,8 +207,8 @@ class HabitatRenderer:
         import quaternion  # provided by habitat-sim
 
         c2w = np.asarray(camera_extrinsics, dtype=np.float64).reshape(4, 4)
-        hfov = _hfov_deg_from_K(camera_intrinsics, width)
-        self._rebuild_if_needed(int(width), int(height), hfov)
+        hfov, render_h = _geometry_from_K(camera_intrinsics, int(width), int(height))
+        self._rebuild_if_needed(int(width), render_h, hfov)
 
         # OpenCV cam -> OpenGL cam only. Do NOT rotate the world: Habitat loads the
         # ScanNet mesh in its native (Z-up) frame without converting it, so poses are
@@ -221,4 +243,10 @@ class HabitatRenderer:
         # inside the worker, which handle()'s catch-all turned into HTTP 200 with zero
         # images — every habitat render silently produced nothing while the stress
         # harness counted it as a success.
-        return rgb.astype(np.uint8)
+        rgb = rgb.astype(np.uint8)
+        if rgb.shape[0] != int(height):
+            # rendered at the fy-corrected height; resample to what the caller asked for
+            from PIL import Image
+            rgb = np.asarray(
+                Image.fromarray(rgb).resize((int(width), int(height)), Image.BILINEAR))
+        return rgb
