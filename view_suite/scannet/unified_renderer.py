@@ -71,7 +71,24 @@ class UnifiedRender:
         self._ply: Optional[str] = None
 
     # ------------- lifecycle -------------
+    def _release_habitat(self) -> None:
+        """Tear down the habitat simulator, if one is cached.
+
+        Explicit close() is required, not just dropping the reference: habitat's
+        Simulator sits in a reference cycle (its sensors hold a back-pointer to it), so
+        without close() its ~330 MiB stays resident until a cyclic gc happens to run —
+        and a render worker allocates so little on the Python heap that the generational
+        thresholds may not fire for a very long time.
+        """
+        if getattr(self, "_habitat", None) is not None:
+            try:
+                self._habitat.close()
+            except Exception:
+                pass
+            self._habitat = None
+
     async def close(self) -> None:
+        self._release_habitat()
         if self._client is not None:
             try:
                 await self._client.aclose()
@@ -84,6 +101,9 @@ class UnifiedRender:
             self.cfg.scene_id = scene_id
             self._ply = None
             self._mesh = None  # drop local cache to avoid mixing scenes
+            # The habitat simulator is bound to a mesh at construction, so it has to go
+            # too — leaving it would silently keep rendering the PREVIOUS scene.
+            self._release_habitat()
 
     # ------------- ensures -------------
     def _ensure_ply(self) -> str:

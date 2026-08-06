@@ -132,9 +132,20 @@ class HabitatRenderer:
         scene reload (measured: 43 renders/s instead of ~200 on 8 GPUs).
         """
         if (width, height) != (self._w, self._h):
+            prev = (self._w, self._h, self._hfov)
             self.close()
             self._w, self._h, self._hfov = width, height, hfov
-            self._build()
+            try:
+                self._build()
+            except Exception:
+                # Do not leave a half-dead renderer behind: _sim is None but the dims
+                # say otherwise, so the handler's cache keeps handing this object out
+                # and every later render dies on `self._sim.get_agent(0)`. That is a
+                # plain exception, not a BrokenProcessPool, so the pool never recycles
+                # the slot and the scene stays dead for the life of the service.
+                # Restore the old geometry and re-raise so the caller can retry.
+                self._w, self._h, self._hfov = prev
+                raise
             return
         if abs(hfov - self._hfov) < 1e-6:
             return
