@@ -54,7 +54,16 @@ def random_c2w(rng: np.random.Generator) -> np.ndarray:
 
 def worker(gpu: int, ply: str, n_scenes: int, n_req: int, w: int, h: int, q, barrier=None) -> None:
     """One process = one GPU = n_scenes resident scenes, serving n_req renders."""
-    from view_suite.scannet.render.habitat_render import HabitatRenderer
+    # Inside the try: an ImportError here used to escape before anything was put on the
+    # queue, so the parent blocked on q.get() forever (and if every GPU failed, the
+    # aggregate min() raised on an empty sequence). Reported instead.
+    try:
+        from view_suite.scannet.render.habitat_render import HabitatRenderer
+    except Exception as e:
+        q.put({"gpu": gpu, "error": f"import failed: {type(e).__name__}: {str(e)[:120]}",
+               "loaded": 0})
+        q.close(); q.join_thread()
+        import os; os._exit(0)
 
     base = gpu_used_mib(gpu)
     t0 = time.perf_counter()
@@ -126,7 +135,13 @@ def main() -> int:
     for p in procs:
         p.start()
     results = [q.get() for _ in gpus]
-    t0 = min(time.perf_counter() - r["wall"] for r in results if "wall" in r)
+    _walls = [r["wall"] for r in results if "wall" in r]
+    if not _walls:
+        print("[mgpu] every worker failed:")
+        for r in results:
+            print(f"[mgpu]   gpu{r.get('gpu')}: {r.get('error')}")
+        return 1
+    t0 = min(time.perf_counter() - w for w in _walls)
     for p in procs:
         p.join()
     wall = time.perf_counter() - t0
