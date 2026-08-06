@@ -192,6 +192,7 @@ nohup bash scripts/scannet_http_service_loop.sh 32 0 1 8767 \
   > scannet_http_service_loop.log 2>&1 &
 echo "$!" > scannet_http_service_loop.pid
 echo "http://0.0.0.0:8767" > client_url.txt   # consumed by env configs
+# multiple services? separate URLs with ';' on one line (see "Scaling the render service")
 ```
 
 **Choosing `MAX_WORKERS`** (the first arg). Each worker keeps a ScanNet scene resident in GPU memory, so the worker count is bounded by **both GPU VRAM and CPU core count** (see [`scripts/scannet_http_service_loop.sh`](scripts/scannet_http_service_loop.sh)). `32` is a safe default for a 24–48 GB GPU on a ~32-core host. On a large card with many cores — e.g. an RTX 6000 Pro (Blackwell) on a 64-core box — try `64`. If you hit GPU OOM or CPU thrashing, lower it.
@@ -310,16 +311,15 @@ Outputs land under `exps/viewsuite/viewsuite_interactive_view_planning/`.
 
 ### Scaling the render service for training
 
-IVP rollouts hit the render service constantly, and **switching scenes is expensive** — each switch reloads a ScanNet point cloud into GPU memory. To keep the trainer fed, run **multiple render services in parallel** and list all of them in `client_url.txt`, one URL per line:
+IVP rollouts hit the render service constantly, and **switching scenes is expensive** — each switch reloads a ScanNet point cloud into GPU memory. To keep the trainer fed, run **multiple render services in parallel** and list all of them in `client_url.txt`, **separated by semicolons (`;`) on a single line**:
 
 ```
-http://10.0.0.1:8767
-http://10.0.0.2:8767
-http://10.0.0.3:8767
-http://10.0.0.4:8767
+http://10.0.0.1:8767;http://10.0.0.2:8767;http://10.0.0.3:8767;http://10.0.0.4:8767
 ```
 
-`interactive_view_planning.py` talks to the service over HTTP and distributes its environments across every URL listed in `client_url.txt`. More services means more scenes stay resident at once, so workers reload point clouds far less often. For our training runs we ran one service per machine on **4× RTX 4090 boxes with 32 workers each**, which comfortably serves **~128 parallel environments**. Scale the number of services and `MAX_WORKERS` to your hardware (see the `MAX_WORKERS` note in Step 3).
+The client parses this with `base_url.split(";")`, so URLs **must** be `;`-separated — do *not* put one per line (the whole file is read and stripped as a single string, and embedded newlines produce an invalid URL). A single-service `client_url.txt` is just one URL with no semicolon.
+
+`interactive_view_planning.py` talks to the services over HTTP through `HRWRoutedAsyncUnifiedClient`, which **routes each scene to a service by rendezvous (HRW) hashing on `scene_id`**: a given scene consistently lands on the same service (so its point cloud stays resident and is reused across turns/episodes), while different scenes spread across all services. If a service fails repeatedly it **fails over** to the next-ranked one. More services means more scenes stay resident at once, so workers reload point clouds far less often. For our training runs we ran one service per machine on **4× RTX 4090 boxes with 32 workers each**, which comfortably serves **~128 parallel environments**. Scale the number of services and `MAX_WORKERS` to your hardware (see the `MAX_WORKERS` note in Step 3).
 
 ---
 
