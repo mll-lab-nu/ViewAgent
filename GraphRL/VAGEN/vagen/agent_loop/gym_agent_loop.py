@@ -152,6 +152,10 @@ def convert_obs_to_content(
 # -------------------- Gym Agent Loop --------------------
 
 class GymAgentLoop(AgentLoopBase):
+    # Ids of multimodal placeholder tokens to strip from sampled responses;
+    # populated in init_class. Empty until then (text-only / no processor).
+    mm_placeholder_ids: frozenset = frozenset()
+
     @classmethod
     def init_class(cls, config, tokenizer, processor, **kwargs):
         if cls._class_initialized:
@@ -181,6 +185,25 @@ class GymAgentLoop(AgentLoopBase):
             cls.system_prompt_prefix = tokenizer.apply_chat_template(
                 _placeholder, add_generation_prompt=False, tokenize=True, return_dict=False, **cls.apply_chat_template_kwargs
             )
+
+        # Multimodal placeholder tokens are structural (inserted by the processor
+        # around image/video inputs). The policy can nonetheless occasionally
+        # *sample* one during free-form generation; if such an id lands in
+        # prompt_ids it corrupts the next-turn sglang prefill with
+        # "No data iterator found for token: <|video_pad|>" and kills the run.
+        # Collect their ids so generated responses can be sanitized (see
+        # _handle_generating_state).
+        mm_ids = set()
+        for tok in ("<|image_pad|>", "<|video_pad|>", "<|vision_start|>",
+                    "<|vision_end|>", "<|vision_pad|>"):
+            try:
+                tid = tokenizer.convert_tokens_to_ids(tok)
+            except Exception:
+                tid = None
+            if isinstance(tid, int) and tid >= 0 and tid != getattr(tokenizer, "unk_token_id", None):
+                mm_ids.add(tid)
+        cls.mm_placeholder_ids = frozenset(mm_ids)
+        print(f"GymAgentLoop: sanitizing {len(cls.mm_placeholder_ids)} multimodal placeholder token id(s) from generations: {sorted(cls.mm_placeholder_ids)}")
 
     @rollout_trace_op
     async def run(self, sampling_params: Dict[str, Any], **kwargs) -> AgentLoopOutput:
@@ -331,13 +354,31 @@ class GymAgentLoop(AgentLoopBase):
             )
 
 
-        agent_data.response_ids = output.token_ids
+        # Sanitize: the policy can occasionally sample a multimodal placeholder
+        # token (e.g. <|video_pad|>). Left in prompt_ids it breaks the next-turn
+        # sglang prefill ("No data iterator found for token: <|video_pad|>") and
+        # crashes the rollout. Drop such tokens (keeping logprobs index-aligned)
+        # before they enter the trajectory / next prefill.
+        gen_ids = output.token_ids
+        gen_logprobs = output.log_probs
+        if self.mm_placeholder_ids and any(t in self.mm_placeholder_ids for t in gen_ids):
+            keep = [i for i, t in enumerate(gen_ids) if t not in self.mm_placeholder_ids]
+            n_stripped = len(gen_ids) - len(keep)
+            gen_ids = [gen_ids[i] for i in keep]
+            if gen_logprobs:
+                gen_logprobs = [gen_logprobs[i] for i in keep]
+            logger.warning(
+                f"In env:{agent_data.env_name}, stripped {n_stripped} stray multimodal "
+                f"placeholder token(s) from generated response to protect next-turn prefill"
+            )
+
+        agent_data.response_ids = gen_ids
         agent_data.prompt_ids += agent_data.response_ids
         agent_data.response_mask += [1] * len(agent_data.response_ids)
-        if len(output.token_ids) > agent_data.response_limit:
-            logger.warning(f"In env:{agent_data.env_name}, generated response length {len(output.token_ids)} exceeds per-turn response_limit {agent_data.response_limit}")
-        if output.log_probs:
-            agent_data.response_logprobs += output.log_probs
+        if len(gen_ids) > agent_data.response_limit:
+            logger.warning(f"In env:{agent_data.env_name}, generated response length {len(gen_ids)} exceeds per-turn response_limit {agent_data.response_limit}")
+        if gen_logprobs:
+            agent_data.response_logprobs += gen_logprobs
 
         # Cache assistant text and add assistant message (text-only)
         assistant_message = await self.loop.run_in_executor(

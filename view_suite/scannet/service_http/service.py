@@ -1,3 +1,4 @@
+from __future__ import annotations  # py3.9 (habitat env) parses 3.10 unions
 #!/usr/bin/env python3
 """
 ScanNet Render HTTP Service
