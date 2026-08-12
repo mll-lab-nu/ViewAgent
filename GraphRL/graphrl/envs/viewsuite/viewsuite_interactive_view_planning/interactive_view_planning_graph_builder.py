@@ -30,7 +30,8 @@ logger = logging.getLogger(__name__)
 
 # ── regex patterns ────────────────────────────────────────────────────────────
 
-_SCENE_ID_RE = re.compile(r"scene(\d+_\d+)")
+_SCENE_ID_RE = re.compile(r"scene(\d+_\d+)")          # ScanNet, e.g. scene0353_02
+_THOR_SCENE_ID_RE = re.compile(r"\b(FloorPlan\d+)\b")  # AI2-THOR, e.g. FloorPlan2
 _POSE_RE = re.compile(
     r"\[tx=([\d.e+-]+),\s*ty=([\d.e+-]+),\s*tz=([\d.e+-]+),\s*"
     r"rx=([\d.e+-]+)°?,\s*ry=([\d.e+-]+)°?,\s*rz=([\d.e+-]+)°?\]"
@@ -380,13 +381,18 @@ class InteractiveViewPlanningGraphBuilder(VagenGraphBuilder):
         """
         image_base = rollout_dir / f"image_{step_idx}" / f"images_{line_idx}"
 
-        # Extract scene_id from the first user message (e.g. "You're in the scene scene0353_02.")
+        # Extract scene_id from the first user message. Handles both ScanNet
+        # ("You're in the scene scene0353_02.") and AI2-THOR ("... FloorPlan2.").
         scene_id = "unknown"
         for msg in messages:
             if msg["role"] == "user":
                 m = _SCENE_ID_RE.search(msg["content"])
                 if m:
                     scene_id = f"scene{m.group(1)}"
+                else:
+                    m2 = _THOR_SCENE_ID_RE.search(msg["content"])
+                    if m2:
+                        scene_id = m2.group(1)
                 break
 
         # First pass: collect all states (pose + image) and actions

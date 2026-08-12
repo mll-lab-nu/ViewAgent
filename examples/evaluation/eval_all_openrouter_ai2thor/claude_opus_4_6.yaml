@@ -1,0 +1,24 @@
+defaults:
+  - eval_default
+
+default_chat_config:
+  temperature: 0.0
+  max_tokens: 10000
+  top_p: 0.95
+  extra_body:
+    reasoning:
+      effort: "medium"
+
+experiment:
+  dump_dir: ${fileroot}/rollouts/ai2thor_claude_opus_4_6
+  default_max_turns: 1
+
+backends:
+  openai:
+    api_key: ${oc.env:OPENROUTER_API_KEY}
+    base_url: "https://openrouter.ai/api/v1"
+    model: "anthropic/claude-opus-4.6"
+    max_concurrency: 12
+    max_retries: 8
+    min_backoff: 0.5
+    max_backoff: 12.0
