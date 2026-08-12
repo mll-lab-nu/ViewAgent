@@ -1,0 +1,136 @@
+# ── ViewSuite Evaluation Default Config (AI2-THOR port) ──────────────
+# Base config for ViewSuite benchmark evaluations on the AI2-THOR environment.
+# Mirrors examples/evaluation/eval_default.yaml (ScanNet) but points at the
+# AI2-THOR-generated dataset and the AI2-THOR task classes.
+#
+# Dataset produced by:
+#   python -m view_suite.envs.ai2thor_proxy_task.data_gen.generate_data \
+#       --out_root=$VIEWSUITE_ROOT/data/ai2thor --scenes=default --samples_per_scene=16
+#   # then split scene-disjoint into _train/_eval/_test via
+#   # view_suite.envs.utils.split_jsonl_by_scene.split_jsonl_by_scene
+#
+# Env classes (registered in VAGEN/vagen/configs/env_registry.yaml):
+#   - Ai2ThorPath2View                single-turn MCQ  (P2V / forward dynamics)
+#   - Ai2ThorView2Path                single-turn MCQ  (V2P / inverse dynamics)
+#   - Ai2ThorInteractiveViewPlanning  multi-turn tool-use (IVP / active exploration)
+#
+# IVP needs the AI2-THOR HTTP render service running; write its URL to
+# client_url_ai2thor.txt, e.g.:
+#   echo "http://0.0.0.0:8765" > $VIEWSUITE_ROOT/client_url_ai2thor.txt
+#
+# Usage: create a per-model config that inherits from this file:
+#   defaults:
+#     - eval_default_ai2thor
+#   backends:
+#     openai:
+#       model: "anthropic/claude-opus-4.6"
+# ─────────────────────────────────────────────────────────────────────
+
+fileroot: ${oc.env:VIEWSUITE_ROOT}
+
+# Test-split size from the default small dataset (12 scenes -> 2 test scenes x
+# 8 samples = 16). Bump together with the data_gen / split parameters.
+n_envs: &n_envs 252
+
+default_chat_config:
+  temperature: 0.0
+  max_tokens: 1024
+  top_p: 1.0
+
+envs:
+
+  - name: Ai2ThorPath2View
+    n_envs: *n_envs
+    tag_id: path_to_view
+    seed: [1, 252, 1]
+    split: test
+    max_turns: 1
+    config:
+      jsonl_path: ${fileroot}/data/ai2thor/path_to_view_test.jsonl
+      image_size: [512, 512]
+      format: eval_mode
+      example_count: 0
+
+  - name: Ai2ThorView2Path
+    n_envs: *n_envs
+    tag_id: view_to_path
+    seed: [1, 252, 1]
+    split: test
+    max_turns: 1
+    config:
+      jsonl_path: ${fileroot}/data/ai2thor/view_to_path_test.jsonl
+      image_size: [512, 512]
+      format: eval_mode
+      example_count: 0
+
+  - name: Ai2ThorInteractiveViewPlanning
+    n_envs: *n_envs
+    tag_id: interactive_view_planning
+    seed: [1, 252, 1]
+    split: test
+    max_turns: 10
+    config:
+      jsonl_path: ${fileroot}/data/ai2thor/interactive_view_planning_test.jsonl
+      max_turns: 10
+      render_backend: client
+      client_url_file_path: ${fileroot}/client_url_ai2thor.txt
+      image_size: [512, 512]
+      format: eval_mode
+      use_example_in_sys_prompt: false
+      action_only_mode: true
+
+experiment:
+  dump_dir: ${fileroot}/rollouts/default_ai2thor
+  default_max_turns: 1
+
+run:
+  backend: "openai"
+  base_seed: 0
+  max_concurrent_jobs: 24
+  resume: skip_completed
+  live_summary: true
+
+backends:
+  openai:
+    api_key: ""               # or export OPENAI_API_KEY
+    base_url: null
+    model: "gpt-4o"
+    max_concurrency: 24
+    max_retries: 6
+    min_backoff: 0.5
+    max_backoff: 8.0
+
+  sglang:
+    base_url: "http://127.0.0.1:30000/v1"
+    api_key: "EMPTY"
+    model: ""
+    max_concurrency: 2
+    max_retries: 6
+    min_backoff: 0.5
+    max_backoff: 8.0
+
+  vllm:
+    base_url: "http://127.0.0.1:8000/v1"
+    api_key: "EMPTY"
+    model: ""
+    max_concurrency: 2
+    max_retries: 6
+    min_backoff: 0.5
+    max_backoff: 8.0
+
+  claude:
+    api_key: ""               # or export ANTHROPIC_API_KEY
+    base_url: null
+    model: "claude-sonnet-4-5"
+    max_concurrency: 24
+    max_retries: 6
+    min_backoff: 0.5
+    max_backoff: 8.0
+
+  gemini:
+    api_key: ""               # or export GEMINI_API_KEY
+    model: "gemini-2.5-pro"
+    max_concurrency: 24
+    max_retries: 6
+    min_backoff: 0.5
+    max_backoff: 8.0

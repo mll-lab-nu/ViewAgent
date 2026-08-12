@@ -1,0 +1,302 @@
+[
+ {
+  "id": "20260315-115034-9aa25340",
+  "chose": "A",
+  "reason": "The initial view shows a top-down-ish perspective on the bed surface with a red mark on the sheet (lower left/foreground) and a nightstand/lamp-like object in the background (upper center). This is consistent with a position on or near the center of the bed, facing roughly north toward the head (with the nightstand at the head being the background object).\n\nThe top-down reference confirms the room layout: bed oriented north-south (head north with nightstands on sides), window/plant on west, stool/chair elements, etc.\n\nActions are applied with rotation step = 30\u00b0 (yaw only for turn_right) and translation step = 0.5 m:\n- Start facing ~north (0\u00b0).\n- turn_right: facing +30\u00b0.\n- turn_right: facing"
+ },
+ {
+  "id": "20260315-115122-f2d5f120",
+  "chose": "A",
+  "reason": "The initial view is from a position close to and facing the sink wall (sinks visible on the left/center, wall-mounted dispensers/trash on the right, upper wall/ceiling visible). The top-down reference confirms sinks are on one side of the room, with toilet stalls several meters away on another side.\n\nThe action sequence is executed with the given step sizes:\n- turn_left: rotate yaw -30 degrees (rounded).\n- look_down: rotate pitch +30 degrees (rounded).\n- move_forward: translate 0.5m in the new facing direction.\n- move_left: strafe 0.5m to the left of the new facing direction.\n\nTotal translation distance is only 1m. Even with the 30-degree turn (which orients somewhat along/away from the wall"
+ },
+ {
+  "id": "20260315-114511-3bb47d4f",
+  "chose": "B",
+  "reason": "The initial view shows the agent positioned behind a gray chair, facing a white desk (with mouse visible) against a colored wall (blue/beige tones), with gray carpet visible to the side. This implies initial orientation is toward the desk/wall (define as 0\u00b0/north for reference).\n\nEach turn_right rotates +30\u00b0 (clockwise/yaw). After 5 turn_right actions: +150\u00b0 total (now facing ~south-southeast if 0\u00b0 was north; 30\u00b0 off from directly away from the desk). The chair and white desk are now mostly behind the agent. The final move_right shifts position laterally 0.5m relative to the new orientation (no further rotation).\n\nThis means:\n- The final view cannot include a chair back in the immediate fore"
+ },
+ {
+  "id": "20260315-114140-1ae641b2",
+  "chose": "B",
+  "reason": "The initial view faces the beanbag chair against the striped north wall (facing north). Each turn_left rotates yaw +30 degrees (counterclockwise). After four turn_left actions: +120 degrees total yaw, now facing ~WSW (120 degrees). The look_up then adjusts pitch +30 degrees (after rounding to nearest 30-degree multiple per the note). This orients the view upward, away from the floor.\n\nSubsequent moves (two move_forward totaling 1m in the WSW direction, plus move_right 0.5m and move_up 0.5m) shift position laterally and vertically toward the west side of the room but do not alter the final orientation. The final pitched-up view therefore cannot include much (if any) of the floor.\n\nOption A in"
+ },
+ {
+  "id": "20260315-113643-fe614867",
+  "chose": "A",
+  "reason": "The initial view shows the agent facing a gray wall with writing, with a dark chair-like object visible on the left side of the frame. This places the agent near that wall, with the chair positioned to the agent's left.\n\nEach turn_left rotates the agent 30 degrees counterclockwise (yaw). Executing turn_left three times results in a total rotation of -90 degrees (after rounding to the nearest multiple of the 30-degree step size). This orients the agent to face directly toward the chair that was initially on the left.\n\nmove_forward then translates the agent 0.5 m in the new facing direction (toward the chair), bringing the chair into the center of the view and closer. move_up raises the camera"
+ },
+ {
+  "id": "20260315-115416-40960970",
+  "chose": "A",
+  "reason": "The initial view shows the agent positioned behind a gray chair, facing a wooden table with a backpack visible on the far side (centered in view). The top-down reference confirms this is at the long wooden table in the scene, with a bookshelf and other elements (like a white desk) located farther away in other directions.\n\nThe action sequence is executed with the given step sizes:\n- turn_right: rotates the agent +30 degrees (yaw) clockwise. The new orientation is only slightly off from the original facing direction (across the table).\n- move_right: strafes 0.5m to the agent's current right (perpendicular to the new facing direction). This is a small translation, keeping the agent in roughly "
+ },
+ {
+  "id": "20260315-113900-7cbd4065",
+  "chose": "C",
+  "reason": "The initial view shows a low-angle shot facing a bookshelf (books on lower shelves visible on the left/center of frame) with a damaged wall section visible on the right and floor/rug in the foreground. This places the starting position and orientation adjacent to the long bookshelf unit visible along the right side of the top-down reference map, facing roughly toward the bookshelf (westward).\n\n- turn_right (30\u00b0): Rotates orientation northward, bringing the room's central area (large rug and circular chair) into the forward view.\n- look_up (30\u00b0): Tilts the camera upward, shifting from the initial downward gaze toward a more level/higher view of the central room features.\n- move_forward (0.5 m"
+ },
+ {
+  "id": "20260315-114903-26e71a0e",
+  "chose": "A",
+  "reason": "The initial view shows a downward-looking perspective at a distinctive patterned rug (red/brown/gray curves) with a dark low table/bench on the right holding two vertical rolled objects (one light-colored with a green end). This matches a position on or adjacent to the central rug in the top-down reference, with the table/bench located to the east of the agent's position (rug visible to the left in the view).\n\nThe top-down reference confirms the room layout: central rug, gray patterned sofa at the south edge (bottom of reference), round furry chair to the west, additional furniture/shelves to the north, and a door on the west wall. The initial orientation is southward (toward the gray sofa),"
+ },
+ {
+  "id": "20260315-113743-444fd528",
+  "chose": "A",
+  "reason": "The initial view shows the agent facing into the room (window on left wall, sofa in front-left, checkerboard on right wall, desk on right). This means the door is behind the agent.\n\nEach turn_left rotates the agent 30 degrees counterclockwise (per the given rotation step). Executing turn_left 6 times rotates the agent exactly 180 degrees (Euler angles remain multiples of 30 degrees after rounding, with no net change from rounding). The agent is now facing the door (opposite direction).\n\n- When facing the door: left = original right (desk/checkerboard side); right = original left (window side).\n- The side walls near the door have switches on the left of the door (desk side) and the shelf on t"
+ },
+ {
+  "id": "20260315-115741-01242f48",
+  "chose": "C",
+  "reason": "The initial view shows a window with blue frame on the left and plain white wall on the right, with pink/blue clothes hanging below. This matches a position in the south-east of the top-down map (near the pink/blue objects in the lower-right area), facing south (180\u00b0 heading, assuming top of top-down is north). The window is on the east part of the south wall (appearing left in view), and the plain wall is the west part of the south wall (appearing right in view).\n\nEach turn_right is a 30\u00b0 clockwise rotation. The sequence of 5 turn_rights yields a total +150\u00b0 clockwise rotation. New heading: 180\u00b0 + 150\u00b0 = 330\u00b0 (NNW).\n\nFrom the south-east position facing NNW:\n- The west wall (with colorful po"
+ },
+ {
+  "id": "20260315-114647-3e8706c3",
+  "chose": "B",
+  "reason": "The initial view shows the agent facing the tall shelf (assume heading north toward the north wall shelf), with the east wall (white with height markings) visible to the right.\n\nEach \"turn_right\" rotates +30 degrees (clockwise) in yaw. After 4 turns: net +120 degrees yaw. New heading is ~ESE (30 degrees south of east).\n\n\"look_down\" then pitches the camera down by 30 degrees.\n\n\"move_forward\" (0.5m) displaces the agent ~0.43m east and ~0.25m south.\n\n\"move_left\" (0.5m) displaces ~0.43m north and ~0.25m east (perpendicular to current heading).\n\nNet: agent is now closer to the east wall, still in the shelf area but oriented toward the east wall (whiteboard/writing area) and angled slightly south,"
+ },
+ {
+  "id": "20260315-114057-1409f562",
+  "chose": "B",
+  "reason": "The initial view shows a window (bright, multi-pane) to the left and an adjacent white wall to the right, with fabric items visible at the bottom. This places the agent near an exterior wall in the living room. The top-down reference confirms the overall layout: a living room containing a gray/blue sofa (with pillow), red rug, central table, and additional furniture/items on the right side.\n\nEach turn_left rotates the agent 30 degrees (per the given rotation step), with Euler angles rounded to the nearest multiple of 30 after each step. Four consecutive turn_left actions therefore produce a net rotation of 120 degrees counterclockwise. The final look_down action pitches the camera downward b"
+ },
+ {
+  "id": "20260315-114455-dba37bce",
+  "chose": "C",
+  "reason": "The initial view shows the agent facing the sinks (north). Each turn_left rotates yaw by -30 degrees (with rounding to multiples of 30 after each, which does not alter the net effect here). After 6 turn_left actions, the agent has rotated 180 degrees and is now facing south (away from the sinks, into the room).\n\nmove_backward then translates the agent 0.5m in the direction opposite its current facing (i.e., north, closer to the sink wall). move_right translates 0.5m to the agent's right (west, toward the initial left/gray wall). move_down lowers the camera height by 0.5m (pitch unchanged, so the view direction remains horizontal/slightly downward).\n\nFinal pose: positioned closer to the north"
+ },
+ {
+  "id": "20260315-115503-c50c3eb5",
+  "chose": "D",
+  "reason": "The initial view shows the agent positioned near a window (bright opening with blue frame), facing toward it (west, assuming standard top-down orientation with north at top). The top-down reference confirms the layout: window on the left/west, sofa in the upper right, central furniture, and a desk/table area with laptop and green object at the bottom/center.\n\nEach turn_right rotates yaw by 30 degrees (per the given rotation step). 5 \u00d7 turn_right = 150 degrees clockwise from initial facing (west/270\u00b0). This results in a new facing direction approximately southeast (around 120\u00b0). look_down then pitches the camera downward by 30 degrees (aligned to step size, with Euler rounding).\n\nFrom this po"
+ },
+ {
+  "id": "20260315-115007-532f101e",
+  "chose": "A",
+  "reason": "The initial view shows a utility/pipe-filled area with a wooden chair (red seat) positioned center-left in the frame, a blue-covered object to the right/center-right, a prominent red tank upper-right, and a plain gray wall on the far left. This implies the chair's initial azimuth is roughly -30\u00b0 to -45\u00b0 relative to the starting orientation (yaw=0, pitch=0).\n\nThe action sequence is executed as follows:\n- turn_left: yaw -= 30\u00b0 (now -30\u00b0; rounded to nearest 30\u00b0 multiple).\n- turn_left: yaw -= 30\u00b0 (now -60\u00b0; rounded).\n- look_down: pitch += 30\u00b0 (now looking 30\u00b0 downward).\n- move_backward: translate 0.5 m opposite the current heading (horizontal component only, at yaw=-60\u00b0).\n- move_down: lower came"
+ },
+ {
+  "id": "20260315-114701-0d52af9b",
+  "chose": "C",
+  "reason": "The initial view shows the chair roughly centered (slightly lower) and the blue machine on the right, with overhead pipes visible (looking relatively level or slightly upward).\n\n- turn_right (30\u00b0 around vertical axis): Camera rotates right, so the chair (previously centered) shifts left in the frame, and the blue machine (previously right) shifts toward the center. More of the right side of the scene is revealed.\n- look_down (30\u00b0 around lateral axis): Camera tilts downward, so the view shifts from overhead pipes toward the floor and lower objects (more floor tiles, base of objects, and lower walls visible).\n- move_right (0.5m lateral translation, relative to the new orientation): This shifts"
+ },
+ {
+  "id": "20260315-115035-73a8a895",
+  "chose": "C",
+  "reason": "The initial view shows significant floor area, indicating a downward camera pitch. The first action (look_up) increases the pitch by 30 degrees (per the given rotation step), resulting in a final view that is tilted upward. No subsequent actions change the pitch (only translations occur afterward, and the note on Euler angle rounding applies only to rotations). Thus, the final observation must show upper walls and/or ceiling.\n\nOption A shows a downward view of a bed. Option B shows a mostly level view of a wall and picture. Option D shows a mostly level view of mid-height bathroom fixtures. Option C is the only one showing the ceiling (with upper wall trim), consistent with an upward pitch a"
+ },
+ {
+  "id": "20260315-114049-39a32447",
+  "chose": "B",
+  "reason": "The initial view shows a blue boiler directly in front, with a gray wall and chair visible on the left side, and a lighter wall with pipes/sink on the right. The action sequence is turn_left (30\u00b0), turn_left (another 30\u00b0, for a total of 60\u00b0 left), then move_backward (0.5 m).\n\nTurning left by 60\u00b0 rotates the view toward the initial left side: the gray wall remains on the left, the chair shifts toward the center, and the blue boiler shifts to the right side of the view. Moving backward shifts the position away from the boiler slightly but keeps the same objects in frame at a similar scale.\n\n- Option A shows a brown stove-like object and wall shelf (not visible initially; requires ~180\u00b0 turn).\n"
+ },
+ {
+  "id": "20260315-114751-bc741c25",
+  "chose": "A",
+  "reason": "The initial view shows a corridor-like space with a white panel and radiator/chair area on the left, pipes/hanging items (including a red element) and blue machine on the right. This implies the agent starts oriented roughly forward (north), with left = west wall and right = east wall/equipment.\n\n- turn_right (yaw +30\u00b0): Now oriented east (original right becomes front). The blue machine, red hanging item, and east-side pipes shift to center of view.\n- look_down (pitch +30\u00b0): Camera tilts downward, so the view is now east and down (toward floor near east-side equipment).\n- move_forward (x2): Translates ~1m east (toward the right wall/blue machine area).\n- move_left (x2): Facing east, \"left\" ="
+ },
+ {
+  "id": "20260315-115225-d7438bc9",
+  "chose": "D",
+  "reason": "The initial view shows the agent positioned between the west wall (window visible on the left) and the bed (on the right/east), facing north. This aligns with the top-down reference, where the window/sill is on the left (west) and the bed is on the right (east side of the room).\n\nEach turn_right rotates the agent 30 degrees clockwise (yaw increases toward east). After two turn_right actions, the agent faces 60 degrees (north-northeast).\n\nmove_left strafes perpendicular to the current facing without changing orientation. For yaw = 60\u00b0 (facing vector approximately (sin(60), cos(60)) with east as +x, north as +y), the left direction vector is (-cos(60), sin(60)), or approximately 2.6 m north an"
+ },
+ {
+  "id": "20260315-113902-eb896254",
+  "chose": "B",
+  "reason": "The initial view faces into a corner with a black bag/backpack on the striped floor (somewhat downward pitch), beige wall to the left, and gray wall to the right with a wall-mounted rack fixture.\n\nEach turn_right rotates yaw +30\u00b0 (right/clockwise). After 4\u00d7 turn_right: +120\u00b0 yaw total (now facing the gray wall, ~30\u00b0 past perpendicular). look_up then adjusts pitch upward ~30\u00b0 (less downward tilt, now viewing higher on the wall). move_backward then translates 0.5 m opposite the new facing direction (new position slightly away from the corner but still oriented toward the gray wall).\n\nThis final orientation and position aligns with viewing the gray wall's fixtures (rack + mounted ironing board)"
+ },
+ {
+  "id": "20260315-113635-5d1f4b2a",
+  "chose": "A",
+  "reason": "The initial view shows a living room-like space with a couch in the foreground/bottom, a window with blinds on the right side, abstract art/pictures on the left/center wall, and the viewpoint positioned near the couch facing toward that decorated corner.\n\nThe action sequence consists of 5\u00d7 turn_right (net +150\u00b0 yaw right, discretized to 30\u00b0 steps with Euler angle rounding), followed by look_down (pitch adjustment downward by ~30\u00b0), followed by 2\u00d7 move_right (strafing 1 m laterally without changing heading).\n\nA 150\u00b0 right rotation from the initial heading (window on right) brings the window direction approximately to the left side of the new view, while the couch remains visible in the lower "
+ },
+ {
+  "id": "20260315-114302-bfe6aedd",
+  "chose": "C",
+  "reason": "The initial view shows the agent facing east directly at the long bookshelf unit (with the white bust on the floor to the agent's right, i.e., south). The top-down reference confirms the bookshelf runs north-south along the east side of the room, with ~0.5m+ gap between the back of the bookshelf and the east wall.\n\nEach turn_right rotates the agent 30 degrees clockwise (to the right). After three turn_right actions, the agent has rotated 90 degrees clockwise and is now facing south (parallel to the bookshelf), with the bookshelf now on the left (east).\n\nmove_forward then translates the agent 0.5m south (along the bookshelf, toward the bust). move_left then translates the agent 0.5m to its le"
+ },
+ {
+  "id": "20260315-114154-995a9243",
+  "chose": "A",
+  "reason": "The initial view is a close-up facing a wall panel/unit (center-left) with the orange couch/armrest visible on the right side (including the white/yellow detail on it). This implies the starting position is close to the wall next to the couch, with the camera oriented roughly toward the wall and couch to the right.\n\nThe action sequence begins with turn_left (yaw -30\u00b0 around Y-axis, per the given rotation step). This orients the camera slightly away from the couch. The three move_backward actions then translate ~1.5m mostly away from the wall in the new facing direction. The move_right translates 0.5m laterally (strafe). The two move_down actions lower the camera height by ~1m (from normal ey"
+ },
+ {
+  "id": "20260315-114434-2b87a553",
+  "chose": "A",
+  "reason": "The initial view shows the agent facing the long desk with two monitors (north in the top-down map). The desk's right side (with the standing frame) aligns with the agent's right in the initial image, confirming that map-right = east.\n\nEach turn_right rotates the agent 30 degrees clockwise (per the given rotation step). After 5 turn_right actions, the agent has rotated 150 degrees clockwise from north, facing approximately southeast (150\u00b0 bearing).\n\nFrom the starting position (just south of the north desk, center-east in the room), facing SE means the view is centered on the south-east part of the room. The subsequent move_left actions (strafing 0.5 m each, total 1 m) are perpendicular to th"
+ },
+ {
+  "id": "20260315-115351-eb11686e",
+  "chose": "A",
+  "reason": "The initial view shows the seated man in the center-left of the frame (with a couch arm in the foreground and an armchair visible to the right). This implies an initial facing direction oriented toward the man and his couch.\n\nEach turn_right rotates yaw by 30 degrees (per the given rotation step), so turn_right \u00d7 2 produces a +60-degree yaw change (objects in the initial center shift leftward in the frame). look_up then adds +30 degrees pitch (objects shift downward in the frame, with more of the upper wall/ceiling visible). The subsequent move_forward \u00d7 4 (total 2 m) and move_right \u00d7 2 (total 1 m strafe) translate the agent but do not alter orientation.\n\nThe final orientation therefore keep"
+ },
+ {
+  "id": "20260315-115104-959ec4ff",
+  "chose": "C",
+  "reason": "The initial view shows a close-up of a plain white wall/edge, implying the agent starts facing a wall (likely south or similar in the top-down map). Each turn_left rotates yaw by -30 degrees (left), and after 5 such turns the total rotation is -150 degrees (rounded to nearest 30-degree multiple per the note, with no drift). This reorients the agent roughly opposite the initial wall-facing direction.\n\nlook_down then pitches the camera down ~30 degrees, so the view is now angled toward the floor rather than horizontal. The subsequent move_left x2 and move_down translate the agent ~0.5m per step (strafe left twice, then backward/down in agent coordinates) while maintaining the downward pitch. T"
+ },
+ {
+  "id": "20260315-113713-f68d6e74",
+  "chose": "D",
+  "reason": "The initial view shows a position next to gray/orange floor patterning, with a bookshelf unit on the left (west) and animal sculptures on a bench/display to the right (east), implying an initial facing direction approximately north. The top-down reference confirms the sculpture cluster location in the upper/central area and the striped floor colors (gray/orange adjacent to purple regions).\n\nTurn right (30\u00b0) changes facing to approximately east (toward the sculptures). The 4\u00d7 move_backward (2 m west) shifts position westward, closer to the left-side bookshelf units but with back to them (now facing east, away from west shelves). The 3\u00d7 move_left (1.5 m north, since facing east) shifts northwa"
+ },
+ {
+  "id": "20260315-115208-674b6b8c",
+  "chose": "A",
+  "reason": "The initial view shows the agent facing approximately north toward the sink wall, with the rightmost sink positioned on the left side of the frame and the paper towel dispenser (to the right of that sink) more central. This implies the agent is angled slightly right of perpendicular to the north wall (roughly +20\u00b0 from due north).\n\nEach turn_left rotates the agent 30\u00b0 counterclockwise (with Euler angles rounded to multiples of 30\u00b0 after each, though this has no effect here as rotations land exactly on multiples). After the first turn_left, facing is -10\u00b0. After the second, facing is -40\u00b0 (WNW, or 40\u00b0 left of perpendicular to the original wall).\n\nIn this new orientation:\n- The original north/"
+ },
+ {
+  "id": "20260315-115234-97c66800",
+  "chose": "C",
+  "reason": "The initial view shows the agent positioned in front of the sinks, facing the sink wall (beige tiles, two sinks, paper towel dispenser on the right). Let's define this initial facing direction as 0\u00b0 (directly at the wall).\n\nEach turn_left rotates the agent 30\u00b0 counterclockwise (per the given rotation step). After the first turn_left: facing -30\u00b0. After the second turn_left: facing -60\u00b0. (Euler angles are already multiples of 30\u00b0, so no rounding changes occur.)\n\nAt -60\u00b0 (still mostly toward the wall but angled leftward), move_forward shifts the position 0.5 m in the current facing direction. This moves the agent slightly forward and leftward relative to the initial position (parallel to the s"
+ },
+ {
+  "id": "20260315-114206-0a9aa726",
+  "chose": "A",
+  "reason": "The initial view shows the round table in the foreground with another chair visible to the right, indicating the agent is positioned at the south chair facing north toward the table (with the southeast chair appearing on the right).\n\nEach turn_left rotates the agent 30 degrees counterclockwise. After four turn_left actions, the total rotation is 120 degrees left from north, resulting in a facing direction 30 degrees south of west (WSW).\n\nThe top-down reference shows the door (with adjacent trash bin) located on the west wall toward the southwest corner. From the south position, this places the door direction at approximately 15-20 degrees south of west.\n\nFacing 30 degrees south of west means"
+ },
+ {
+  "id": "20260315-115345-b41adaac",
+  "chose": "A",
+  "reason": "The initial view shows the agent positioned behind a light-colored chair, facing a white desk (with monitor on the left and mouse visible). The right side of this view includes a blue textured wall. The actions consist solely of three turn_right operations (no translation), with each turn being a 30-degree rotation step. This results in a total rotation of exactly 90 degrees to the right (after rounding to the nearest multiple of the step size per the given note).\n\nA 90-degree right turn from the initial orientation (facing the desk) orients the agent toward what was previously on the right: the blue wall area. Option A matches this, showing the blue wall (consistent texture and color with t"
+ },
+ {
+  "id": "20260315-113825-a3f2fc78",
+  "chose": "C",
+  "reason": "The initial view has outlets on the left side and a vent on the right side. Each turn_left rotates the agent 30 degrees (per the given rotation step), so 4x turn_left produces a net rotation of 120 degrees left. Objects on the right (vent) therefore shift into the left side of the final view, while objects on the left (outlets) shift behind the agent and out of view. The subsequent move_backward (0.5 m) changes position slightly in the new facing direction, and move_down lowers the camera height or pitch (producing a view that includes more of the floor).\n\nThis matches image C: vent now visible on the left, no outlets, door visible on the right, and a downward-looking angle showing the strip"
+ },
+ {
+  "id": "20260315-114525-50269108",
+  "chose": "B",
+  "reason": "The initial view appears to be in a bathroom, angled toward a wall-mounted mirror/cabinet area above a sink, with the faucet and pipes visible at the bottom of the frame (consistent with the metal fixture and white damaged areas). The top-down reference provides the overall apartment layout, which includes this bathroom area (with adjacent living space visible in the scan).\n\nThe action sequence is executed as follows:\n- turn_right (yaw +30\u00b0, rounded): rotates view right, now facing more toward the sink/vanity instead of the wall/mirror directly.\n- turn_right (yaw +60\u00b0 total, rounded): completes the turn to align with the sink area.\n- look_down (pitch -30\u00b0, rounded): tilts the camera downward"
+ },
+ {
+  "id": "20260315-114144-9d72a152",
+  "chose": "A",
+  "reason": "The initial view shows the agent facing toward the chair (north), with the blue machine on the right (east) and cylinders on the left (west). Each turn_left rotates 30 degrees counterclockwise. Executing turn_left six times totals 180 degrees, so the agent now faces south (opposite the chair). The cylinders are now on the right of the view, and the blue machine is now on the left.\n\nAfter the 180-degree turn:\n- move_backward (0.5 m) while facing south moves the agent north (toward the chair's direction but facing away, so the chair is out of view).\n- move_left (0.5 m) while facing south moves east (toward the blue machine's side, bringing it closer into view on the left).\n- move_down adjusts "
+ },
+ {
+  "id": "20260315-115707-c1b58d9d",
+  "chose": "C",
+  "reason": "The initial view shows the agent facing approximately north (cushions centered, round chair to the west/left, bookshelf spanning roughly +30\u00b0 to +80\u00b0 on the east/right). The top-down reference confirms the layout: round chair north-west, cushions/rug central, bookshelf along the east, stool in the south-east, sofa to the south, and irregular/void (white) boundaries around the scanned area.\n\nEach turn_right rotates yaw +30\u00b0 (clockwise/right). After 4\u00d7 turn_right, yaw = +120\u00b0 (now facing ESE). The look_up then sets pitch \u2248 +30\u00b0. The original bookshelf shifts to approximately -90\u00b0 to -40\u00b0 (far left edge or partially out, depending on exact FOV ~90-120\u00b0 and bookshelf span). The new center (0\u00b0) c"
+ },
+ {
+  "id": "20260315-115516-cb59d3ef",
+  "chose": "B",
+  "reason": "The initial view shows the agent positioned north of the sink (facing south toward the south wall/counter), with the trash can to the agent's left (east of the sink). This matches the top-down reference layout (top of top-down = north, bottom = south, trash east of sink = right side in top-down).\n\nActions are applied sequentially (rotation step = 30\u00b0; after each rotation, Euler angles rounded to nearest multiple of 30\u00b0 along each axis):\n- turn_right: Yaw changes by +30\u00b0 (now facing ~30\u00b0 west of south).\n- look_down: Pitch changes by +30\u00b0 (now tilted down 30\u00b0).\n- move_left: Strafe 0.5 m to agent's left (southeast-ish relative to new heading).\n- move_up: Interpreted as move_forward 0.5 m (stand"
+ },
+ {
+  "id": "20260315-113717-5ffcfe77",
+  "chose": "A",
+  "reason": "The initial view shows the agent facing approximately north toward the sink wall (two sinks, dispensers on the right of the wall). The top-down reference confirms the layout: sinks attached to a north wall, toilets/urinals to the east of the sinks, open space/drain in front (south), and a corner/wall feature to the west.\n\nTurn_left rotates yaw -30\u00b0 (now facing 30\u00b0 west of north). The four move_forward actions translate 2 m in this direction, moving the agent north-west and closer to the sink wall (ending near the west end of the sinks, assuming initial distance \u2248 2 m and no hard collision). The three move_left actions strafe 1.5 m (now mostly west/south-west relative to new facing), shifting"
+ },
+ {
+  "id": "20260315-115537-81f7b45b",
+  "chose": "C",
+  "reason": "The initial view shows the camera facing the gray couch (with blue/gray items on it), with the shoe rack visible in the upper right background. This places the initial camera position south of the central couch (facing north), consistent with the top-down reference layout (couch south of central rug, shoe rack northeast).\n\nEach turn_left rotates the camera 30 degrees counterclockwise (per the given rotation step). Three turn_left actions = 90 degrees total left rotation. Initial facing north becomes facing west after this. (Euler angles are rounded to nearest 30-degree multiples after each rotation, but this has no effect on a clean 90-degree total here.)\n\nFrom the new westward orientation, "
+ },
+ {
+  "id": "20260315-114845-2dbd91fa",
+  "chose": "B",
+  "reason": "The initial view shows the agent facing north, with colorful statue bases/sculptures in the foreground and bookshelves further north in the background. The top-down reference confirms an open central area with N-S striped rugs, central statue-like objects, a north bookshelf, and a south bookshelf, with the starting position south of the central statues.\n\nEach turn_right rotates the agent +30 degrees (per the given rotation step), with snapping to multiples of 30 degrees after each rotation. Three turn_right actions result in a net +90-degree (right) rotation, so the agent now faces east. In this orientation:\n- Left = north (bookshelves + statues now on the left side of the view).\n- Right = s"
+ },
+ {
+  "id": "20260315-114753-f6ecbd66",
+  "chose": "C",
+  "reason": "The initial view shows the agent facing into the bathroom (assume North), with a toilet visible on the right (East side, attached to or near the right wall, seen in side profile) and another fixture/urinal on the left/back. Turning right three times (3 * 30\u00b0 = 90\u00b0 yaw right, rounded per the note) orients the agent East, facing what was originally on the right (toward the East toilet/wall). \n\nmove_forward then shifts the position 0.5m East (closer to the right-side toilet). move_right strafes 0.5m South (parallel to the new facing wall). move_up shifts height +0.5m (view angle to fixtures/floor adjusts slightly but pitch unchanged). The resulting view should be oriented toward the original ri"
+ },
+ {
+  "id": "20260315-115433-198f3128",
+  "chose": "C",
+  "reason": "The initial view is from a position facing north toward a desk against the north wall (monitors in front, checkered poster on the west part of the north wall to the left, photo collage on the east part to the right). Each turn_left rotates the agent 30 degrees CCW. Four turn_left actions = 120 degrees CCW from north, resulting in facing approximately WSW (30 degrees south of west). look_down pitches the camera downward ~30 degrees. The four move_right actions (each 0.5 m) then strafe the agent ~2 m in the direction perpendicular to the current heading (to the right when facing WSW = roughly northward).\n\nThis final orientation (WSW heading + downward pitch) and adjusted position (shifted nort"
+ },
+ {
+  "id": "20260315-113757-f8eb102a",
+  "chose": "A",
+  "reason": "The initial view has the bookshelf on the agent's left and a white chair on the right, with an open/white area ahead. The action sequence consists of 6x turn_left (each 30 degrees, totaling exactly 180 degrees, so the agent faces the opposite direction) followed by 1x move_left (a 0.5m strafe that does not change orientation).\n\nA 180-degree turn reverses the scene: the original left (bookshelf) is now on the right, the original right (white chair) is now on the left, and the view is now toward whatever was behind the starting position (a wooden table). Only option A matches this: it shows the bookshelf now on the right, with a table and chair directly ahead. The sideways translation of 0.5m "
+ },
+ {
+  "id": "20260315-114253-908019f2",
+  "chose": "D",
+  "reason": "The initial view shows a bookshelf to the agent's left (-X), a wall/column with a white patch to the right (+X), and a purple rug visible on the floor, implying the agent is in a narrow space between the bookshelf and wall, initially facing forward (+Z/north).\n\nEach turn_right rotates yaw by 30 degrees (total 90 degrees clockwise after three turns). After the turns, the agent faces +X (east, toward the original wall).\n\n- move_backward (x2): moves -X (west, toward the bookshelf) by 1m total.\n- move_right: with new facing (+X), current right is now -Z, so moves 0.5m in the original backward direction.\n- move_down: pitches the camera down ~30 degrees (per the rotation step and Euler rounding no"
+ },
+ {
+  "id": "20260315-115755-6145249f",
+  "chose": "A",
+  "reason": "The initial view shows gray ottomans/sofa in the foreground/center with a patterned rug to the left/bottom and a large multi-compartment shelving unit visible on the right side of the frame (black/white panels). The top-down reference confirms this position is near the center-left of the room, oriented roughly toward the gray seating, with the shelving structure along the right wall.\n\nturn_right rotates the agent +30 degrees (per the given rotation step) around the yaw axis, bringing the right-wall shelving more into the center of the view. (Post-rotation Euler angles are rounded to the nearest 30-degree multiple, but this does not change the net 30-degree right turn here.)\n\nmove_right then "
+ },
+ {
+  "id": "20260315-113913-6025cb0e",
+  "chose": "A",
+  "reason": "The initial view shows the agent positioned near a corner, facing approximately north toward the gray wall (with the door on the west wall to the left and an office chair visible to the east on the right). Define heading 0\u00b0 as north, increasing clockwise for right turns (x east, y north). Thus, initial heading = 0\u00b0.\n\nEach turn_right rotates +30\u00b0 (per the given rotation step). After four turn_right actions: heading = 120\u00b0 (ESE). The chair (initially ~90\u00b0 to the right) is now at a relative angle of 90\u00b0 - 120\u00b0 = -30\u00b0 (slightly left of the new facing direction). The central table (south of starting position) is at a relative angle of ~60\u00b0 (to the right of the new facing direction).\n\nThe subseque"
+ },
+ {
+  "id": "20260315-114043-c4d70444",
+  "chose": "C",
+  "reason": "The initial view shows the agent facing a white compartmentalized shelf structure (with items like blue/teal/orange boxes visible on the lower level). The top-down reference confirms this shelf is along one edge of the room (bottom-right in the overhead layout), with the agent positioned in front of it facing toward the shelf.\n\nEach turn_right rotates the agent by the given step of 30 degrees (with post-rotation snapping of Euler angles to multiples of 30 degrees). Executing turn_right four times produces a net rotation of +120 degrees (clockwise). This changes the agent's facing from perpendicular to the shelf to an angled view toward the right end/corner of the shelf (where the shelf struc"
+ },
+ {
+  "id": "20260315-113645-6060f03a",
+  "chose": "A",
+  "reason": "The initial view shows a close-up of a metallic gray chair-like object against a white wall, with some blue floor visible (indicating a slight downward pitch). The top-down reference confirms this is in a corner or edge area of the room with such an object (distinct from the desk/laptop areas in the top-down map).\n\nThe action sequence is turn_left (yaw -30\u00b0), turn_left (yaw -60\u00b0 total), look_up (pitch +30\u00b0). No translation occurs, so the position remains fixed. Per the problem, Euler angles are rounded to the nearest 30\u00b0 multiple after each rotation (initial orientation is assumed aligned to these discrete steps).\n\nA 60\u00b0 left yaw keeps the same chair in view but from a shifted angle (more si"
+ },
+ {
+  "id": "20260315-115232-fee18547",
+  "chose": "C",
+  "reason": "The initial pose has the camera facing a certain direction (towards the chair and pipes, with a wall on the left and red spherical object upper right). Each turn_right rotates yaw by exactly 30 degrees (per the given rotation step), for a total yaw change of +120 degrees (right) after four such actions. The look_down then adjusts pitch downward by 30 degrees. The two move_left actions then translate the camera 0.5 m each (total 1 m) in the direction perpendicular to the new heading (i.e., the \"left\" vector after the 120-degree yaw change). The final move_down translates the camera vertically downward by 0.5 m.\n\nThis results in a new position (shifted ~1 m laterally in the post-rotation left "
+ },
+ {
+  "id": "20260315-114755-e130c33c",
+  "chose": "A",
+  "reason": "The initial view shows the agent facing the door (assumed north), with the trash bin to the left (west). The top-down reference confirms the door is along the west/north area, with the round table and swivel chairs located centrally toward the east/southeast of the room.\n\nEach turn_right rotates the agent 30 degrees clockwise (per the given rotation step). Executing turn_right four times results in a net rotation of +120 degrees (rounded to the nearest multiple of 30 degrees after each step, which does not change the outcome here). The new heading is southeast (approximately 120 degrees from north).\n\nFrom this orientation:\n- The north wall remains partially visible on the left side of the vi"
+ },
+ {
+  "id": "20260315-113638-bbcadabd",
+  "chose": "C",
+  "reason": "The initial view shows an aisle between bookshelves facing toward a white/brown end wall (dead-end), with no black floor object visible. This implies the black cylindrical object (visible in the top-down reference and in option C) is behind the initial position, in the open aisle direction.\n\nThe action sequence consists of 6 \u00d7 turn_left (each 30\u00b0 per the given rotation step, totaling exactly 180\u00b0 after rounding to nearest multiples of 30\u00b0 per the note) followed by move_backward (0.5 m). A 180\u00b0 left rotation orients the agent to face the open aisle (away from the end wall), bringing the black object into the forward view. The subsequent backward move shifts the position 0.5 m toward the end w"
+ },
+ {
+  "id": "20260315-114349-cb8046b4",
+  "chose": "C",
+  "reason": "The initial view shows the agent positioned north of the south-facing couch (windows behind couch), facing south, with the black office chair and PC tower to the agent's right (west). This aligns with the top-down view where the couch is at bottom-left (south-west), desks and other objects toward the north and east.\n\nInitial orientation: facing south.\n- Each turn_left rotates 30 degrees counterclockwise (left), with Euler angles rounded to multiples of 30 degrees after each rotation.\n- Three turn_left actions: total +90 degrees left (counterclockwise from south faces east).\n\nAfter rotations, facing east.\n- move_backward (0.5m): opposite of facing east = move west.\n- move_left (0.5m): strafe "
+ },
+ {
+  "id": "20260315-113950-29623231",
+  "chose": "C",
+  "reason": "The initial view shows the agent positioned in front of a door with a lever-style handle, with a peeling wall visible to the agent's left. This implies the agent is facing north toward the door (on the north wall), close to the west wall (peeling wall = left/west).\n\nEach turn_right rotates the agent +30 degrees (increasing heading clockwise). After 5 turn_right actions, the agent has rotated +150 degrees, resulting in a heading of 150 degrees (30 degrees east of south, or south-southeast).\n\nlook_down then adjusts the camera pitch downward by 30 degrees. move_forward translates the agent 0.5 m in the current heading (mostly south with some eastward component). move_up raises the camera height"
+ },
+ {
+  "id": "20260315-114300-7bd41c2e",
+  "chose": "B",
+  "reason": "The initial view shows the agent positioned in front of the sink, facing toward it (north). Each turn_left rotates the agent 30 degrees counterclockwise (with Euler angle rounding to multiples of 30 degrees after each rotation, which does not alter the exact 30-degree increments here).\n\n- After 5 \u00d7 turn_left: total rotation of 150 degrees left. New heading is approximately 150 degrees CCW from north (roughly west-southwest, 30 degrees off from directly away from the sink).\n- Then 2 \u00d7 move_backward (1.0 m total): displaces the agent in the direction opposite the current heading (roughly toward/offset from the sink area but adjusted by the 150-degree offset, landing nearer the central room are"
+ },
+ {
+  "id": "20260315-114024-5a936c9f",
+  "chose": "C",
+  "reason": "The initial view shows the agent facing the long side of the white table (assumed north, with table in front), based on the table extending left-right in view, stacked white boxes and glove visible to the agent's right (east), pole in background right, and hanging dark items in background. This aligns with the top-down reference where stacked boxes are on the right (east) side of the table.\n\nEach turn_right rotates yaw by 30 degrees (to the agent's right). Three turn_right actions = +90 degrees total rotation, changing facing from north to east. The look_up action increases pitch by 30 degrees (from initial downward tilt toward the table to a more level/upward view). The five move_left actio"
+ },
+ {
+  "id": "20260315-114309-960d96e3",
+  "chose": "C",
+  "reason": "The initial view shows pipes in the center (with blue object below), red tank on the right, white panel on the left, and a chair/stool at bottom-left. The action sequence rotates the agent 120 degrees left (4 \u00d7 30-degree turn_left steps, with Euler angle rounding to multiples of 30 after each, which does not change the net 120-degree yaw here), then pitches down 30 degrees (look_down), then strafes 0.5 m sideways (move_left, which shifts position but not orientation).\n\nA 120-degree left rotation means:\n- Previous center (pipes/blue) shifts ~120 degrees right in the new view (likely to the right edge or just inside a wide FOV).\n- Previous right (red tank) shifts to ~165\u2013180 degrees (behind or"
+ },
+ {
+  "id": "20260315-114744-7111482a",
+  "chose": "C",
+  "reason": "The initial view shows a blue tank centered in front, with a pipe-covered wall on the right and an open area with a red-seated chair visible in the background to the left. Each turn_left rotates the agent 30 degrees counterclockwise (per the given rotation step), so 4x turn_left results in a net -120 degree change in yaw (with rounding to multiples of 30 degrees after each step having no effect here since turns are exact multiples). This orients the agent toward the original left/open area. The subsequent move_backward (0.5 m opposite the new facing) and move_left (0.5 m perpendicular to the new facing, i.e., 90 degrees counterclockwise from new yaw) shifts the position slightly but keeps th"
+ },
+ {
+  "id": "20260315-114240-60246d1f",
+  "chose": "C",
+  "reason": "The initial view shows the agent positioned behind an office chair (dark backrest, gray seat), facing north toward a window and desk (with some desk extension visible on the right and a dark cabinet on the left). Thus, initial position ~south of chair, orientation = 0\u00b0 (north).\n\nturn_right rotates the agent 30\u00b0 clockwise (standard convention: facing north, right = east), and the second turn_right brings orientation to +60\u00b0 (60\u00b0 east of north). No further rotations occur, so final orientation remains +60\u00b0.\n\nmove_backward (0.5 m) translates in the direction opposite the current facing (+60\u00b0 + 180\u00b0 = 240\u00b0), moving the agent southwest. move_left then translates 0.5 m in the direction 90\u00b0 counter"
+ },
+ {
+  "id": "20260315-113951-5abf2718",
+  "chose": "A",
+  "reason": "The initial view shows the agent facing the fixture wall (beige tiles), with a sink visible on the left side of the view (negative X), a toilet near center, and a dispenser on the right side of the view (positive X). This implies starting position roughly in front of the toilet (X \u2248 0), facing the wall (negative Z direction), at a distance of ~1.5-2m.\n\nActions:\n- look_down: pitch -= 30\u00b0 (now looking somewhat down).\n- move_forward x2: translate +1m in facing direction (now ~0.5-1m from wall).\n- move_left x5: strafe 2.5m in left direction (negative X, toward/ past the left sink). Final position ~X = -2.5.\n- move_up: pitch += 30\u00b0 (back to horizontal, same yaw as start).\n\nNo yaw change, so still"
+ },
+ {
+  "id": "20260315-115458-f719e868",
+  "chose": "B",
+  "reason": "The initial view shows the agent looking up at a damaged ceiling with a light fixture and vent (suggesting upward pitch, likely +30\u00b0 to +60\u00b0). The top-down reference confirms this is in a corner/edge area of the room with specific ceiling damage and layout (light in center, torn sections to one side, furniture visible in other parts of the room).\n\nEach turn_left rotates yaw by -30\u00b0 (with Euler rounding to multiples of 30\u00b0 after each step, per the note). Executing this 6 times yields exactly -180\u00b0 (facing the opposite direction, still at the same upward pitch, but with ceiling features rotated 180\u00b0 in view: initial left-side damage shifts to the right side of the view).\n\nlook_down then adjust"
+ }
+]

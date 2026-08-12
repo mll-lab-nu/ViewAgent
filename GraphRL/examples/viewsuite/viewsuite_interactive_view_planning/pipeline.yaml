@@ -93,6 +93,17 @@ general_overrides:
       filter:
         void_threshold: 0.7
         std_threshold: 10.0
+      merge_tol:               # Idea-5: cross-trajectory node-merge tolerance
+        position: 0.001        # default = baseline exact-match; override in run.sh
+        angle: 0.001           # keep BELOW half-step (0.25m/15deg) to avoid merging adjacent cells
+      atomize:                 # Idea-1: render intermediate views -> 100% single-action graph
+        enabled: false         # turn on via run.sh override
+        client_url: null       # null -> falls back to $VIEWSUITE_ROOT/client_url_2.txt
+        step_translation: 0.5
+        step_rotation: 30.0
+        size: 512
+        render_chunk: 32
+        max_scene_concurrency: 8
     generators:
       - action_gen
       - path_to_view

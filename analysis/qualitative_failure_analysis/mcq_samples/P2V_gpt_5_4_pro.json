@@ -1,0 +1,302 @@
+[
+ {
+  "id": "20260315-120756-243864a3",
+  "chose": "D",
+  "reason": "After 3 left turns, the view rotates 90\u00b0 left from the shelf. That puts the original shelf/wall on the right side. Then moving forward and right places the camera slightly into the room but also back toward that original wall, so the resulting view should face a nearby desk area with the desk mostly to the left side. This matches D best."
+ },
+ {
+  "id": "20260315-134411-7f74ef09",
+  "chose": "B",
+  "reason": "From the trash-bin corner, four right turns = 120\u00b0 rotates the view toward the nearby counter/bulletin-board area rather than across the room. After the final look_up, the framing should show more wall/board and less floor. Among the options, B best matches that orientation and tilt from the same position."
+ },
+ {
+  "id": "20260315-122302-5d1c49f9",
+  "chose": "A",
+  "reason": "The initial view looks like the bright curtain/window area next to the couch. After turning left 120\u00b0, then looking down and moving forward, the resulting viewpoint matches the sofa with the red rug."
+ },
+ {
+  "id": "20260315-133906-7369e07d",
+  "chose": "A",
+  "reason": "The final view should keep the same facing direction as the initial image, but be farther back, shifted to the right, and tilted upward. That means we should still see the chair/far wall area, with more overhead pipes and more of the right-side wall visible. Among the options, A best matches that: same general direction, farther back, more upward view, and more right-side content than the initial."
+ },
+ {
+  "id": "20260315-140823-0c9d3e78",
+  "chose": "D",
+  "reason": "Six left turns = 180\u00b0 turn. Then move_backward puts the camera closer to the whiteboard wall, and move_right (after the 180\u00b0 turn) shifts it to the initial left side. The final view should face away from the whiteboard toward the desk area, from a slightly farther-back, more centered position. That matches image D."
+ },
+ {
+  "id": "20260315-114327-21aa61f2",
+  "chose": "D",
+  "reason": "Six left turns = 180\u00b0, so the view flips to the opposite side of the room. From the initial position, two strafes left after that place the camera near the other desk/chair area, and moving down lowers the viewpoint slightly. Among the options, D best matches that opposite-side desk view with the chair on the left foreground and desk/monitors ahead."
+ },
+ {
+  "id": "20260315-115840-b372cd1e",
+  "chose": "C",
+  "reason": "The starting view is most consistent with being near the entry/vanity area facing the main door. After five right turns (150\u00b0), the view rotates toward the interior vanity/closet side. Looking down, moving forward, and then moving up gives a slightly elevated, downward-angled view that includes the chair on the left, the door ahead, and the sink/counter on the right. This matches C best."
+ },
+ {
+  "id": "20260315-141510-f32f6745",
+  "chose": "D",
+  "reason": "The initial view faces the chair/bookshelf corner, with the shelf on the right and chair on the left. After 4 right turns (120\u00b0), the camera is looking toward the area that was originally behind-right, not still at the shelf. Then moving forward + right shifts the position roughly backward-right relative to the initial facing, toward the couch-side area. Looking up and moving up matches the elevated, upward-tilted view showing the couch and nearby wall/table. So the result is D."
+ },
+ {
+  "id": "20260315-131101-d1de5213",
+  "chose": "B",
+  "reason": "After turning left 120\u00b0, then looking down, backing up twice and strafing right, the camera ends up near the desk corner/cart area. The two move_down actions make the final view low and floor-focused, matching the close downward shot of the rug, desk leg, and cart."
+ },
+ {
+  "id": "20260315-120446-7f8821e9",
+  "chose": "C",
+  "reason": "Six left turns make a 180\u00b0 rotation, so the final view should face away from the shelves. Then moving right twice shifts the camera about 1 m toward the initial left side. That places the desk area with the draped chair in front and the tall cabinet on the right, which matches option C."
+ },
+ {
+  "id": "20260315-120753-0b17cff1",
+  "chose": "C",
+  "reason": "The initial view is facing the cubby shelf. Four right turns = 120\u00b0 clockwise, which makes the camera look obliquely along the shelf toward one end. Then moving left shifts the camera closer to the shelf/end area. Among the options, C matches that close, angled end-of-shelf view best."
+ },
+ {
+  "id": "20260315-135707-b399158e",
+  "chose": "D",
+  "reason": "After the 60\u00b0 right turn, the camera is oriented toward the bed-side area; looking down, strafing right twice, and lowering places the viewpoint beside the bed with the stool and floor in view. This matches D."
+ },
+ {
+  "id": "20260315-115257-21371f2c",
+  "chose": "B",
+  "reason": "From the initial view, the bookshelf is on the left and a wall/window frame is to the right. Turning right 30\u00b0 shifts the view toward the window/frame, looking up emphasizes the upper part of that structure, and moving forward/up brings it closer and higher in frame. This best matches image B."
+ },
+ {
+  "id": "20260315-141647-8fc9ab65",
+  "chose": "A",
+  "reason": "The initial view is very close to the cabinet/curtain area. After turning right 90\u00b0, the camera should face more toward the open side of that area; looking up and then moving backward twice would reveal a wider, slightly upward-tilted view. Among the options, A best matches that widened/upward result (B looks too close / less backed up, C looks downward, D faces the bed too directly)."
+ },
+ {
+  "id": "20260315-130518-df17124b",
+  "chose": "A",
+  "reason": "After a 90\u00b0 right turn, the two left moves effectively place the camera about 1 m forward from the original view, ending up nearer the door side and facing the wall with the chairs. The best match is the view with the chair centered and a second chair partially visible on the right."
+ },
+ {
+  "id": "20260315-124709-a77a9e6b",
+  "chose": "C",
+  "reason": "Turning left 4 times gives a 120\u00b0 left rotation from the initial couch-facing view, so the camera ends up looking toward the bookshelf/doorway side of the room. The two backward moves plus one left strafe shift the camera slightly toward the lower-right/couch side, which matches the bookshelf-left / doorway-center / furniture-right composition best. That corresponds to image C."
+ },
+ {
+  "id": "20260315-114626-cde59d86",
+  "chose": "D",
+  "reason": "The initial view is down the narrow utility-room passage: shelves are close on the left wall, with the chair/blue machine farther ahead-right. After turning left 90\u00b0, the camera faces toward that left wall/shelves. Looking down, then moving backward (away from the wall), moving left (back along the passage), and moving down produces a lower, floor-dominant view with the wall/shelves on the left and the blue machine on the right. This matches D."
+ },
+ {
+  "id": "20260315-114439-a0554611",
+  "chose": "B",
+  "reason": "The start appears to be in the narrow aisle near the large machine/copier and the shelving/corner area. After turning left 150\u00b0, then moving backward and strafing left twice, the net position shifts roughly to the opposite side of that aisle while facing back toward the large machine. Among the options, image B best matches that resulting viewpoint."
+ },
+ {
+  "id": "20260315-122152-9b918175",
+  "chose": "A",
+  "reason": "Initial view is in the narrow aisle beside the cubby shelves, facing toward the corner with the green bin and boxes. Turning left twice (60\u00b0 total) swings the view toward the copier/bulletin-board side of the room, and moving down shifts slightly along that aisle. This matches image A."
+ },
+ {
+  "id": "20260315-141116-65dd0a83",
+  "chose": "A",
+  "reason": "The initial view is from the sink area, angled toward the left side of the vanity. After turning left 4 times, the agent is rotated 120\u00b0 to face toward the closet/bench area. Then moving backward and left shifts the position away from the sink and toward the room interior/left side, yielding a view toward the closet door with the bench visible on the left. This matches image A."
+ },
+ {
+  "id": "20260315-125624-5d791437",
+  "chose": "D",
+  "reason": "Turning right shifts the view so the couch moves to the left side, and then moving right places the camera farther into the open floor area beside it. This matches image D."
+ },
+ {
+  "id": "20260315-125300-1decf81d",
+  "chose": "D",
+  "reason": "Turning right and then moving right should bring the camera closer to the machinery/panel on the right side; looking down adds more floor/lower-pipe visibility. That matches D best."
+ },
+ {
+  "id": "20260315-115018-bfd4b52a",
+  "chose": "A",
+  "reason": "The left wall in the initial view should shift to the right after four 30\u00b0 left turns (120\u00b0 total), while the vented panel on the right should move out of frame. That matches image A, which shows the same wall/fixture now on the right and a newly revealed tiled wall ahead. The small backward move and move down are also consistent with the lower, slightly pulled-back perspective."
+ },
+ {
+  "id": "20260315-121952-5d8de93e",
+  "chose": "C",
+  "reason": "Turning left makes the central stall panel shift toward the middle of view. Then moving backward and right places the camera a bit closer to the partition on the right side of the initial image, while the final move down lowers the viewpoint. Among the options, C best matches this left-rotated, slightly shifted, lower perspective."
+ },
+ {
+  "id": "20260315-130739-e343db66",
+  "chose": "C",
+  "reason": "Turning right twice from the shelf/door view should bring the camera toward the printer-cart/sofa side of the room, not toward the door. After looking down and moving forward, the view should show more floor while still facing that side. That matches C best."
+ },
+ {
+  "id": "20260315-121555-a6776fdb",
+  "chose": "B",
+  "reason": "Six left turns make a 180\u00b0 turn. Then moving backward and left in that new orientation is equivalent to moving forward and right relative to the initial view, ending up closer to the corner/panel on the initial right side. After turning around, that right-side panel should now appear on the left, with the doorway/partition area visible ahead/right. This matches image B best."
+ },
+ {
+  "id": "20260315-142125-038d181b",
+  "chose": "A",
+  "reason": "Three right turns give a 90\u00b0 clockwise rotation. The net translation is roughly to the initial left and slightly backward, then 1 m downward, which should place the camera in a lower aisle-like view parallel to the shelves. Among the options, A best matches that shifted low viewpoint with shelves on both sides and the floor-strip alignment."
+ },
+ {
+  "id": "20260315-115141-dd546f7e",
+  "chose": "C",
+  "reason": "The initial view looks like it is just south of the couch/right-side cabinet area, facing mostly out into unscanned space: the couch back/arm is visible along the top edge, and the cabinet with the purple item is at the right edge.\n\nApply the actions:\n- turn_left \u00d73 = 90\u00b0 left\n- from that new heading, move_backward\n- then move_left\n\nThis shifts the camera northwest into the room and leaves it facing toward the right-side shelving/cabinet area. From there, the couch should appear on the left, the white cabinet in front/right, and shelves farther right \u2014 matching image C."
+ },
+ {
+  "id": "20260315-130617-6ec2d44d",
+  "chose": "A",
+  "reason": "After turning right twice, the view should swing from the shoe-rack wall toward the narrow passage. Looking down and then moving forward + left would place the camera closer to the left wall, with the corridor extending ahead and the chair visible, while the large blue unit should be mostly off to the right. That matches image A best."
+ },
+ {
+  "id": "20260315-122523-62d3d9a0",
+  "chose": "D",
+  "reason": "The initial view is in the corner with the luggage rack/bag near the curtain. After turning right 120\u00b0, looking down, then moving forward and left, and finally moving up, the camera should end up slightly above and offset from that same corner, looking down at the rack/bag with the nearby furniture visible. This matches D best."
+ },
+ {
+  "id": "20260315-135851-e9eec9e6",
+  "chose": "B",
+  "reason": "The initial view is from the sink area, facing along the restroom toward the toilet/stall side, with the sinks on the right and the opposite wall on the left. Moving forward twice carries the camera past the sinks toward the toilets; moving left four times shifts it across toward the opposite side of the room, and moving up raises the viewpoint. From there, the toilet area should appear ahead/right with a wall close on the left. That matches image B best."
+ },
+ {
+  "id": "20260315-130452-9af7fc60",
+  "chose": "C",
+  "reason": "After looking down, moving forward twice brings the camera farther down the narrow aisle toward the chair/end wall; moving left shifts it closer to the left wall, and moving up raises the viewpoint while keeping the downward pitch. The resulting view should show more floor, the boiler shifted to the right, and the aisle/end wall still ahead. That matches C best."
+ },
+ {
+  "id": "20260315-120138-26e501a7",
+  "chose": "D",
+  "reason": "Starting from a strongly upward-looking ceiling view, 5 right turns = 150\u00b0 yaw, then one look_down likely still leaves the camera angled upward. Moving backward 3 steps and down 1 step changes position but not enough to turn this into a desk/whiteboard view. The only option consistent with an upward-facing view of the same ceiling/skylight area is D."
+ },
+ {
+  "id": "20260315-135520-ea1a0aa6",
+  "chose": "B",
+  "reason": "The 4 right turns change heading by 120\u00b0, not 360\u00b0. From the initial hall/closet view, looking down and then moving forward plus three left strafes places the camera by the sink/vanity at an oblique downward angle. That matches image B best."
+ },
+ {
+  "id": "20260315-131954-e61b73bf",
+  "chose": "A",
+  "reason": "The initial view is most consistent with being near the upper-left part of the room, facing the left wall/door. Turning right three times gives a 90\u00b0 right turn, so the new view faces toward the top side of the room. Moving forward then brings the camera toward the pair of chairs along that wall: a black office chair on the left and a guest chair on the right. This matches image A best."
+ },
+ {
+  "id": "20260315-140507-f7f5613b",
+  "chose": "B",
+  "reason": "Turning right from the initial corner likely centers the bright gap/opening that is currently on the right side of the view. Looking down adds more floor, and two clockwise rolls make the scene noticeably tilted. Among the choices, B best matches that combination of same location, rightward reorientation toward the opening, downward tilt, and rolled camera."
+ },
+ {
+  "id": "20260315-131405-658e1e2a",
+  "chose": "D",
+  "reason": "The start appears to be beside the large copier/printer in the upper-right area, with the green bin/box corner nearby. After looking down, moving forward twice and then right places the viewpoint close to the copier\u2019s side/front near that corner. This best matches image D."
+ },
+ {
+  "id": "20260315-121506-4347bd77",
+  "chose": "A",
+  "reason": "Six left turns make a 180\u00b0 turn, so the camera ends up facing back toward the starting area. Then moving backward shifts it toward the chair end, and moving left (in the reversed orientation) shifts it toward the blue machine\u2019s far/right side. The resulting view should show the blue machine on the left and the adjacent gray surface on the right, which matches A."
+ },
+ {
+  "id": "20260315-124509-7ac73235",
+  "chose": "B",
+  "reason": "The initial view appears to face the wall-mounted fixture/counter area. After turning right twice (60\u00b0 total), looking down, and moving forward a short distance, the view should still include that counter on the left while bringing the tall panel/door on the right more into view. This matches image B best."
+ },
+ {
+  "id": "20260315-141322-9a07a045",
+  "chose": "D",
+  "reason": "Starting from a wall/corridor-like view near the right side of the room, five left turns reorient the camera toward the workstation area. After looking down, strafing left 1.5 m moves into the desk zone, and moving down lowers the viewpoint toward the tabletop. This matches the desk-with-monitor/laptop view."
+ },
+ {
+  "id": "20260315-131651-f0ad92c6",
+  "chose": "C",
+  "reason": "Turning right 90\u00b0 from the initial door view points toward the sink/vanity area. Looking down twice and then moving forward and left would bring the camera close to the vanity from an angled side position, matching the sink-counter view in C."
+ },
+ {
+  "id": "20260315-140206-b6b038cc",
+  "chose": "B",
+  "reason": "After a right turn and looking down, moving left would shift the camera toward/over the sink area, and moving up raises the viewpoint. The resulting view should be a higher, downward-looking angle over the countertop rather than still mostly showing the vanity front. That matches B."
+ },
+ {
+  "id": "20260315-123741-3ce742a9",
+  "chose": "B",
+  "reason": "After 5 right turns, the view is rotated 150\u00b0 clockwise from the initial corner-facing direction. From that upper-right area, this points back toward the shelving/cubby side of the room. Then looking up and moving up should produce an elevated, upward-tilted view with the cubbies and upper wall/ceiling visible. Among the options, B best matches that pose."
+ },
+ {
+  "id": "20260315-141309-fc9d9c12",
+  "chose": "D",
+  "reason": "From the initial view, the camera is beside the right end of the white table, facing roughly along the table toward the curtain/wall side. After turning right twice (60\u00b0), then moving backward twice and left twice, the net motion places the camera farther toward the curtain side and slightly around the table, with the table now appearing on the right edge rather than dominating the left. Lowering the camera also matches the lower perspective. This is most consistent with image D."
+ },
+ {
+  "id": "20260315-131254-24c5c7b6",
+  "chose": "B",
+  "reason": "The initial view is along the gray wall with open space to the right. The motion sequence results in ending farther along that aisle, rotated to the right, and then raised upward by 1.0 m total. Among the choices, B best matches that final elevated viewpoint in the utility area."
+ },
+ {
+  "id": "20260315-141534-06bf578a",
+  "chose": "A",
+  "reason": "The initial view faces the desk/workbench wall. After two left turns, the camera aims toward the left section of the desk; moving forward then strafing left twice shifts the viewpoint leftward and slightly back from the desk. That matches the wider desk view with monitor/laptop and the bucket now on the right side."
+ },
+ {
+  "id": "20260315-140726-fa7f6c20",
+  "chose": "B",
+  "reason": "The initial view is in the narrow gap beside the blue boiler. After turning right 4 times at 30\u00b0 each, the camera yaws 120\u00b0, which should swing the view around to face down the aisle with the boiler now on the right. Then looking up by 30\u00b0 should emphasize the upper pipes/ceiling rather than the floor. Among the choices, B matches that orientation and upward tilt best."
+ },
+ {
+  "id": "20260315-115813-8682babb",
+  "chose": "A",
+  "reason": "After turning right twice, looking further down, then rolling clockwise 90\u00b0, the two left moves most plausibly shift the viewpoint from the drawer area toward the rug/desk edge. Among the choices, A matches that final down-tilted position best; C looks like a smaller shift with the drawer still in frame."
+ },
+ {
+  "id": "20260315-141753-aa541815",
+  "chose": "D",
+  "reason": "The initial view looks like a narrow gap with a whiteboard/wall on the right and the side of a shelf/desk on the left, facing along that gap. Moving forward twice likely advances past the end of that furniture, and then moving left shifts out into the open room while keeping the same viewing direction. The resulting scene should open up to show the room with the desk on the right and couch/rug on the left, which matches D."
+ },
+ {
+  "id": "20260315-135111-24bf126b",
+  "chose": "D",
+  "reason": "Six left turns = 180\u00b0 turn. From the initial view, that puts the camera facing back toward the couch/cabinet area behind it. Then look_up raises the view, and move_backward shifts slightly away from that couch/cabinet area, so the result should show that area from a bit farther back with an upward tilt. That matches D best."
+ },
+ {
+  "id": "20260315-113647-e7b0bec7",
+  "chose": "A",
+  "reason": "The moves place the camera mostly to the initial right side of the copier/cabinet area, near the corner with the green bin, while facing back across it. That matches A."
+ },
+ {
+  "id": "20260315-132155-7158de0e",
+  "chose": "C",
+  "reason": "After looking up and moving from the dresser area toward the left/northwest side of the room, the camera should end near the wall corner, still facing that corner but with an upward pitch. The resulting view should emphasize the upper walls/ceiling rather than the bed or a close-up picture. That best matches C."
+ },
+ {
+  "id": "20260315-132839-473ff701",
+  "chose": "D",
+  "reason": "The initial view is very close to the right end of the shelving unit. After turning left twice (60\u00b0), you\u2019d be looking obliquely along the shelf. Then moving backward and especially two steps right shifts you around the shelf\u2019s right end into the aisle, so the shelf should end up on the left side of view with seating visible to the right. That matches D best."
+ },
+ {
+  "id": "20260315-121017-3dae456f",
+  "chose": "C",
+  "reason": "Initial view is at the corner with shelves on the left wall and the desk/window on the right wall. Five right turns = 150\u00b0, so the camera should end up looking mostly toward the opposite side of the room, not still at the same corner. B is only a slight right turn, A looks more like a moderate turn, and D is too close/downward. C best matches the 150\u00b0 rotated view."
+ },
+ {
+  "id": "20260315-125102-ae16837b",
+  "chose": "A",
+  "reason": "Turning left by 30\u00b0 from the sink view would bring the left side of the vanity/counter into view. Moving left and then down would make that side appear closer and lower, revealing more of the cabinet face and the adjacent hallway area. This matches image A best."
+ },
+ {
+  "id": "20260315-114347-bfbb3df3",
+  "chose": "B",
+  "reason": "Net motion is mostly to the left of the initial sink view, with only a small move closer to the sink wall, while keeping a 30\u00b0 left-turned orientation. That places the camera near the left-side doorway/panel area, looking obliquely across it rather than straight at the sinks. This matches image B."
+ },
+ {
+  "id": "20260315-114547-50a506ab",
+  "chose": "D",
+  "reason": "From the initial desk-facing view, the agent is near the top wall. After three right turns, it faces toward the couch side of the room. Moving backward four steps shifts it leftward across the room; the extra right move shifts slightly downward/south. With the lowered height, the resulting view should be from the left/center area looking toward the orange couch, with the chairs and cabinet visible. This matches D best."
+ },
+ {
+  "id": "20260315-133418-82877a00",
+  "chose": "C",
+  "reason": "Starting close to the entry door, three left turns make the view 90\u00b0 left of the original. Looking down and then strafing left shifts the camera into the adjacent vanity/closet area rather than still facing the door. The image that matches this is the closet/sink view."
+ },
+ {
+  "id": "20260315-115209-280a1813",
+  "chose": "D",
+  "reason": "Turning left 90\u00b0 from the initial stall view, then moving backward 1.5 m and slightly back relative to the original view places the camera just outside the stall entrance, looking across the opening. This matches the view where the toilet is now to the right and the stall edge/opening frames the scene."
+ },
+ {
+  "id": "20260315-115400-ce49cc83",
+  "chose": "D",
+  "reason": "Turning 120\u00b0 right from the initial view of the luggage-rack/ironing-board corner reorients the camera toward the bed/window side of the room. After looking up and moving backward slightly, the scene matches the bed with the AC/window on the left."
+ }
+]

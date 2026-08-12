@@ -63,13 +63,32 @@ _FORMAT_TEMPLATES: Dict[str, str] = {
         "{action_description}"
     ),
     "eval_mode": (
-        "You can think first, which is optional, then answer, respond in this format:\n"
-        "[your reasoning here]<action>{action_example}</action>\n"
+        "You can think first (optional), then answer. Respond in EXACTLY this format:\n"
+        "<think>your reasoning here</think><action>{action_example}</action>\n"
+        "The <think>...</think> block is optional, but the <action>...</action> "
+        "block is REQUIRED and must use angle-bracket tags exactly as shown "
+        "(do not use square brackets or any other tags).\n"
         "{action_description}"
     ),
     "no_think": (
         "You need to only give your answer, respond in this format:\n"
         "<action>{action_example}</action>\n"
+        "{action_description}"
+    ),
+    # Grounding format: the agent must ground its decision in what it SEES, and
+    # commit to a prediction of the next view. The <description> is goal-agnostic,
+    # so unlike <think> it stays valid after a hindsight goal relabel -> it can be
+    # cached on the graph node and reused as SFT supervision.
+    "grounding": (
+        "First briefly describe what you see, then reason, then act. "
+        "Respond in this format:\n"
+        "<description>[one short sentence: the main objects/layout in the current "
+        "view]</description>"
+        "<think>[one short sentence: why this action moves you toward the target]"
+        "</think>"
+        "<action>{action_example}</action>\n"
+        "Keep <description> and <think> to ONE short sentence each, and ALWAYS end "
+        "with the <action> tag.\n"
         "{action_description}"
     ),
 }
@@ -148,6 +167,53 @@ def parse_free_think(response: str) -> Dict[str, Any]:
         "ok": True,
         "think": m.group("think").strip(),
         "actions_blob": m.group("action").strip(),
+    }
+
+
+# full grounding = description + think + action. <prediction> was dropped: a 3B model
+# spent its whole budget on 4 tags and never emitted <action> (1992 of 2552 turns had
+# NO action tag). The "next view" is simply the NEXT turn's <description>, which the
+# graph builder already prefers, so nothing is lost.
+_GROUNDING_RE = re.compile(
+    r'^\s*<description>(?P<description>[\s\S]*?)</description>\s*'
+    r'<think>(?P<think>[\s\S]*?)</think>\s*'
+    r'<action>(?P<action>[\s\S]*?)</action>\s*$',
+    re.IGNORECASE
+)
+
+
+@FormatRegistry.register("grounding")
+def parse_grounding(response: str) -> Dict[str, Any]:
+    """
+    Grounding format:
+    ``<description>..</description><think>..</think><prediction>..</prediction><action>..</action>``
+
+    LENIENT on purpose. A small model emits sloppy variants (missing <prediction>,
+    stray text between tags). If we required an exact fullmatch, every such turn
+    would be a parse error -> no action executed, no reward, no learning signal, and
+    the policy could never bootstrap into the format. So: we only REQUIRE a
+    non-empty <action>; description/think/prediction are captured when present.
+    ``full_format`` reports whether all four tags were present in the right order —
+    that is what the per-turn format bonus should key on, so the format is still
+    rewarded without breaking the episode.
+    """
+    a = _LENIENT_ACTION_RE.search(response)
+    if not a or not a.group("action").strip():
+        return {"ok": False, "description": "", "think": "", "prediction": "",
+                "actions_blob": "", "full_format": False}
+
+    def _grab(tag):
+        m = re.search(rf"<{tag}>([\s\S]*?)</{tag}>", response, re.IGNORECASE)
+        return m.group(1).strip() if m else ""
+
+    desc, think, pred = _grab("description"), _grab("think"), _grab("prediction")
+    return {
+        "ok": True,
+        "description": desc,
+        "think": think,
+        "prediction": pred,
+        "actions_blob": a.group("action").strip(),
+        "full_format": bool(_GROUNDING_RE.fullmatch(response)),
     }
 
 

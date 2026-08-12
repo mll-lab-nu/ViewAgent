@@ -981,6 +981,9 @@ class RayPPOTrainer:
         if self.val_reward_fn is not None and self.config.trainer.get("val_before_train", True):
             val_metrics = self._validate()
             assert val_metrics, f"{val_metrics=}"
+            # tag with the step axis so val_before_train plots at step 0 (not n/a)
+            # when charts use `training/global_step` as the x-axis.
+            val_metrics["training/global_step"] = self.global_steps
             pprint(f"Initial validation metrics: {val_metrics}")
             logger.log(data=val_metrics, step=self.global_steps)
             if self.config.trainer.get("val_only", False):

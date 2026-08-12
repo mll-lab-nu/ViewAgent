@@ -1,0 +1,26 @@
+# RL train envs for AI2-THOR Interactive View Planning (IVP).
+# Scene-disjoint train split produced by split_jsonl_by_scene.
+# Requires the AI2-THOR HTTP render service (client_url_ai2thor.txt).
+envs:
+  - name: Ai2ThorInteractiveViewPlanning
+    data_source: ae
+    seed: [0, 1133, 1]
+    n_envs: 1133
+    max_turns: 10
+    response_length_per_turn: 512
+    config:
+      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/ai2thor/interactive_view_planning_train.jsonl
+      image_size: [512, 512]
+      format: eval_mode
+      use_example_in_sys_prompt: false
+      client_url_file_path: ${oc.env:VIEWSUITE_ROOT}/client_url_ai2thor.txt
+      render_backend: client
+      max_turns: 10
+      per_turn_format_reward: 0.01
+      format_reward: 0.0
+      give_answer_reward: 0.1
+      action_only_mode: true
+      allow_rotate: false
+      # Per-turn bonus when the model emits the reasoning format
+      # `<observation>...</observation> ... <action>...</action>`.
+      obs_format_bonus_reward: 0.01
