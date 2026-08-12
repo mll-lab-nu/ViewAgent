@@ -2,7 +2,7 @@
 # Frontier-model evaluation on the AI2-THOR test split via OpenRouter.
 # Per-model configs inherit this file (defaults: - eval_default).
 # IVP needs the AI2-THOR render service (client_url_ai2thor.txt).
-# Run with OPENROUTER_API_KEY exported + HTTPS_PROXY=http://proxy.example:8080.
+# Run with OPENROUTER_API_KEY exported, plus HTTPS_PROXY if outbound needs a proxy.
 # ─────────────────────────────────────────────────────────────────────
 
 fileroot: ${oc.env:VIEWSUITE_ROOT}

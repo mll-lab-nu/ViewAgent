@@ -124,7 +124,7 @@ python -m view_suite.envs.ai2thor_proxy_task.data_gen.gen_parallel \
 # filter low-semantic views (blank walls/floors) via a VLM (OpenRouter qwen3.7-plus):
 python -m view_suite.envs.ai2thor_proxy_task.data_gen.filter_low_semantic \
     --data_root=$VIEWSUITE_ROOT/data/ai2thor_full --backend=openrouter --model=qwen/qwen3.7-plus \
-    --workers=24 --review_dir=$VIEWSUITE_ROOT/filter_review   # OPENROUTER_API from .env, via egress-proxy
+    --workers=24 --review_dir=$VIEWSUITE_ROOT/filter_review   # OPENROUTER_API from .env; set EGRESS_PROXY if outbound needs a proxy
 
 # scene-disjoint split -> _train/_eval/_test:
 python -c "from view_suite.envs.utils.split_jsonl_by_scene import split_jsonl_by_scene as s; \

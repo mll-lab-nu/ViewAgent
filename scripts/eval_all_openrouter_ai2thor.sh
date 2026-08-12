@@ -2,8 +2,13 @@
 ROOT=/home/kangrui/projects/viewagent_ai2thor/ViewAgent
 source ~/miniconda3/etc/profile.d/conda.sh; conda activate viewagent_thor
 export VIEWSUITE_ROOT="$ROOT" fileroot="$ROOT"
-export OPENROUTER_API_KEY=$(grep -oE '^OPENROUTER_API=.*' /home/kangrui/projects/viewagent_ai2thor/.env | cut -d= -f2- | tr -d "\"'")
-export HTTPS_PROXY=http://proxy.example:8080 HTTP_PROXY=http://proxy.example:8080 NO_PROXY=localhost,127.0.0.1
+# Key from an .env outside the repo; point ENV_FILE at yours.
+ENV_FILE="${ENV_FILE:-$ROOT/.env}"
+export OPENROUTER_API_KEY=$(grep -oE '^OPENROUTER_API=.*' "$ENV_FILE" | cut -d= -f2- | tr -d "\"'")
+# Only needed where outbound traffic must go through a proxy.
+if [ -n "${EGRESS_PROXY:-}" ]; then
+  export HTTPS_PROXY="$EGRESS_PROXY" HTTP_PROXY="$EGRESS_PROXY" NO_PROXY=localhost,127.0.0.1
+fi
 cd "$ROOT"
 for m in gpt_5_4 gemini_3_1_pro grok_4_20_beta claude_opus_4_6; do
   echo "[eval_all] launching $m"
