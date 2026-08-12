@@ -14,3 +14,7 @@ env_registry:
   Path2View: view_suite.envs.scannet_proxy_task.path_to_view.Path2View
   InteractiveViewPlanning: view_suite.envs.scannet_proxy_task.interactive_view_planning.InteractiveViewPlanning
   View2Path: view_suite.envs.scannet_proxy_task.view_to_path.View2Path
+  # --- AI2-THOR proxy tasks (P2V / V2P / IVP) ---
+  Ai2ThorPath2View: view_suite.envs.ai2thor_proxy_task.path_to_view.Ai2ThorPath2View
+  Ai2ThorView2Path: view_suite.envs.ai2thor_proxy_task.view_to_path.Ai2ThorView2Path
+  Ai2ThorInteractiveViewPlanning: view_suite.envs.ai2thor_proxy_task.interactive_view_planning.Ai2ThorInteractiveViewPlanning
