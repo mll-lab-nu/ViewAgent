@@ -2,8 +2,8 @@
 # One-shot: eval the latest trained checkpoint on the CLEAN test set (n=252, 3 tasks)
 # with 8-GPU sglang (data-parallel). Training must already be stopped.
 set -u
-ROOT=/home/kangrui/projects/viewagent_ai2thor/ViewAgent
-LOGF=/home/kangrui/projects/viewagent_ai2thor/test_eval_now.log
+ROOT="${VIEWSUITE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+LOGF="${TEST_EVAL_LOG:-$ROOT/../test_eval_now.log}"
 exec >> "$LOGF" 2>&1
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate viewagent_thor
@@ -62,6 +62,6 @@ DP_SIZE=8 TP_SIZE=1 MEM_FRACTION=0.85 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 PORT=
 
 pkill -9 -f "[s]glang" 2>/dev/null; sleep 5
 log "=== TABLE (trained + frontier, test n=252) ==="
-python3 /home/kangrui/projects/viewagent_ai2thor/build_ai2thor_table_full.py 2>&1 | tee -a "$LOGF" \
+python3 "$ROOT/../build_ai2thor_table_full.py" 2>&1 | tee -a "$LOGF" \
   > "$ROOT/examples/evaluation/eval_all_openrouter_ai2thor/RESULTS_full.md"
 log "wrote RESULTS_full.md; DONE"
