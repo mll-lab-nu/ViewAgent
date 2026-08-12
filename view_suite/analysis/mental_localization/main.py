@@ -45,8 +45,8 @@ view before it could answer).
 Usage
 -----
     python -m view_suite.analysis.mental_localization.main \
-        --rollouts_dir /home/kangrui/projects/viewsuite/data/rollouts/rollouts_all_new \
-        --output_dir   /home/kangrui/projects/viewsuite/data/rollouts/rollouts_all_new_mental_localization \
+        --rollouts_dir data/rollouts/rollouts_all_new \
+        --output_dir   data/rollouts/rollouts_all_new_mental_localization \
         --models gpt_5_4,gpt_5_4_pro,gemini_3_1_pro,claude_opus_4_6,grok_4_20_beta
 """
 from __future__ import annotations
