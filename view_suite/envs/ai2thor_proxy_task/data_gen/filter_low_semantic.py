@@ -36,17 +36,19 @@ from typing import Dict, List, Optional, Tuple
 import requests
 
 # --- Backends ---------------------------------------------------------------
-# "openrouter": external OpenRouter API (needs OPENROUTER_API key; reached via
-#     Meta fwdproxy). Real quota -> the recommended path.
-# "ai_gateway": Meta AI Gateway -> Vertex/Gemini over mTLS (no key, but the
-#     shared `playground` gateway is heavily rate-limited).
+# "openrouter": external OpenRouter API (needs an OPENROUTER_API key, and an
+#     egress proxy on networks that require one). Real quota -> the recommended path.
+# "ai_gateway": an internal mTLS gateway to Vertex/Gemini (no key, but the shared
+#     `playground` gateway is heavily rate-limited).
 _DEFAULT_BACKEND = "openrouter"
 _DEFAULT_MODEL = {"openrouter": "qwen/qwen3.7-plus", "ai_gateway": "gemini-2.5-flash"}
 
-# OpenRouter (external) — routed through Meta's forward proxy.
+# OpenRouter (external). Set EGRESS_PROXY where outbound traffic needs a proxy;
+# unset means connect directly.
 _OR_URL = "https://openrouter.ai/api/v1/chat/completions"
-_FWDPROXY = os.environ.get("FWDPROXY", "http://fwdproxy:8080")
-_OR_PROXIES = {"http": _FWDPROXY, "https": _FWDPROXY}
+_EGRESS_PROXY = os.environ.get("EGRESS_PROXY") or os.environ.get("HTTPS_PROXY")
+_OR_PROXIES = ({"http": _EGRESS_PROXY, "https": _EGRESS_PROXY}
+               if _EGRESS_PROXY else None)
 
 # AI Gateway (Vertex/Gemini) config.
 _GATEWAY = os.environ.get("AI_GATEWAY", "playground")
@@ -219,8 +221,9 @@ def run(
 ):
     """Filter low-semantic samples out of the AI2-THOR proxy-task jsonls.
 
-    backend: "openrouter" (default; needs OPENROUTER_API, via fwdproxy) or
-        "ai_gateway" (Meta mTLS -> Gemini; shared gateway is rate-limited).
+    backend: "openrouter" (default; needs OPENROUTER_API, plus EGRESS_PROXY on
+        networks that require one) or "ai_gateway" (internal mTLS -> Gemini;
+        the shared gateway is rate-limited).
     model: VLM id; default per backend (openrouter -> qwen/qwen3.7-plus).
     workers: OpenRouter tolerates ~12; drop to ~2 for the ai_gateway playground.
     review_dir: if set, copy judged images into <review_dir>/{keep,filter}/ for
