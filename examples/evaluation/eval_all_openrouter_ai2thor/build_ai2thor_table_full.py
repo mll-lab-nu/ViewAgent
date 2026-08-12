@@ -3,7 +3,6 @@
 Short = GT turn-length <= 2, Long = > 2 (len(gt_action_seq)). Reads per-episode
 metrics.json under rollouts/<model>/tag_<task>/.
 """
-import os
 import json, glob, os
 
 ROOT = os.environ.get("VIEWSUITE_ROOT", ".")
