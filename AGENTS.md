@@ -80,8 +80,8 @@ The AI2-THOR env is a **thin layer** over the shared ScanNet base classes
      Restore it (e.g. from a fresh LLaMA-Factory clone or a sibling checkout).
   2. `trl` must be **==0.24.0** (LLaMA-Factory requires `<=0.24.0`; verl/vagen
      import fine under it — the `graphrl==0.26.2` pip pin is metadata-only).
-- **wandb**: authed via `~/.netrc` → **https://meta.wandb.io** (project
-  `viewsuite`, entity `kangrui`). Scripts default `WANDB_MODE=online`.
+- **wandb**: authed via `~/.netrc`; set `WANDB_BASE_URL` / `WANDB_ENTITY` for a
+  self-hosted instance. Scripts default `WANDB_MODE=online`.
 
 ---
 
@@ -170,7 +170,7 @@ bash examples/viewsuite/ai2thor_interactive_view_planning/run.sh
 The loop = **RL** (verl+sglang, IVP rollouts rendered live via the render
 service) → **traj_to_sft** (build a view graph from rollouts, distill 7 SFT
 datasets) → **LLaMA-Factory SFT** → next iter's start model. All wandb-logged
-(`meta.wandb.io/kangrui/viewsuite`, run names `ai2thor_interactive_view_planning_*`).
+(project `viewsuite`, run names `ai2thor_interactive_view_planning_*`).
 Outputs under `GraphRL/exps/viewsuite/ai2thor_interactive_view_planning/`.
 
 Validated end-to-end (RL + traj_to_sft + SFT all run and produce `sft_model`).
