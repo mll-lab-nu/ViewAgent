@@ -75,7 +75,7 @@ def _openrouter_key() -> str:
             return os.environ[k]
     for envp in (
         os.path.join(os.environ.get("VIEWSUITE_ROOT", ""), "..", ".env"),
-        "/home/kangrui/projects/viewagent_ai2thor/.env",
+        "$ENV_FILE",
     ):
         if envp and os.path.exists(envp):
             for line in open(envp):
