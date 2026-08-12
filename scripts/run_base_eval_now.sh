@@ -1,7 +1,7 @@
 #!/bin/bash
 set -u
-ROOT=/home/kangrui/projects/viewagent_ai2thor/ViewAgent
-LOGF=/home/kangrui/projects/viewagent_ai2thor/base_eval_now.log
+ROOT="${VIEWSUITE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+LOGF="${BASE_EVAL_LOG:-$ROOT/../base_eval_now.log}"
 exec >> "$LOGF" 2>&1
 source ~/miniconda3/etc/profile.d/conda.sh; conda activate viewagent_thor
 export VIEWSUITE_ROOT="$ROOT"; cd "$ROOT"
@@ -15,6 +15,6 @@ DP_SIZE=8 TP_SIZE=1 MEM_FRACTION=0.85 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 PORT=
     default_chat_config.max_tokens=2048 backends.sglang.max_concurrency=32 run.max_concurrent_jobs=32 \
   && log "base eval finished" || log "base eval FAILED"
 pkill -9 -f "[s]glang" 2>/dev/null; sleep 5
-python3 /home/kangrui/projects/viewagent_ai2thor/build_ai2thor_table_full.py 2>&1 | tee -a "$LOGF" \
+python3 $ROOT/../build_ai2thor_table_full.py 2>&1 | tee -a "$LOGF" \
   > "$ROOT/examples/evaluation/eval_all_openrouter_ai2thor/RESULTS_full.md"
 log "rebuilt RESULTS_full.md; DONE"
