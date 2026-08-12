@@ -3,8 +3,8 @@
 #   1) babysit the training run (heal tunnels + render servers, resume on failure)
 #   2) when training completes, eval the trained model on the 3 tasks vs baseline
 # Runs under systemd-run --user so it survives session teardown.
-ROOT=/home/kangrui/projects/viewagent_ai2thor/ViewAgent
-LOG=/home/kangrui/projects/viewagent_ai2thor/orchestrate.log
+ROOT="${VIEWSUITE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+LOG="${ORCHESTRATE_LOG:-$ROOT/../orchestrate.log}"
 exec >> "$LOG" 2>&1
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate viewagent_thor
