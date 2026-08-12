@@ -1,0 +1,56 @@
+{
+ "gpt_5_4": {
+  "n": 442,
+  "no_answer": 0.0,
+  "snap_answer": 2.5,
+  "orientation_flip": 7.2,
+  "both_off": 49.3,
+  "position_off_only": 37.8,
+  "rotation_off_only": 3.2
+ },
+ "gpt_5_4_pro": {
+  "n": 406,
+  "no_answer": 0.7,
+  "snap_answer": 0.0,
+  "orientation_flip": 9.6,
+  "both_off": 47.8,
+  "position_off_only": 39.4,
+  "rotation_off_only": 2.5
+ },
+ "gemini_3_1_pro": {
+  "n": 417,
+  "no_answer": 1.0,
+  "snap_answer": 0.2,
+  "orientation_flip": 10.8,
+  "both_off": 50.6,
+  "position_off_only": 35.3,
+  "rotation_off_only": 2.2
+ },
+ "claude_opus_4_6": {
+  "n": 473,
+  "no_answer": 0.0,
+  "snap_answer": 0.0,
+  "orientation_flip": 15.4,
+  "both_off": 55.8,
+  "position_off_only": 25.2,
+  "rotation_off_only": 3.6
+ },
+ "grok_4_20_beta": {
+  "n": 488,
+  "no_answer": 31.4,
+  "snap_answer": 24.0,
+  "orientation_flip": 4.1,
+  "both_off": 21.5,
+  "position_off_only": 17.2,
+  "rotation_off_only": 1.8
+ },
+ "qwen_25_vl_7b_trained": {
+  "n": 277,
+  "no_answer": 0.4,
+  "snap_answer": 0.0,
+  "orientation_flip": 7.6,
+  "both_off": 49.1,
+  "position_off_only": 40.4,
+  "rotation_off_only": 2.5
+ }
+}

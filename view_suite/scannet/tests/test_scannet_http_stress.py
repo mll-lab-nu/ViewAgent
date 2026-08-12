@@ -20,6 +20,7 @@ Usage:
 """
 
 import asyncio
+import math
 import random
 import time
 from dataclasses import dataclass
@@ -54,7 +55,11 @@ class RequestStats:
 
 def generate_random_camera_task(width: int = 640, height: int = 480) -> Dict[str, Any]:
     """Generate a random camera pose task for testing."""
-    fx = fy = random.uniform(400, 800)
+    # Fixed intrinsics on purpose. Habitat bakes FOV into the sensor, so randomising fx
+    # makes every frame a full scene rebuild (~2 s) and measures reload cost, not render
+    # cost. Real callers hold intrinsics fixed.
+    fx = 462.07   # view_suite.envs.utils.scannet_utils.default_intrinsics()
+    fy = 617.31
     cx = width / 2
     cy = height / 2
     intrinsics = [
@@ -63,11 +68,23 @@ def generate_random_camera_task(width: int = 640, height: int = 480) -> Dict[str
         [0, 0, 1],
     ]
 
-    # Identity extrinsics for simplicity
+    # A pose INSIDE the room, not identity. At identity the camera sits at the world
+    # origin looking at almost nothing: measured 1% non-background, a 1.9 KiB PNG and
+    # 11 ms, versus 46 ms and 88 KiB for a real interior view. Benchmarking the empty
+    # frame overstates throughput ~4x.
+    yaw = random.uniform(0, 2 * math.pi)
+    fwd = [math.cos(yaw), math.sin(yaw), 0.0]
+    right = [fwd[1], -fwd[0], 0.0]
+    down = [
+        right[1] * fwd[2] - right[2] * fwd[1],
+        right[2] * fwd[0] - right[0] * fwd[2],
+        right[0] * fwd[1] - right[1] * fwd[0],
+    ]
+    eye = [random.uniform(2.0, 5.0), random.uniform(2.0, 5.0), 1.5]
     extrinsics = [
-        [1, 0, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 1, 0],
+        [right[0], down[0], fwd[0], eye[0]],
+        [right[1], down[1], fwd[1], eye[1]],
+        [right[2], down[2], fwd[2], eye[2]],
         [0, 0, 0, 1],
     ]
 
@@ -128,6 +145,12 @@ async def client_worker(
                 )
                 end_time = time.perf_counter()
 
+                # A 200 is NOT success. handler.handle() answers internal errors and
+                # missing scenes with HTTP 200 + meta={"error": ...} and zero images, and
+                # the client does not raise on those. Counting them as successes is how a
+                # renderer that produced NO images at all still scored 100% — twice. A
+                # request only counts if it returned one image per task.
+                ok = len(images) == len(tasks)
                 stats.append(RequestStats(
                     client_id=client_id,
                     request_id=req_id,
@@ -136,8 +159,9 @@ async def client_worker(
                     start_time=start_time,
                     end_time=end_time,
                     duration=end_time - start_time,
-                    success=True,
+                    success=ok,
                     num_images=len(images),
+                    error=None if ok else f"expected {len(tasks)} images, got {len(images)}",
                 ))
             except Exception as e:
                 end_time = time.perf_counter()
@@ -194,7 +218,11 @@ async def run_stress_test(
 
     # Health check
     try:
-        async with httpx.AsyncClient(timeout=10.0) as hc:
+        # Same self-signed-certificate switch the render client honours.
+        verify = os.getenv("RENDER_TLS_NO_VERIFY", "0").strip().lower() not in (
+            "1", "true", "yes",
+        )
+        async with httpx.AsyncClient(timeout=10.0, verify=verify) as hc:
             r = await hc.get(f"{url}/health")
             r.raise_for_status()
             print("Service health check: OK")

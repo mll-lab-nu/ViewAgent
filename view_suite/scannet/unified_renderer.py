@@ -15,13 +15,17 @@ DEFAULT_CLIENT_MAX_INFLIGHT = int(os.getenv("SCANNET_RENDER_CLIENT_MAX_INFLIGHT"
 
 @dataclass
 class RenderConfig:
-    render_backend: str                 # "local" | "client"
+    render_backend: str                 # "local" | "client" | "habitat"
     scannet_root: Optional[str] = None  # required for local; also used to resolve ply for client
     client_url: Optional[str] = None    # required for client
     client_origin: Optional[str] = None
     scene_id: Optional[str] = None      # current scene
     client_open_timeout: Optional[float] = None
     client_max_inflight: Optional[int] = None
+    # habitat backend: renders in-process on an EXPLICIT gpu, unlike open3d/EGL
+    # which always lands on device 0 regardless of CUDA_VISIBLE_DEVICES.
+    gpu_device_id: int = 0
+    habitat_light_intensity: float = 2.5   # matches Open3D mean exposure
 
 def _to_jsonable(x: Any) -> Any:
     if isinstance(x, np.ndarray):
@@ -63,10 +67,28 @@ class UnifiedRender:
         )
         self._mesh: Optional[MeshRenderer] = None
         self._client: Optional[HRWRoutedAsyncUnifiedClient] = None
+        self._habitat = None
         self._ply: Optional[str] = None
 
     # ------------- lifecycle -------------
+    def _release_habitat(self) -> None:
+        """Tear down the habitat simulator, if one is cached.
+
+        Explicit close() is required, not just dropping the reference: habitat's
+        Simulator sits in a reference cycle (its sensors hold a back-pointer to it), so
+        without close() its ~330 MiB stays resident until a cyclic gc happens to run —
+        and a render worker allocates so little on the Python heap that the generational
+        thresholds may not fire for a very long time.
+        """
+        if getattr(self, "_habitat", None) is not None:
+            try:
+                self._habitat.close()
+            except Exception:
+                pass
+            self._habitat = None
+
     async def close(self) -> None:
+        self._release_habitat()
         if self._client is not None:
             try:
                 await self._client.aclose()
@@ -79,6 +101,9 @@ class UnifiedRender:
             self.cfg.scene_id = scene_id
             self._ply = None
             self._mesh = None  # drop local cache to avoid mixing scenes
+            # The habitat simulator is bound to a mesh at construction, so it has to go
+            # too — leaving it would silently keep rendering the PREVIOUS scene.
+            self._release_habitat()
 
     # ------------- ensures -------------
     def _ensure_ply(self) -> str:
@@ -97,6 +122,17 @@ class UnifiedRender:
             self._mesh = MeshRenderer(self._ensure_ply())
         return self._mesh
 
+    def _ensure_habitat(self):
+        """Habitat-Sim renderer pinned to cfg.gpu_device_id (real multi-GPU isolation)."""
+        if self._habitat is None:
+            from view_suite.scannet.render.habitat_render import HabitatRenderer
+            self._habitat = HabitatRenderer(
+                self._ensure_ply(),
+                gpu_device_id=int(self.cfg.gpu_device_id or 0),
+                light_intensity=float(self.cfg.habitat_light_intensity),
+            )
+        return self._habitat
+
     async def _ensure_client(self) -> HRWRoutedAsyncUnifiedClient:
         if self._client is None:
             assert self.cfg.client_url, "client_url required"
@@ -113,6 +149,9 @@ class UnifiedRender:
     async def render_image_from_cam_param(self, camera_intrinsics, camera_extrinsics, width=300, height=300) -> Image.Image:
         if self.cfg.render_backend == "local":
             img = self._ensure_local().render_image_from_cam_param(camera_intrinsics, camera_extrinsics, width, height)
+            return self._to_pil(img)
+        elif self.cfg.render_backend == "habitat":
+            img = self._ensure_habitat().render_image_from_cam_param(camera_intrinsics, camera_extrinsics, width, height)
             return self._to_pil(img)
         elif self.cfg.render_backend == "client":
             K = _ensure_K3x3(np.asarray(camera_intrinsics, dtype=np.float32))

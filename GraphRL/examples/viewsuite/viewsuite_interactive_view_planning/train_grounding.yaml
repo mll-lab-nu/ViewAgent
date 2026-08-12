@@ -1,0 +1,30 @@
+# Grounding-format RL config: the policy must emit
+#   <description>current view</description><think>..</think><prediction>next view</prediction><action>..</action>
+# description/prediction are goal-agnostic -> cached on graph nodes and reused as
+# SFT supervision after hindsight relabeling (see graph_builder view_desc).
+# per_turn_format_reward raised 0.01->0.05 so the format is worth learning;
+# response_length_per_turn 512->1024 since the turn is much longer.
+envs:
+  - name: InteractiveViewPlanning
+    data_source: ae
+    seed: [0, 3419, 1]
+    n_envs: 3419
+    max_turns: 10
+    response_length_per_turn: 1024
+    config:
+      jsonl_path: ${oc.env:VIEWSUITE_ROOT}/data/viewsuite_15k/interactive_view_planning_train_filter.jsonl
+      image_size: [512, 512]
+      format: grounding
+      use_example_in_sys_prompt: false
+      client_url_file_path: ${oc.env:VIEWSUITE_ROOT}/client_url.txt
+      render_backend: client
+      max_turns: 10
+      per_turn_format_reward: 0.05
+      format_reward: 0.0
+      give_answer_reward: 0.1
+      action_only_mode: true
+      allow_rotate: false
+      # Per-turn bonus when the model emits the reasoning format
+      # `<observation>...</observation> ... <action>...</action>`.
+      # 0 to disable. Only GymProxyTool reads this.
+      obs_format_bonus_reward: 0.01
