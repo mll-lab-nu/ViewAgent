@@ -10,6 +10,13 @@ OMP_CAP=${2:-4}
 PORT=${3:-8767}
 GPU_IDS=${4:-"0"}
 BACKEND=${5:-open3d}  # open3d (mesh) | gsplat (3DGS) | habitat (mesh, multi-GPU)
+# Bind address and TLS pair come from the environment, so the supervisor can serve
+# HTTPS and bind "::" when the client is on another machine. Both default to the
+# previous behaviour (IPv4 bind, plain HTTP). Set the bind deliberately: an IPv4-only
+# listener is simply invisible to an IPv6 client, with no error on either side.
+HOST=${HOST:-0.0.0.0}
+SSL_KEYFILE=${SSL_KEYFILE:-}
+SSL_CERTFILE=${SSL_CERTFILE:-}
 # Anchor to VIEWSUITE_ROOT, not the CWD: setsid does not change directory, so a
 # CWD-relative default resolves against wherever the supervisor happened to be started
 # and the service then comes up healthy but fails on every scene.
@@ -57,7 +64,10 @@ CMD=("$PY_BIN" "${VIEWSUITE_ROOT}/view_suite/scannet/service_http/service.py"
      --port="$PORT"
      --log_level="$LOG_LEVEL"
      --backend="$BACKEND"
+     --host="$HOST"
      --forced_render_size=None)
 [ -n "$GPU_IDS" ] && CMD+=(--gpu_ids="$GPU_IDS")
+[ -n "$SSL_KEYFILE" ] && CMD+=(--ssl_keyfile="$SSL_KEYFILE")
+[ -n "$SSL_CERTFILE" ] && CMD+=(--ssl_certfile="$SSL_CERTFILE")
 
 exec "${CMD[@]}"

@@ -5,6 +5,7 @@ import asyncio
 import io
 import json
 import logging
+import os
 import random
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -83,7 +84,15 @@ class AsyncUnifiedClient:
         self.retry_log_level = int(retry_log_level)
 
         limits = httpx.Limits(max_connections=int(max_connections))
-        self._client = httpx.AsyncClient(timeout=self.timeout, limits=limits)
+        # A remote render service may be served over HTTPS with a self-signed
+        # certificate. Verification stays on by default; set RENDER_TLS_NO_VERIFY=1 to
+        # accept a self-signed pair, or leave it on and point SSL_CERT_FILE at the cert.
+        verify = os.getenv("RENDER_TLS_NO_VERIFY", "0").strip().lower() not in (
+            "1", "true", "yes",
+        )
+        self._client = httpx.AsyncClient(
+            timeout=self.timeout, limits=limits, verify=verify
+        )
 
     async def aclose(self) -> None:
         """Close the underlying HTTP client and release pooled connections."""
