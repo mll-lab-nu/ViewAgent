@@ -37,6 +37,8 @@ _POSE_RE = re.compile(
     r"rx=([\d.e+-]+)°?,\s*ry=([\d.e+-]+)°?,\s*rz=([\d.e+-]+)°?\]"
 )
 _ACTION_RE = re.compile(r"<action>(.*?)</action>", re.DOTALL)
+_GROUND_DESC_RE = re.compile(r"<description>(.*?)</description>", re.DOTALL | re.IGNORECASE)
+_GROUND_PRED_RE = re.compile(r"<prediction>(.*?)</prediction>", re.DOTALL | re.IGNORECASE)
 _ANSWER_RE = re.compile(r"^answer\s*\(", re.IGNORECASE)
 _IMAGE_PLACEHOLDER = "<image>"
 
@@ -232,6 +234,20 @@ class InteractiveViewPlanningGraphBuilder(VagenGraphBuilder):
             std_threshold (float, default 10.0): min image std deviation.
     """
 
+    def __init__(self, config):
+        super().__init__(config)
+        # Idea-5: coarser node-merge tolerance unlocks cross-trajectory merge.
+        # The agent moves on a 0.5m/30deg grid, but the default 1e-3 tolerance is
+        # ~exact-match, so float drift keeps grid-identical poses from different
+        # trajectories from ever merging -> the graph barely beats no-graph.
+        # Set the tolerance BELOW half a step (< 0.25m / < 15deg) so distinct
+        # ADJACENT grid cells never merge. Configurable via graph_builder.merge_tol.
+        mt = (config.get("merge_tol") or {})
+        if mt.get("position") is not None:
+            ViewSuiteNodeData.POSITION_TOL = float(mt["position"])
+        if mt.get("angle") is not None:
+            ViewSuiteNodeData.ANGLE_TOL = float(mt["angle"])
+
     # ── factory override ──────────────────────────────────────────────────────
 
     def _make_node_data(self, ndata: Dict[str, Any]) -> NodeData:
@@ -382,6 +398,7 @@ class InteractiveViewPlanningGraphBuilder(VagenGraphBuilder):
         # First pass: collect all states (pose + image) and actions
         states: List[Tuple[Dict[str, float], Optional[str]]] = []  # (pose, image_path)
         actions: List[Optional[str]] = []  # action text after each state
+        grounding_txt: List[Dict[str, str]] = []  # per-state {"desc","pred"} (grounding fmt)
         global_img_idx = 0
 
         for msg in messages:
@@ -409,6 +426,7 @@ class InteractiveViewPlanningGraphBuilder(VagenGraphBuilder):
 
                 states.append((pose, obs_img_path))
                 actions.append(None)
+                grounding_txt.append({})
 
             elif role == "assistant":
                 action = _parse_action(content)
@@ -416,6 +434,18 @@ class InteractiveViewPlanningGraphBuilder(VagenGraphBuilder):
                     action = _clean_action(action)
                 if action and actions:
                     actions[-1] = action
+                # Grounding format: cache the goal-AGNOSTIC visual text so it can be
+                # reused as SFT supervision after a hindsight goal relabel.
+                #   <description> describes the CURRENT view  -> belongs to state i
+                #   <prediction>  describes the NEXT view     -> belongs to state i+1
+                # (<think> is goal-dependent and deliberately NOT cached here.)
+                if grounding_txt:
+                    d = _GROUND_DESC_RE.search(content)
+                    p = _GROUND_PRED_RE.search(content)
+                    if d and grounding_txt:
+                        grounding_txt[-1]["desc"] = d.group(1).strip()
+                    if p and grounding_txt:
+                        grounding_txt[-1]["pred"] = p.group(1).strip()
 
         # Build transitions: (state_i, action_i, state_{i+1})
         transitions: List[Tuple[NodeData, EdgeData, NodeData]] = []
@@ -427,19 +457,34 @@ class InteractiveViewPlanningGraphBuilder(VagenGraphBuilder):
             if action is None:
                 continue  # no valid action between these states
 
+            g_src = grounding_txt[i] if i < len(grounding_txt) else {}
+            g_dst = grounding_txt[i + 1] if i + 1 < len(grounding_txt) else {}
+            src_extra = {"scene_id": scene_id}
+            if g_src.get("desc"):
+                src_extra["view_desc"] = g_src["desc"]
+            dst_extra = {"scene_id": scene_id}
+            # prefer the NEXT state's own description; fall back to this step's prediction
+            if g_dst.get("desc"):
+                dst_extra["view_desc"] = g_dst["desc"]
+            elif g_src.get("pred"):
+                dst_extra["view_desc"] = g_src["pred"]
+
             src = ViewSuiteNodeData(
                 state={"scene_id": scene_id, "pose": pose_src},
                 obs_str=_pose_to_text(pose_src),
                 source_images=[img_src] if img_src else [],
-                extra={"scene_id": scene_id},
+                extra=src_extra,
             )
             dst = ViewSuiteNodeData(
                 state={"scene_id": scene_id, "pose": pose_dst},
                 obs_str=_pose_to_text(pose_dst),
                 source_images=[img_dst] if img_dst else [],
-                extra={"scene_id": scene_id},
+                extra=dst_extra,
             )
-            transitions.append((src, VagenEdgeData(obs_str=action), dst))
+            edge_extra = {}
+            if g_src.get("pred"):
+                edge_extra["pred_desc"] = g_src["pred"]
+            transitions.append((src, VagenEdgeData(obs_str=action, extra=edge_extra), dst))
 
         return transitions
 
@@ -478,14 +523,39 @@ class InteractiveViewPlanningGraphBuilder(VagenGraphBuilder):
                 "[InteractiveViewPlanningGraphBuilder] Filtered %d low-quality nodes", removed,
             )
 
-        # Split multi-action edges and merge equivalent nodes
-        n_virt, n_merged = self._refine_graph(graph)
-        if n_virt:
-            logger.info(
-                "[InteractiveViewPlanningGraphBuilder] Refine: %d virtual nodes created, "
-                "%d nodes merged",
-                n_virt, n_merged,
-            )
+        # Split multi-action edges and merge equivalent nodes.
+        # Idea-1: if atomize is enabled, render intermediate views so the graph
+        # becomes 100% single-action (multi-action edges whose intermediates fail
+        # to render are dropped), instead of collapsing back to "a | b | c" edges.
+        atom_cfg = self.config.get("atomize", {}) or {}
+        if atom_cfg.get("enabled"):
+            from .utils.graph_atomize import atomize_graph
+            try:
+                stats = atomize_graph(self, graph, images_dir, atom_cfg)
+                logger.info(
+                    "[InteractiveViewPlanningGraphBuilder] Atomize: %s", stats,
+                )
+            except Exception as e:
+                # Fail-safe: never crash the pipeline. Still guarantee a
+                # single-action graph by pruning any multi-action edges.
+                logger.error(
+                    "[atomize] FAILED (%s) -> pruning multi-action edges as fallback",
+                    e, exc_info=True,
+                )
+                pruned = 0
+                for u, v, eid, data in list(graph._g.edges(data=True, keys=True)):
+                    if len([a for a in data["obs_str"].split("|") if a.strip()]) > 1:
+                        graph._g.remove_edge(u, v, key=eid)
+                        pruned += 1
+                logger.info("[atomize] fallback pruned %d multi-action edges", pruned)
+        else:
+            n_virt, n_merged = self._refine_graph(graph)
+            if n_virt:
+                logger.info(
+                    "[InteractiveViewPlanningGraphBuilder] Refine: %d virtual nodes created, "
+                    "%d nodes merged",
+                    n_virt, n_merged,
+                )
 
         # Remove redundant edges (Dijkstra-based)
         n_redundant = self._remove_redundant_edges(graph)

@@ -44,3 +44,8 @@ MANIFEST
 /scripts/_finalize_ai2thor_dataset.sh
 /outputs/
 train_progress.png
+# Secrets. `.env` was already excluded only by luck -- nothing matched it, so a stray
+# `git add .` would have committed it. This repo is a public mirror.
+.env
+.env.*
+!.env.example

@@ -1,3 +1,4 @@
+from __future__ import annotations  # py3.9 (habitat env) parses 3.10 unions
 import os
 os.environ['__EGL_VENDOR_LIBRARY_DIRS'] = '/usr/share/glvnd/egl_vendor.d'
 os.environ['__GLX_VENDOR_LIBRARY_DIRS'] = '/usr/share/glvnd/glx_vendor.d'

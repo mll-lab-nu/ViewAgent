@@ -34,6 +34,8 @@ fi
 python -m graphrl.main \
     --config-path="${SCRIPT_DIR}" \
     --config-name=pipeline \
+    project_name=viewsuite_graph_improve \
+    experiment_name=graph_atomize_ir5 \
     general_overrides.rl.hydra_overrides.data.train_files="${SCRIPT_DIR}/train_turn_format.yaml" \
     general_overrides.rl.hydra_overrides.data.val_files="${SCRIPT_DIR}/val.yaml" \
     iterations=4 \
@@ -44,6 +46,10 @@ python -m graphrl.main \
     iteration_overrides.iter0.rl.training_steps=61 \
     iteration_overrides.iter1.rl.training_steps=61 \
     iteration_overrides.iter2.rl.training_steps=61 \
+    iteration_overrides.iter3.rl.training_steps=300 \
+    general_overrides.traj_to_sft.graph_builder.atomize.enabled=true \
+    general_overrides.traj_to_sft.graph_builder.merge_tol.position=0.2 \
+    general_overrides.traj_to_sft.graph_builder.merge_tol.angle=10.0 \
     +iteration_overrides.iter3.rl.hydra_overrides.data.train_files="${SCRIPT_DIR}/train.yaml" \
     +iteration_overrides.iter3.rl.hydra_overrides.huggingface_hub.repo_id=viewsuite_interactive_view_planning \
     +iteration_overrides.iter3.rl.hydra_overrides.trainer.log_image.enable=false \
