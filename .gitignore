@@ -49,3 +49,7 @@ train_progress.png
 .env
 .env.*
 !.env.example
+
+# Working notes — local only, kept out of the remote.
+AGENTS.md
+AGENT.md
