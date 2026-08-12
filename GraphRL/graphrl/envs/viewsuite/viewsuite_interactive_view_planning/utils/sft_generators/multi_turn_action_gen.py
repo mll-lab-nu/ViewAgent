@@ -25,6 +25,31 @@ DEFAULT_RATIO = (6, 2, 2)  # single : mix : multi
 
 # ── path classifiers ─────────────────────────────────────────────────────
 
+
+def _grounded_assistant(graph, cur_id, nxt_id, action_txt: str) -> str:
+    """Assemble the assistant turn.
+
+    If the graph carries cached grounding text (captured from RL rollouts that used
+    the "grounding" output format), emit the full
+    ``<description><think><prediction><action>`` turn; the description/prediction are
+    goal-agnostic so they remain valid under hindsight relabeling. Falls back to the
+    plain ``<action>`` turn when no grounding text is available.
+    """
+    def desc(nid):
+        try:
+            return (graph.nodes[nid].get("extra") or {}).get("view_desc") or ""
+        except Exception:
+            return ""
+    d_cur, d_nxt = desc(cur_id), desc(nxt_id)
+    if not d_cur and not d_nxt:
+        return f"<action>{action_txt}</action>"
+    think = f"To reach the target view, the next step is {action_txt}."
+    return (f"<description>{d_cur}</description>"
+            f"<think>{think}</think>"
+            f"<prediction>{d_nxt}</prediction>"
+            f"<action>{action_txt}</action>")
+
+
 def _classify_path(path: List[Dict[str, Any]]) -> str:
     """Classify a path as 'single', 'mix', or 'multi'.
 
@@ -344,7 +369,10 @@ def _build_record(
     messages.append({"role": "user", "content": first_user})
     messages.append({
         "role": "assistant",
-        "content": f"<action>{_clean_action(path[0]['action'])}</action>",
+        "content": _grounded_assistant(
+            graph, path[0]["from_id"], path[0]["to_id"],
+            _clean_action(path[0]["action"]),
+        ),
     })
 
     # ── middle turns ──
@@ -368,7 +396,10 @@ def _build_record(
         })
         messages.append({
             "role": "assistant",
-            "content": f"<action>{_clean_action(path[i]['action'])}</action>",
+            "content": _grounded_assistant(
+                graph, path[i]["from_id"], path[i]["to_id"],
+                _clean_action(path[i]["action"]),
+            ),
         })
 
     # ── final turn: target reached ──

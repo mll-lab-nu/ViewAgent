@@ -37,6 +37,7 @@ The base class ships a couple of helpers (``write_dataset_info``,
 from __future__ import annotations
 
 import json
+import os
 import logging
 from dataclasses import dataclass
 from pathlib import Path
@@ -174,6 +175,36 @@ class TrajToSFTModule:
                 entry["formatting"] = "sharegpt"
                 entry["columns"] = {"messages": "conversations", "system": "system"}
             info[name] = entry
+
+        # ── anti-overfit: mix in general instruction/VQA data ───────────────
+        # Task-only SFT collapses auxiliary abilities fast (lit: aux task 81%->16.5%,
+        # most of it within the first 1000 steps — matches our P2V/V2P -> 0). Mixing
+        # even ~6% general data removes the collapse with NO measurable loss of
+        # specialization, so we register a general set alongside the task sets.
+        # Config:  general_mix: {file: /abs/path.json, ratio: 0.15, formatting: sharegpt}
+        gm = (self.config.get("general_mix") or {}) if hasattr(self, "config") else {}
+        gm_file = gm.get("file")
+        if gm_file and os.path.exists(gm_file):
+            import shutil as _sh
+            dst = out_dir / "general_mix.json"
+            try:
+                _sh.copyfile(gm_file, dst)
+                n_task = sum(len(v) for v in datasets.values()) if isinstance(datasets, dict) else 0
+                ratio = float(gm.get("ratio", 0.15))
+                entry = {"file_name": dst.name}
+                if gm.get("formatting", "sharegpt") == "sharegpt":
+                    entry["formatting"] = "sharegpt"
+                    entry["columns"] = {"messages": "conversations", "system": "system"}
+                if n_task and ratio > 0:
+                    # cap general samples at ratio/(1-ratio) of the task data
+                    entry["num_samples"] = max(1, int(n_task * ratio / max(1e-6, 1 - ratio)))
+                info["general_mix"] = entry
+                logger.info("[%s] general_mix registered: %s (ratio=%.2f, cap=%s)",
+                            self.name, dst.name, ratio, entry.get("num_samples"))
+            except Exception as e:
+                logger.warning("[%s] general_mix skipped: %s", self.name, e)
+        elif gm_file:
+            logger.warning("[%s] general_mix file not found, skipping: %s", self.name, gm_file)
 
         if not info:
             raise RuntimeError(f"[{self.name}] no non-empty datasets produced")

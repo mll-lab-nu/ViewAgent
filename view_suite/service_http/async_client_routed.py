@@ -44,7 +44,7 @@ class HRWRoutedAsyncUnifiedClient(AsyncUnifiedClient):
 
         # ---- Routing controls ----
         route_by_scene: bool = True,
-        failover_after_failures: int = 4,
+        failover_after_failures: int = 0,
         promote_on_success: bool = True,  # pin to the url that succeeded (per-client-instance)
         cache_ranked_candidates: bool = True,  # cache HRW ranking per scene_id (per-client-instance)
     ):
@@ -142,8 +142,8 @@ class HRWRoutedAsyncUnifiedClient(AsyncUnifiedClient):
         meta: Optional[Dict[str, Any]] = None,
         images: Optional[List[Image.Image]] = None,
         *,
-        retries: int = 8,
-        backoff: float = 2.0,
+        retries: int = 4,
+        backoff: float = 0.5,
     ) -> Tuple[Dict[str, Any], List[Image.Image]]:
         params = {"token": self.token} if self.token else None
 
@@ -215,7 +215,7 @@ class HRWRoutedAsyncUnifiedClient(AsyncUnifiedClient):
                     raise
 
                 # Preserve original backoff semantics
-                delay = float(backoff) * (2 ** attempt) * (0.7 + 0.6 * random.random())
+                delay = min(float(backoff) * (2 ** attempt), 8.0) * (0.7 + 0.6 * random.random())
 
                 if self.log_retries:
                     next_attempt = attempt + 1

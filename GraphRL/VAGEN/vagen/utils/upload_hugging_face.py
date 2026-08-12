@@ -159,10 +159,37 @@ class HFUploadManager:
         # Strip manager-only keys before forwarding to the actor.
         actor_kwargs = {k: v for k, v in hf_hub_cfg.items()
                         if k not in ("hf_save_freq", "upload_contents")}
-        if actor_kwargs.get("repo_id"):
-            self._actor = HFUploadActor.remote(**actor_kwargs)
-        else:
+        if not actor_kwargs.get("repo_id"):
             print("Warning: hf_save_freq is set but huggingface_hub.repo_id is missing, skipping HF upload.")
+            return
+
+        # Uploading is a convenience; it must never be able to kill a training run.
+        # We run with HF_HUB_OFFLINE=1 (the fix for HF download hangs — model and data
+        # are staged on shared storage instead), and under offline mode HfApi.create_repo
+        # raises OfflineModeIsEnabled inside HFUploadActor.__init__. That is an actor
+        # creation failure, so Ray turns it into ActorDiedError and takes the whole
+        # TaskRunner down. It only fires once a new best appears, which made it look
+        # intermittent: graph_atomize iter3 restarted from step 0 every time, hit a
+        # guaranteed "new best" at the first validation (step 20), and died there 10
+        # times in a row without ever recording a validation point.
+        offline = any(os.environ.get(v, "").strip().lower() in ("1", "true", "yes")
+                      for v in ("HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE", "HF_DATASETS_OFFLINE"))
+        if offline:
+            print("[HFUpload] HF hub is in offline mode; skipping HF upload "
+                  "(checkpoints still go to default_local_dir / the shared mirror).")
+            return
+
+        try:
+            actor = HFUploadActor.remote(**actor_kwargs)
+            # Force __init__ to run now so a failure surfaces here, where we can
+            # degrade to "no upload", rather than at the first ray.get() during
+            # training where it propagates as ActorDiedError.
+            ray.get(actor.__ray_ready__.remote())
+            self._actor = actor
+        except Exception as e:
+            print(f"[HFUpload] Warning: upload actor unavailable ({type(e).__name__}: "
+                  f"{str(e)[:200]}); continuing without HF upload.")
+            self._actor = None
 
     @property
     def enabled(self) -> bool:
@@ -225,7 +252,18 @@ class HFUploadManager:
         print(f"[HFUpload] Started async best-val upload (step {global_steps}) to {path_in_repo}")
 
     def flush(self):
-        """Block until any pending upload finishes."""
-        if self._pending_future is not None:
+        """Block until any pending upload finishes.
+
+        A failed upload disables further uploads rather than propagating: losing a
+        convenience copy on the Hub is not a reason to lose a training run.
+        """
+        if self._pending_future is None:
+            return
+        try:
             ray.get(self._pending_future)
+        except Exception as e:
+            print(f"[HFUpload] Warning: upload failed ({type(e).__name__}: "
+                  f"{str(e)[:200]}); disabling further uploads.")
+            self._actor = None
+        finally:
             self._pending_future = None
