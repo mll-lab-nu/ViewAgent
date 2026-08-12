@@ -3,9 +3,10 @@
 Short = GT turn-length <= 2, Long = > 2 (len(gt_action_seq)). Reads per-episode
 metrics.json under rollouts/<model>/tag_<task>/.
 """
+import os
 import json, glob, os
 
-ROOT = "/home/kangrui/projects/viewagent_ai2thor/ViewAgent"
+ROOT = os.environ.get("VIEWSUITE_ROOT", ".")
 TASKS = [("path_to_view", "P2V"), ("view_to_path", "V2P"), ("interactive_view_planning", "IVP")]
 # (rollout_dir, label). Trained/base first for the rebuttal delta, then frontier.
 MODELS = [
