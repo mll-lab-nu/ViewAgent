@@ -12,6 +12,7 @@ Environment variables:
     UNIFIED_API_KEY: Optional API key for authentication
     UNIFIED_ADMIT_TIMEOUT: Timeout for request admission in seconds (default: 2.0)
 """
+from __future__ import annotations  # py3.9 (habitat env) parses 3.10 unions
 import logging
 import os
 from typing import Sequence
@@ -46,7 +47,11 @@ def run(
 
     Args:
         scannet_root: Root directory of ScanNet dataset (must contain scene subdirs)
-        max_workers: Number of worker processes for rendering
+        max_workers: Number of worker processes for rendering. NOTE each worker
+            caches exactly ONE scene (handler._ensure_scene_loaded), so with N
+            GPUs this is also the cap on cached scenes: scenes_per_gpu =
+            max_workers / len(gpu_ids). Keep it small (~10/GPU) when the GPU is
+            shared with training — 32 workers on one GPU is what exhausted VRAM.
         gpu_ids: GPU IDs to use (comma-separated string or list, e.g., "0,1,2,3")
         forced_render_size: Force all renders to this size (e.g., "512,512", "512x512", or 512)
         host: Host address to bind to (default: "0.0.0.0" for all interfaces)
