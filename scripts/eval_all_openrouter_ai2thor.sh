@@ -1,5 +1,5 @@
 #!/bin/bash
-ROOT=/home/kangrui/projects/viewagent_ai2thor/ViewAgent
+ROOT="${VIEWSUITE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 source ~/miniconda3/etc/profile.d/conda.sh; conda activate viewagent_thor
 export VIEWSUITE_ROOT="$ROOT" fileroot="$ROOT"
 # Key from an .env outside the repo; point ENV_FILE at yours.

@@ -6,7 +6,7 @@ Reads per-episode metrics.json under rollouts/ai2thor_<model>/tag_<task>/.
 """
 import json, glob, os, sys
 
-ROOT = "/home/kangrui/projects/viewagent_ai2thor/ViewAgent"
+ROOT = os.environ.get("VIEWSUITE_ROOT", ".")
 TASKS = [("path_to_view", "P2V"), ("view_to_path", "V2P"), ("interactive_view_planning", "IVP")]
 MODELS = [("ai2thor_gpt_5_4", "GPT-5.4"), ("ai2thor_gemini_3_1_pro", "Gemini-3.1-Pro"),
           ("ai2thor_grok_4_20_beta", "Grok-4.20"), ("ai2thor_claude_opus_4_6", "Claude-Opus-4.6")]
