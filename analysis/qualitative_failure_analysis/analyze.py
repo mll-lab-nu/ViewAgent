@@ -5,7 +5,8 @@ IVP=active_exploration)."""
 import json, os, re, glob, random, statistics as st
 from collections import Counter, defaultdict
 
-BASE = "/home/kangrui/projects/viewagent/rebuttal_experiments/07_qualitative_failure_analysis/extracted/rollouts_all_new"
+# Point at the extracted rollout tree; override with QUALITATIVE_ROLLOUTS_DIR.
+BASE = os.environ.get("QUALITATIVE_ROLLOUTS_DIR", "data/rollouts/rollouts_all_new")
 MODELS = ["gpt_5_4", "gpt_5_4_pro", "gemini_3_1_pro", "claude_opus_4_6", "grok_4_20_beta", "qwen_25_vl_7b_trained"]
 TAGS = {"tag_forward_dynamics": "P2V", "tag_inverse_dynamics": "V2P", "tag_active_exploration": "IVP"}
 random.seed(0)
