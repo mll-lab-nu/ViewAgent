@@ -1,0 +1,24 @@
+defaults:
+  - eval_default
+
+default_chat_config:
+  temperature: 0.0
+  max_tokens: 10000
+  top_p: 0.95
+  extra_body:
+    reasoning:
+      effort: "medium"
+
+experiment:
+  dump_dir: ${fileroot}/rollouts/ai2thor_grok_4_20_beta
+  default_max_turns: 1
+
+backends:
+  openai:
+    api_key: ${oc.env:OPENROUTER_API_KEY}
+    base_url: "https://openrouter.ai/api/v1"
+    model: "x-ai/grok-4.20-beta"
+    max_concurrency: 12
+    max_retries: 8
+    min_backoff: 0.5
+    max_backoff: 12.0

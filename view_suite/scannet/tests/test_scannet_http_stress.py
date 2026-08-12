@@ -218,7 +218,11 @@ async def run_stress_test(
 
     # Health check
     try:
-        async with httpx.AsyncClient(timeout=10.0) as hc:
+        # Same self-signed-certificate switch the render client honours.
+        verify = os.getenv("RENDER_TLS_NO_VERIFY", "0").strip().lower() not in (
+            "1", "true", "yes",
+        )
+        async with httpx.AsyncClient(timeout=10.0, verify=verify) as hc:
             r = await hc.get(f"{url}/health")
             r.raise_for_status()
             print("Service health check: OK")

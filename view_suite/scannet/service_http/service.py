@@ -1,3 +1,4 @@
+from __future__ import annotations  # py3.9 (habitat env) parses 3.10 unions
 #!/usr/bin/env python3
 """
 ScanNet Render HTTP Service
@@ -37,6 +38,8 @@ def run(
     gpu_ids: Sequence[int] | str | None = None,
     forced_render_size: Sequence[int] | int | str | None = None,
     host: str = "0.0.0.0",
+    ssl_keyfile: str | None = None,
+    ssl_certfile: str | None = None,
     port: int = 8765,
     reload: bool = False,
     log_level: str = "info",
@@ -54,7 +57,11 @@ def run(
             shared with training — 32 workers on one GPU is what exhausted VRAM.
         gpu_ids: GPU IDs to use (comma-separated string or list, e.g., "0,1,2,3")
         forced_render_size: Force all renders to this size (e.g., "512,512", "512x512", or 512)
-        host: Host address to bind to (default: "0.0.0.0" for all interfaces)
+        host: Host address to bind to (default: "0.0.0.0" for all interfaces).
+            Use "::" to also accept IPv6.
+        ssl_keyfile / ssl_certfile: serve HTTPS instead of HTTP. Useful when the
+            client is not on this machine. A self-signed pair works, provided the
+            client skips verification.
         port: Port number to listen on (default: 8765)
         reload: Enable auto-reload for development (default: False)
         log_level: Logging level (default: "info")
@@ -95,6 +102,7 @@ def run(
     print(f"  gs_root:             {gs_root}")
     print(f"  max_workers:         {max_workers}")
     print(f"  gpu_ids:             {gpu_ids}")
+    print(f"  scheme:              {'https' if ssl_certfile else 'http'}")
     print(f"  forced_render_size:  {forced_render_size}")
     print(f"  render_timeout:      {render_timeout}s")
     print(f"  max_inflight:        {max_inflight_env} (from env UNIFIED_MAX_INFLIGHT)")
@@ -107,6 +115,8 @@ def run(
         port=port,
         reload=reload,
         log_level=log_level,
+        ssl_keyfile=ssl_keyfile,
+        ssl_certfile=ssl_certfile,
     )
 
 if __name__ == "__main__":
