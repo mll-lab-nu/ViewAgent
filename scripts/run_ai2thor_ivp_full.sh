@@ -2,7 +2,7 @@
 # Full iterative RL<->SFT training run (persistent wrapper for systemd).
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate viewagent_thor
-cd /home/kangrui/projects/viewagent_ai2thor/ViewAgent/GraphRL
+cd "${VIEWSUITE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}/GraphRL"
 export VIEWSUITE_ROOT=/home/kangrui/projects/viewagent_ai2thor/ViewAgent
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export WANDB_MODE=online

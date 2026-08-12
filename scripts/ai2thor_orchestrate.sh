@@ -55,7 +55,7 @@ clean_kill_train(){   # stop unit + purge all ray/sglang/verl leftovers (bracket
   ray stop --force >/dev/null 2>&1 || true; sleep 5
   systemctl --user reset-failed ai2thor_ivp_train.service 2>/dev/null
 }
-start_train(){ systemd-run --user --unit=ai2thor_ivp_train --same-dir /bin/bash /home/kangrui/projects/viewagent_ai2thor/run_ai2thor_full.sh; }
+start_train(){ systemd-run --user --unit=ai2thor_ivp_train --same-dir /bin/bash $ROOT/../run_ai2thor_full.sh; }
 
 log "orchestrator started; babysitting training"
 RESUMES=0; MAXRESUMES=8
