@@ -1,0 +1,51 @@
+# ── Random Baseline: Habitat-GS Interactive View Planning (Navigation) ─────────
+# Random-walk agent that explores randomly for N-1 turns, then submits a
+# randomly chosen previously-observed camera pose as the answer. Needs NO model
+# server -- useful to smoke-test the Habitat-GS IVP eval pipeline end-to-end.
+#
+# Requires the Habitat-GS HTTP render service running and its URL in
+# client_url_habitat_gs.txt (see scripts/habitat_gs_http_service.sh).
+#
+#   VIEWSUITE_ROOT=$(pwd) python -m vagen.evaluate.run_eval \
+#     --config examples/evaluation/eval_random_habitat_gs.yaml fileroot=$(pwd)
+# ─────────────────────────────────────────────────────────────────────
+
+fileroot: ${oc.env:VIEWSUITE_ROOT}
+
+envs:
+
+  - name: HabitatGSInteractiveViewPlanning
+    n_envs: 16
+    tag_id: interactive_view_planning_10
+    seed: [1, 16, 1]
+    split: test
+    max_turns: 10
+    config:
+      jsonl_path: ${fileroot}/data/habitat_gs/interactive_view_planning_test.jsonl
+      max_turns: 10
+      render_backend: client
+      client_url_file_path: ${fileroot}/client_url_habitat_gs.txt
+      image_size: [512, 512]
+      format: eval_mode
+      use_example_in_sys_prompt: false
+      action_only_mode: true
+
+default_chat_config:
+  random_seed: 42
+
+experiment:
+  dump_dir: ${fileroot}/rollouts/random_habitat_gs
+  default_max_turns: 10
+
+run:
+  backend: "random_navigation"
+  base_seed: 0
+  max_concurrent_jobs: 8
+  resume: skip_completed
+  live_summary: true
+
+backends:
+  random_navigation:
+    model: "random"
+    max_concurrency: 100
+    max_retries: 0

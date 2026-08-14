@@ -28,7 +28,7 @@ from view_suite.service_http.handler import BaseHandler, HandlerResult
 from view_suite.scannet.utils.path_utils import resolve_scene_ply, resolve_scene_gs_ply
 from view_suite.service_http.multipart import numpy_to_png_bytes
 
-SUPPORTED_BACKENDS = ("open3d", "gsplat", "habitat")
+SUPPORTED_BACKENDS = ("open3d", "gsplat", "habitat", "habitat_gs")
 
 LOGGER = logging.getLogger(__name__)
 if not LOGGER.handlers:
@@ -67,8 +67,9 @@ def _bind_process_to_gpu(gpu_id: Optional[int], backend: str = "") -> None:
         return
     _WORKER_GPU_ID = int(gpu_id)                          # habitat needs the PHYSICAL id
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)      # CUDA (torch, gsplat)
-    if backend == "habitat":
-        # Scoped to habitat deliberately: these are inert for Filament and for this
+    if backend in ("habitat", "habitat_gs"):
+        # Scoped to the habitat backends deliberately: these are inert for Filament and
+        # for this
         # box's EGL loader (neither libEGL nor open3d reads EGL_DEVICE_ID, and
         # NVIDIA_VISIBLE_DEVICES is only consumed at container creation), so setting
         # them unconditionally would be an untested mutation on the working backends'
@@ -224,6 +225,21 @@ def _ensure_scene_loaded(scene_id: str, scene_root: str, backend: str,
             w, h = size or (512, 512)
             renderer = HabitatRenderer(ply_path, gpu_device_id=_habitat_device_id(),
                                        width=w, height=h)
+        elif backend == "habitat_gs":
+            # Habitat-GS: same simulator, gaussian stage instead of a mesh, and a
+            # different corpus layout (<root>/<split>/<scene>/<scene>.gs.ply), so the
+            # path comes from the GS scene list rather than resolve_scene_ply.
+            # Needs the `habitat-gs` conda env -- that build and habitat-sim 0.3.3
+            # cannot live in the same interpreter.
+            from view_suite.habitat_gs.habitat_gs_render import HabitatGSRenderer
+            from view_suite.habitat_gs.scene_list import scene_navmesh, scene_ply
+            w, h = size or (512, 512)
+            renderer = HabitatGSRenderer(
+                scene_ply(scene_root, scene_id),
+                gpu_device_id=_habitat_device_id(),
+                width=w, height=h,
+                navmesh_path=scene_navmesh(scene_root, scene_id),
+            )
         else:
             raise ValueError(f"Unsupported backend={backend!r}; expected one of {SUPPORTED_BACKENDS}")
         _ACTIVE_RENDERER = renderer
