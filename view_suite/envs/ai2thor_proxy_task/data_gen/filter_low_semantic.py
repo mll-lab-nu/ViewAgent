@@ -51,13 +51,15 @@ _OR_PROXIES = ({"http": _EGRESS_PROXY, "https": _EGRESS_PROXY}
                if _EGRESS_PROXY else None)
 
 # AI Gateway (Vertex/Gemini) config.
-_GATEWAY = os.environ.get("AI_GATEWAY", "playground")
-_GCP_PROJECT = os.environ.get("AI_GATEWAY_PROJECT", "${AI_GATEWAY_PROJECT}")
+# Base URL of an internal/self-hosted Gemini-compatible gateway. No default: the
+# endpoint is site-specific and does not belong in a public repo.
+_GATEWAY_BASE = os.environ.get("AI_GATEWAY_BASE_URL", "")
+_GCP_PROJECT = os.environ.get("AI_GATEWAY_PROJECT", "")
 
 
 def _gateway_url(model: str) -> str:
     return (
-        f"https://{_GATEWAY}.${AI_GATEWAY_HOST}"
+        f"{_GATEWAY_BASE}"
         f"/v1/projects/{_GCP_PROJECT}/locations/global"
         f"/publishers/google/models/{model}:generateContent"
     )
@@ -118,13 +120,20 @@ def _mime(path: str) -> str:
     return "image/png" if path.lower().endswith(".png") else "image/jpeg"
 
 
-def _request_verdict(backend: str, model: str, b64: str, mime: str, auth, timeout: float):
-    """One HTTP call; returns (status_code, verdict_text_or_None). Raises on network error."""
+def _request_verdict(backend: str, model: str, b64: str, mime: str, auth, timeout: float,
+                     prompt: str = None):
+    """One HTTP call; returns (status_code, verdict_text_or_None). Raises on network error.
+
+    `prompt` defaults to FILTER_PROMPT. It is a parameter so another corpus can supply
+    its own rubric without duplicating this client -- Habitat-GS needs one that also
+    covers outdoor scenes and gaussian-splatting smear.
+    """
+    prompt = prompt if prompt is not None else FILTER_PROMPT
     if backend == "openrouter":
         body = {
             "model": model, "temperature": 0.0, "max_tokens": 8,
             "messages": [{"role": "user", "content": [
-                {"type": "text", "text": FILTER_PROMPT},
+                {"type": "text", "text": prompt},
                 {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}},
             ]}],
         }
@@ -138,7 +147,7 @@ def _request_verdict(backend: str, model: str, b64: str, mime: str, auth, timeou
     else:  # ai_gateway (Vertex/Gemini over mTLS)
         body = {
             "contents": [{"role": "user", "parts": [
-                {"text": FILTER_PROMPT},
+                {"text": prompt},
                 {"inline_data": {"mime_type": mime, "data": b64}},
             ]}],
             "generationConfig": {"temperature": 0.0, "maxOutputTokens": 8,
@@ -147,7 +156,7 @@ def _request_verdict(backend: str, model: str, b64: str, mime: str, auth, timeou
         r = requests.post(
             _gateway_url(model), cert=auth,
             headers={"content-type": "application/json",
-                     "x-calling-product": "ai2thor-data-filter"},
+                     "x-calling-product": os.environ.get("AI_GATEWAY_PRODUCT", "viewsuite-data-filter")},
             json=body, timeout=timeout,
         )
         if r.status_code == 200:
@@ -156,7 +165,8 @@ def _request_verdict(backend: str, model: str, b64: str, mime: str, auth, timeou
 
 
 def judge_image(path: str, model: str, auth, backend: str = _DEFAULT_BACKEND,
-                timeout: float = 60.0, max_retries: int = 8) -> str:
+                timeout: float = 60.0, max_retries: int = 8,
+                prompt: str = None) -> str:
     """Return 'KEEP' / 'FILTER' for one image, or 'ERROR' if all retries fail.
 
     Retries on 429 / transient 5xx with exponential backoff + jitter. 'ERROR'
@@ -167,7 +177,7 @@ def judge_image(path: str, model: str, auth, backend: str = _DEFAULT_BACKEND,
     mime = _mime(path)
     for attempt in range(max_retries):
         try:
-            code, txt = _request_verdict(backend, model, b64, mime, auth, timeout)
+            code, txt = _request_verdict(backend, model, b64, mime, auth, timeout, prompt)
             if code == 200:
                 if not txt:
                     return "ERROR"
