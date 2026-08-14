@@ -197,7 +197,11 @@ async def run_stress_test(
     max_connections: int,
 ):
     """Run stress test with multiple concurrent client workers."""
-    scene_folder_path+="/scans"
+    # ScanNet keeps its scenes one level down in scans/; the Habitat-GS corpus puts
+    # them directly under the split directory. Append only when it is really there,
+    # so a path that already points at the scene directories works as given.
+    if os.path.isdir(os.path.join(scene_folder_path, "scans")):
+        scene_folder_path = os.path.join(scene_folder_path, "scans")
     scene_ids = [os.path.basename(o) for o in sorted(os.listdir(scene_folder_path)) if os.path.isdir(os.path.join(scene_folder_path, o))][:num_scenes]
 
     print(f"\n{'='*80}")
