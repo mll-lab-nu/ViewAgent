@@ -53,3 +53,6 @@ train_progress.png
 # Working notes — local only, kept out of the remote.
 AGENTS.md
 AGENT.md
+
+# VLM screen artefacts: rejected views copied out for eyeballing, regenerable
+/gs_filter_review/
