@@ -57,6 +57,8 @@ Can VLMs predict how each camera move changes the view, and plan many such moves
 
 Across 13 frontier VLMs, a sharp **planning gap** emerges: the best models exceed 70% on short-horizon P2V/V2P but reach at most **21.3%** on IVP (Gemini 3.1 Pro; GPT-5.4 Pro reaches 19.9%), and over 90% of their successes occur only after the target view becomes observable. To close this gap, we train a multi-turn **VLM agent** with an **iterative framework** that alternates *self-exploration* (reinforcement learning in ViewSuite) with *view graph distillation*. Every trajectory, successful or not, traces valid view transitions; aggregated across exploration they form a **view graph**, an empirical **world model** of view transitions, and distilling sampled paths into supervised demonstrations is a form of **on-policy distillation** with no teacher stronger than the environment. This lifts Qwen2.5-VL-7B from **2.5% → 47.8%** on Interactive View Planning, surpassing every frontier model evaluated.
 
+View planning is a form of **active perception**: the agent actively chooses where to look next instead of passively consuming pre-recorded views. ViewSuite scores 6-DoF camera pose localization rather than physical arrival, which isolates viewpoint reasoning, a capability **embodied agents** also need, from physical navigation. The trained **multi-turn VLM agents** are released as the [ViewAgent checkpoints](https://huggingface.co/collections/MLL-Lab/viewagent-models) on HuggingFace.
+
 For more details, see the [paper on arXiv](https://arxiv.org/abs/2605.29563), the [project homepage](https://viewagent.github.io/), and the [TL;DR thread on X](https://x.com/ManlingLi_/status/2067697152722415623).
 
 ## 📦 Repository Structure
@@ -83,8 +85,8 @@ ViewSuite/
 Used on the machine that runs RL/SFT training and the eval harness.
 
 ```bash
-# Clone the repository
-git clone https://github.com/mll-lab-nu/ViewSuite.git
+# Clone the repository (GitHub repo: mll-lab-nu/ViewAgent)
+git clone https://github.com/mll-lab-nu/ViewAgent.git ViewSuite
 cd ViewSuite
 
 # Create env (Python 3.12)
