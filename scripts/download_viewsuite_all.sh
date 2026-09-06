@@ -2,5 +2,5 @@
 
 python -m view_suite.utils.download_targz_hf \
     --repo=MLL-Lab/viewsuite \
-    --files="viewagent15k_scannet_open3d.tar.gz,viewagent15k_scannet_gs_test.tar.gz,viewagent_viewagent_mindcube.tar.gz" \
+    --files="viewagent15k_scannet_open3d.tar.gz,viewagent15k_scannet_gs_test.tar.gz,viewagent_mindcube.tar.gz" \
     --out="$VIEWSUITE_ROOT/data"

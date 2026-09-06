@@ -2,5 +2,5 @@
 
 python -m view_suite.utils.download_targz_hf \
     --repo=MLL-Lab/viewsuite \
-    --files=viewagent_viewagent_scannet.tar.gz \
+    --files=viewagent_scannet.tar.gz \
     --out="$VIEWSUITE_ROOT/data"

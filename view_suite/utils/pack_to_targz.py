@@ -5,7 +5,7 @@ Fast packer: prefers system `tar` + parallel gzip (`pigz`), falls back to Python
 
 Defaults:
   folder  = data/viewagent_scannet        # relative to current working directory
-  output  = viewagent_viewagent_scannet.tar.gz
+  output  = viewagent_scannet.tar.gz
   include = ["*.ply"]           # set to None/"none" to keep all files
   no_follow_symlinks = True
   level = 6                     # compression level (1..9)
@@ -22,7 +22,7 @@ Examples:
   python pack_to_targz_fast.py --include="*.ply,*.sens,*.txt"
 
   # Change folder/output; both can be relative paths
-  python pack_to_targz_fast.py --folder=data/viewagent_scannet --output=out/viewagent_viewagent_scannet.tar.gz
+  python pack_to_targz_fast.py --folder=data/viewagent_scannet --output=out/viewagent_scannet.tar.gz
 
   # Follow symlinks (archive link targets instead of symlink entries)
   python pack_to_targz_fast.py --no_follow_symlinks=False
@@ -199,7 +199,7 @@ def _system_tar_filtered(
 
 def pack(
     folder: str = "data/viewagent_scannet",
-    output: str = "viewagent_viewagent_scannet.tar.gz",
+    output: str = "viewagent_scannet.tar.gz",
     include: Optional[Union[str, List[str]]] = "*.ply",
     no_follow_symlinks: bool = True,
     level: int = 6,
