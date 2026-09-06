@@ -20,7 +20,7 @@ SSL_CERTFILE=${SSL_CERTFILE:-}
 # Anchor to VIEWSUITE_ROOT, not the CWD: setsid does not change directory, so a
 # CWD-relative default resolves against wherever the supervisor happened to be started
 # and the service then comes up healthy but fails on every scene.
-SCANNET_ROOT=${SCANNET_ROOT:-${VIEWSUITE_ROOT}/data/scannet/scans}
+SCANNET_ROOT=${SCANNET_ROOT:-${VIEWSUITE_ROOT}/data/viewagent_scannet/scans}
 # habitat lives in its own conda env (py3.9); the training env cannot import it.
 PY_BIN=${PY_BIN:-python}
 if [ "$BACKEND" = "habitat" ]; then

@@ -41,7 +41,7 @@ def collect_scannet_scene_ids():
     
 def download_scannet_data(
     scannet_download_script_path: str,
-    out_dir: str="data/scannet",
+    out_dir: str="data/viewagent_scannet",
     timeout_s: int = 900,
 ):
     download_scannet_batch(

@@ -18,7 +18,7 @@ MODELS = [
 ]
 
 gtlen = {}
-for line in open(f"{ROOT}/data/ai2thor/interactive_view_planning_test.jsonl"):
+for line in open(f"{ROOT}/data/viewagent_ai2thor/interactive_view_planning_test.jsonl"):
     r = json.loads(line)
     gtlen[r["sample_id"]] = len(r["meta"]["gt_action_seq_letters"])
 

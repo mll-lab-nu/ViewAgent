@@ -209,9 +209,9 @@ if __name__ == "__main__":
     ) -> None:
         root = os.environ.get("VIEWSUITE_ROOT", ".")
         jsonl_path = jsonl_path or os.path.join(
-            root, "data/viewsuite_15k/interactive_view_planning_test.jsonl"
+            root, "data/viewagent15k_scannet_open3d/interactive_view_planning_test.jsonl"
         )
-        scannet_root = scannet_root or os.path.join(root, "data/scannet/scans")
+        scannet_root = scannet_root or os.path.join(root, "data/viewagent_scannet/scans")
         client_url = client_url or _default_client_url()
         save_dir = os.path.abspath(save_dir or os.path.join(root, "tests/ivp_play"))
         os.makedirs(save_dir, exist_ok=True)

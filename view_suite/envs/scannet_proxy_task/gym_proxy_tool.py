@@ -575,11 +575,11 @@ if __name__ == "__main__":
     import fire
 
     async def run(
-        jsonl_path: str = "data/viewsuite_15k/interactive_view_planning_train_filter.jsonl",
+        jsonl_path: str = "data/viewagent15k_scannet_open3d/interactive_view_planning_train_filter.jsonl",
         seed: int = 208,
         render_backend: str = "client",
         client_url: str = "http://0.0.0.0:8767",
-        scannet_root: str = "data/scannet/scans",
+        scannet_root: str = "data/viewagent_scannet/scans",
         client_origin: Optional[str] = None,
         scene_id: Optional[str] = None,
         save_dir: str = "./interactive_view_planning_test",

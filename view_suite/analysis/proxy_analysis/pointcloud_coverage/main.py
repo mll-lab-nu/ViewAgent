@@ -45,7 +45,7 @@ from view_suite.analysis.proxy_analysis.pointcloud_coverage.plotter import Plott
 
 
 # Default JSONL path (matches the evaluation config)
-_DEFAULT_JSONL = "/root/projects/viewsuite/data/viewsuite_15k/interactive_view_planning_test_filter.jsonl"
+_DEFAULT_JSONL = "/root/projects/viewsuite/data/viewagent15k_scannet_open3d/interactive_view_planning_test_filter.jsonl"
 
 # Checkpoint file name (one JSON object per line, each line = one trajectory result)
 _CHECKPOINT_FILE = "checkpoint.jsonl"
@@ -195,7 +195,7 @@ class PointCloudByTurnAnalyzer:
     def run_all(
         self,
         rollouts_dir: str = "/root/projects/viewsuite/rollouts",
-        scannet_dir: str = "/root/projects/viewsuite/data/scannet",
+        scannet_dir: str = "/root/projects/viewsuite/data/viewagent_scannet",
         output_dir: Optional[str] = None,
         n_workers: int = 8,
         width: int = 512,

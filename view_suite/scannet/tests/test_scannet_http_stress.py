@@ -330,7 +330,7 @@ def main(
     num_scenes: int = 128,
     num_clients: int = 128,
     requests_per_client: int = 10,
-    scene_folder_path: str = "data/scannet",
+    scene_folder_path: str = "data/viewagent_scannet",
     token: Optional[str] = None,
     num_tasks_per_request: int = 5,
     timeout: float = 120.0,

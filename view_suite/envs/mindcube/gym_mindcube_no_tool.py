@@ -241,7 +241,7 @@ if __name__ == "__main__":
     import fire
 
     async def _main_async(
-        data_path: str = "/root/projects/viewsuite/data/mindcube",
+        data_path: str = "/root/projects/viewsuite/data/viewagent_mindcube",
         split: str = "dev",
         jsonl_path: str = "",
         save_path: str = "./test_mindcube",
@@ -296,7 +296,7 @@ if __name__ == "__main__":
         print(f"Status: {obs['obs_str']}")
 
     def main(
-        data_path: str = "/root/projects/viewsuite/data/mindcube",
+        data_path: str = "/root/projects/viewsuite/data/viewagent_mindcube",
         split: str = "dev",
         jsonl_path: str = "",
         save_path: str = "./test_mindcube",

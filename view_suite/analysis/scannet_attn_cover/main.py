@@ -15,7 +15,7 @@ Usage:
     python -m view_suite.analysis.scannet_attn_cover.main run \
         --rollout_dir /root/projects/viewsuite/rollouts/iter5_rl_960/tag_ae_loose_no_example \
         --model_path /root/projects/viewsuite/iter5_rl_960 \
-        --scannet_dir /root/projects/viewsuite/data/scannet
+        --scannet_dir /root/projects/viewsuite/data/viewagent_scannet
 """
 
 from __future__ import annotations

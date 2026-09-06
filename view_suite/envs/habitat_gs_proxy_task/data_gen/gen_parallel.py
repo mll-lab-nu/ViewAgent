@@ -7,7 +7,7 @@ JSONL files from 8 processes is a corrupted-line generator.
 
     VIEWSUITE_ROOT=$PWD PYTHONPATH=$PWD ~/miniconda3/envs/habitat-gs/bin/python \
       -m view_suite.envs.habitat_gs_proxy_task.data_gen.gen_parallel \
-      --out_root=$VIEWSUITE_ROOT/data/habitat_gs --scenes=all --samples_per_scene=24 --n_gpus=8
+      --out_root=$VIEWSUITE_ROOT/data/viewagent_habitat_gs --scenes=all --samples_per_scene=24 --n_gpus=8
 """
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ def _worker(args) -> tuple:
 
 
 def run(
-    out_root: str = "data/habitat_gs",
+    out_root: str = "data/viewagent_habitat_gs",
     root: Optional[str] = None,
     scenes: str = "all",
     samples_per_scene: int = 24,

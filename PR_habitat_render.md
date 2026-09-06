@@ -144,13 +144,13 @@ HP=~/miniconda3/envs/habitat/bin/python3
 
 # in-process, multi-GPU
 $HP view_suite/scannet/tests/test_habitat_multigpu.py \
-    --ply data/scannet/scans/scene0011_00/scene0011_00_vh_clean.ply \
+    --ply data/viewagent_scannet/scans/scene0011_00/scene0011_00_vh_clean.ply \
     --gpus 0,1,2,3,4,5,6,7 --scenes_per_gpu 4 --requests_per_gpu 100
 
 # over HTTP, via the supervisor
 bash scripts/scannet_http_service_loop.sh 64 0,1,2,3,4,5,6,7 1 8801 10800 habitat &
 $HP view_suite/scannet/tests/test_scannet_http_stress.py --url=http://localhost:8801 \
-    --scene_folder_path=data/scannet --num_scenes=32 --num_clients=64 \
+    --scene_folder_path=data/viewagent_scannet --num_scenes=32 --num_clients=64 \
     --requests_per_client=5 --num_tasks_per_request=5
 ```
 

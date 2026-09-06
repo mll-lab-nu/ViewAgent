@@ -115,7 +115,7 @@ def _normalize_files(files: Sequence[str] | str) -> list[str]:
 
 
 def cli(
-    files: str="viewsuite_15k.tar.gz",
+    files: str="viewagent15k_scannet_open3d.tar.gz",
     repo: str="MLL-Lab/viewsuite",
     out: str="data/",
     repo_type: str = "dataset",

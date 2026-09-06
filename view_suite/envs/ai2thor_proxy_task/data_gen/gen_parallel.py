@@ -8,7 +8,7 @@ per-task jsonls are concatenated.
 Usage:
   conda activate viewagent_thor
   python -m view_suite.envs.ai2thor_proxy_task.data_gen.gen_parallel \
-      --out_root=$VIEWSUITE_ROOT/data/ai2thor_full \
+      --out_root=$VIEWSUITE_ROOT/data/viewagent_ai2thor_full \
       --scenes=all --samples_per_scene=16 --n_gpus=8
 """
 from __future__ import annotations

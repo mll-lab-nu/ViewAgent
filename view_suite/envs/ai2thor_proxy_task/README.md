@@ -36,17 +36,17 @@ export VIEWSUITE_ROOT=$(pwd)
 
 # 120 iTHOR scenes x 24 samples, 8 GPUs, resumable
 python -m view_suite.envs.ai2thor_proxy_task.data_gen.gen_parallel \
-    --out_root=$VIEWSUITE_ROOT/data/ai2thor_full --scenes=all --samples_per_scene=24 --n_gpus=8
+    --out_root=$VIEWSUITE_ROOT/data/viewagent_ai2thor_full --scenes=all --samples_per_scene=24 --n_gpus=8
 
 # drop low-semantic views (blank walls and floors) with a VLM judge.
 # Needs OPENROUTER_API; set EGRESS_PROXY if outbound traffic requires a proxy.
 python -m view_suite.envs.ai2thor_proxy_task.data_gen.filter_low_semantic \
-    --data_root=$VIEWSUITE_ROOT/data/ai2thor_full --backend=openrouter \
+    --data_root=$VIEWSUITE_ROOT/data/viewagent_ai2thor_full --backend=openrouter \
     --model=qwen/qwen3.7-plus --workers=24 --review_dir=$VIEWSUITE_ROOT/filter_review
 
 # scene-disjoint train/eval/test split
 python -c "from view_suite.envs.utils.split_jsonl_by_scene import split_jsonl_by_scene as s; \
-[s(f'data/ai2thor/{t}.jsonl', ratios=(70,15,15)) for t in \
+[s(f'data/viewagent_ai2thor/{t}.jsonl', ratios=(70,15,15)) for t in \
  ['path_to_view','view_to_path','interactive_view_planning']]"
 ```
 

@@ -11,7 +11,7 @@ the same removal to all three task jsonls, then re-splits scene-disjoint.
 
 Usage:
   python -m view_suite.envs.ai2thor_proxy_task.data_gen.filter_degenerate \
-      --data_root=$VIEWSUITE_ROOT/data/ai2thor
+      --data_root=$VIEWSUITE_ROOT/data/viewagent_ai2thor
 """
 from __future__ import annotations
 

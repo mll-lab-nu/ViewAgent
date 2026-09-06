@@ -5,7 +5,7 @@ ScanNet Render HTTP Service
 FastAPI-based service for rendering ScanNet 3D scenes with GPU acceleration.
 
 Usage:
-    python service.py --scannet_root=data/scannet/scans --max_workers=24 --port=8765
+    python service.py --scannet_root=data/viewagent_scannet/scans --max_workers=24 --port=8765
 
 Environment variables:
     UNIFIED_MAX_INFLIGHT: Maximum concurrent requests (default: 0 = unlimited)
@@ -30,7 +30,7 @@ logging.basicConfig(
 )
 
 def run(
-    scannet_root: str = "data/scannet/scans",
+    scannet_root: str = "data/viewagent_scannet/scans",
     gs_root: str = "data/scannet_3dgs_mcmc",
     backend: str = "open3d",
     max_workers: int = 24,

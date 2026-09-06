@@ -118,7 +118,7 @@ Lives on the render-service machine. Downloads from the public dataset repo [`ML
 
 ```bash
 bash scripts/download_scannet.sh
-# downloads scannet.tar.gz into data/
+# downloads viewagent_scannet.tar.gz into data/
 ```
 
 ### Local — ViewSuite tasks (jsonl + small assets)
@@ -127,15 +127,15 @@ Lives on the training/eval machine (the one talking to the render service).
 
 ```bash
 bash scripts/download_viewsuite_all.sh
-# downloads viewsuite_15k.tar.gz + mindcube.tar.gz into data/
+# downloads viewagent15k_scannet_open3d.tar.gz + viewagent_mindcube.tar.gz into data/
 ```
 
 After both, you should have:
 
 ```
 data/
-├── scannet/scans/...
-└── viewsuite_15k/
+├── viewagent_scannet/scans/...
+└── viewagent15k_scannet_open3d/
     ├── interactive_view_planning_test.jsonl   # Interactive View Planning (IVP)
     ├── path_to_view_test.jsonl                # Path-to-View (P2V)
     ├── view_to_path_test.jsonl                # View-to-Path (V2P)
@@ -162,7 +162,7 @@ The service exposes an HTTP render endpoint that gym environments call to render
 **Mesh backend (open3d, recommended, full splits available)** — renders directly from the ScanNet meshes (Step 2); no extra download needed.
 
 ```bash
-# Required: tells the service where to find data/scannet/...
+# Required: tells the service where to find data/viewagent_scannet/...
 export VIEWSUITE_ROOT="$(pwd)"
 
 #   args: MAX_WORKERS=32 GPU_IDS=0 OMP_CAP=1 PORT=8767 T=10800 BACKEND=open3d
@@ -235,7 +235,7 @@ Type movement keys in any combination (e.g. `wwd`), or `quit` to exit. If the IV
 
 ## 📊 5. Evaluation
 
-Both eval suites read `data/viewsuite_15k/*.jsonl`. **IVP** evaluation additionally needs the render service (Step 3) and `client_url.txt`; **P2V/V2P** do not.
+Both eval suites read `data/viewagent15k_scannet_open3d/*.jsonl`. **IVP** evaluation additionally needs the render service (Step 3) and `client_url.txt`; **P2V/V2P** do not.
 
 ### 5a. Closed-source / API models — `examples/evaluation/eval_scannet_proxy_task`
 
