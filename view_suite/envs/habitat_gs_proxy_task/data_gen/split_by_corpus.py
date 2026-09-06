@@ -10,7 +10,7 @@ to unseen viewpoints of rooms the model already trained on.
 
     VIEWSUITE_ROOT=$PWD PYTHONPATH=$PWD python -m \
       view_suite.envs.habitat_gs_proxy_task.data_gen.split_by_corpus \
-      --data_root=$VIEWSUITE_ROOT/data/viewagent_habitat_gs
+      --data_root=$VIEWSUITE_ROOT/data/viewagent15k_habitat_gs
 """
 from __future__ import annotations
 

@@ -17,7 +17,7 @@ the way in when no API key is available. Either way the rubric is ours: the AI2-
 is written for indoor furniture, and half of this corpus is outdoors.
 
     python -m view_suite.envs.habitat_gs_proxy_task.data_gen.filter_low_semantic \
-        --data_root=$VIEWSUITE_ROOT/data/viewagent_habitat_gs --workers=24 \
+        --data_root=$VIEWSUITE_ROOT/data/viewagent15k_habitat_gs --workers=24 \
         --review_dir=$VIEWSUITE_ROOT/gs_filter_review
 """
 from __future__ import annotations

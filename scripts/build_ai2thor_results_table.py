@@ -13,7 +13,7 @@ MODELS = [("ai2thor_gpt_5_4", "GPT-5.4"), ("ai2thor_gemini_3_1_pro", "Gemini-3.1
 
 # sample_id -> GT turn length (shared across tasks)
 gtlen = {}
-for line in open(f"{ROOT}/data/viewagent_ai2thor/interactive_view_planning_test.jsonl"):
+for line in open(f"{ROOT}/data/viewagent15k_ai2thor/interactive_view_planning_test.jsonl"):
     r = json.loads(line)
     gtlen[r["sample_id"]] = len(r["meta"]["gt_action_seq_letters"])
 

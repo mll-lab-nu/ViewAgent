@@ -46,7 +46,7 @@ python -m view_suite.envs.ai2thor_proxy_task.data_gen.filter_low_semantic \
 
 # scene-disjoint train/eval/test split
 python -c "from view_suite.envs.utils.split_jsonl_by_scene import split_jsonl_by_scene as s; \
-[s(f'data/viewagent_ai2thor/{t}.jsonl', ratios=(70,15,15)) for t in \
+[s(f'data/viewagent15k_ai2thor/{t}.jsonl', ratios=(70,15,15)) for t in \
  ['path_to_view','view_to_path','interactive_view_planning']]"
 ```
 

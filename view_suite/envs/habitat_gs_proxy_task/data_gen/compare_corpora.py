@@ -15,7 +15,7 @@ real reduction in what the benchmark tests, and it should be paid for knowingly.
 
     ~/miniconda3/envs/habitat-gs/bin/python -m \
       view_suite.envs.habitat_gs_proxy_task.data_gen.compare_corpora \
-      --a=data/viewagent_habitat_gs --b=data/habitat_gs_p40 --label_a=pitch60 --label_b=pitch40
+      --a=data/viewagent15k_habitat_gs --b=data/habitat_gs_p40 --label_a=pitch60 --label_b=pitch40
 """
 from __future__ import annotations
 

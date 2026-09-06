@@ -21,7 +21,7 @@ envs:
     split: test
     max_turns: 10
     config:
-      jsonl_path: ${fileroot}/data/viewagent_ai2thor/interactive_view_planning_test.jsonl
+      jsonl_path: ${fileroot}/data/viewagent15k_ai2thor/interactive_view_planning_test.jsonl
       max_turns: 10
       render_backend: client
       client_url_file_path: ${fileroot}/client_url_ai2thor.txt

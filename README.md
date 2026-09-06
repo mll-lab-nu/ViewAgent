@@ -118,7 +118,7 @@ Lives on the render-service machine. Downloads from the public dataset repo [`ML
 
 ```bash
 bash scripts/download_scannet.sh
-# downloads viewagent_scannet.tar.gz into data/
+# downloads viewagent_viewagent_scannet.tar.gz into data/
 ```
 
 ### Local — ViewSuite tasks (jsonl + small assets)
@@ -127,7 +127,7 @@ Lives on the training/eval machine (the one talking to the render service).
 
 ```bash
 bash scripts/download_viewsuite_all.sh
-# downloads viewagent15k_scannet_open3d.tar.gz + viewagent_mindcube.tar.gz into data/
+# downloads viewagent15k_scannet_open3d.tar.gz + viewagent_viewagent_mindcube.tar.gz into data/
 ```
 
 After both, you should have:

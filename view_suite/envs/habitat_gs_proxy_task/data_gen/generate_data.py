@@ -56,7 +56,7 @@ OPTION_LETTERS = ["A", "B", "C", "D"]
 
 @dataclass
 class GenConfig:
-    out_root: str = "data/viewagent_habitat_gs"
+    out_root: str = "data/viewagent15k_habitat_gs"
     root: str = field(default_factory=default_root)
     samples_per_scene: int = 24
     width: int = 512

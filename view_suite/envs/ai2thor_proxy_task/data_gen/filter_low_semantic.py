@@ -18,7 +18,7 @@ Pipeline (post-processing over an already-generated dataset):
 Usage:
   conda activate viewagent_thor
   python -m view_suite.envs.ai2thor_proxy_task.data_gen.filter_low_semantic \
-      --data_root=$VIEWSUITE_ROOT/data/viewagent_ai2thor --workers=16
+      --data_root=$VIEWSUITE_ROOT/data/viewagent15k_ai2thor --workers=16
   # then re-split with view_suite.envs.utils.split_jsonl_by_scene
 """
 from __future__ import annotations

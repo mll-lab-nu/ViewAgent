@@ -66,18 +66,18 @@ bash scripts/download_habitat_gs.sh
 # 2. generate. Resumable: a scene with a .done marker is skipped.
 ~/miniconda3/envs/habitat-gs/bin/python -m \
   view_suite.envs.habitat_gs_proxy_task.data_gen.gen_parallel \
-  --out_root=$VIEWSUITE_ROOT/data/viewagent_habitat_gs --scenes=all --samples_per_scene=24 --n_gpus=8
+  --out_root=$VIEWSUITE_ROOT/data/viewagent15k_habitat_gs --scenes=all --samples_per_scene=24 --n_gpus=8
 
 # 3. screen every view with a VLM judge. --backend=openrouter needs OPENROUTER_API;
 #    --backend=cli shells out to whatever VIEW_JUDGE_CMD names, for sites where a
 #    vision-capable CLI is easier to come by than an API key.
 python -m view_suite.envs.habitat_gs_proxy_task.data_gen.filter_low_semantic \
-  --data_root=$VIEWSUITE_ROOT/data/viewagent_habitat_gs \
+  --data_root=$VIEWSUITE_ROOT/data/viewagent15k_habitat_gs \
   --workers=48 --review_dir=$VIEWSUITE_ROOT/gs_filter_review
 
 # 4. split along scene boundaries (val/ becomes test; train/ splits into train+dev)
 python -m view_suite.envs.habitat_gs_proxy_task.data_gen.split_by_corpus \
-  --data_root=$VIEWSUITE_ROOT/data/viewagent_habitat_gs
+  --data_root=$VIEWSUITE_ROOT/data/viewagent15k_habitat_gs
 ```
 
 Pin the judge with `--judge_model=<name>` on any run whose provenance matters. Left

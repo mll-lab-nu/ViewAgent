@@ -5,7 +5,7 @@
 #
 # Dataset produced by:
 #   python -m view_suite.envs.habitat_gs_proxy_task.data_gen.generate_data \
-#       --out_root=$VIEWSUITE_ROOT/data/viewagent_habitat_gs --scenes=default --samples_per_scene=16
+#       --out_root=$VIEWSUITE_ROOT/data/viewagent15k_habitat_gs --scenes=default --samples_per_scene=16
 #   # then split scene-disjoint into _train/_eval/_test via
 #   # view_suite.envs.utils.split_jsonl_by_scene.split_jsonl_by_scene
 #
@@ -46,7 +46,7 @@ envs:
     split: test
     max_turns: 1
     config:
-      jsonl_path: ${fileroot}/data/viewagent_habitat_gs/path_to_view_test.jsonl
+      jsonl_path: ${fileroot}/data/viewagent15k_habitat_gs/path_to_view_test.jsonl
       image_size: [512, 512]
       format: eval_mode
       example_count: 0
@@ -58,7 +58,7 @@ envs:
     split: test
     max_turns: 1
     config:
-      jsonl_path: ${fileroot}/data/viewagent_habitat_gs/view_to_path_test.jsonl
+      jsonl_path: ${fileroot}/data/viewagent15k_habitat_gs/view_to_path_test.jsonl
       image_size: [512, 512]
       format: eval_mode
       example_count: 0
@@ -70,7 +70,7 @@ envs:
     split: test
     max_turns: 10
     config:
-      jsonl_path: ${fileroot}/data/viewagent_habitat_gs/interactive_view_planning_test.jsonl
+      jsonl_path: ${fileroot}/data/viewagent15k_habitat_gs/interactive_view_planning_test.jsonl
       max_turns: 10
       render_backend: client
       client_url_file_path: ${fileroot}/client_url_habitat_gs.txt
